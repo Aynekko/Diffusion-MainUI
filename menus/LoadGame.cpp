@@ -377,6 +377,8 @@ void CMenuLoadGame::DeleteGame()
 		EngFuncs::PIC_Free( cmd );
 
 		savesListModel.Update();
+
+		UpdateGame();
 	}
 }
 
