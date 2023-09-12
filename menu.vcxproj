@@ -68,8 +68,8 @@
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IntDir>..\build\mainui\msdev\</IntDir>
-    <OutDir>..\build\mainui\msdev\</OutDir>
+    <IntDir>bld</IntDir>
+    <OutDir>bld</OutDir>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -132,7 +132,7 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "D:\!DIFFUSION 2020\source code 2022\engine\build\mainui\msdev\menu.dll" "D:\!DIFFUSION 2020\!GAME_developer\menu.dll"</Command>
+      <Command>copy /Y "D:\!DIFFUSION 2020\source code 2022\Diffusion-main-ui\bld\menu.dll" "D:\!DIFFUSION 2020\!GAME_developer\menu.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
