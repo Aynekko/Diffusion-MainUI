@@ -52,43 +52,6 @@ private:
 	const char *m_szModes[64];
 };
 
-class CMenuRenderersModel : public CMenuBaseArrayModel
-{
-public:
-	void Update() override
-	{
-		refdll temp;
-
-		for( unsigned int i = 0;
-			EngFuncs::GetRenderers( i, temp.shortName, sizeof( temp.shortName ), temp.readable, sizeof( temp.readable ));
-			i++ )
-		{
-			m_refs.AddToTail( temp );
-		}
-	}
-	int GetRows() const override { return m_refs.Count(); }
-	const char *GetText( int i ) override { return m_refs[i].readable; }
-
-	const char *GetShortName( int i ) { return m_refs[i].shortName; }
-	void Add( const char *str )
-	{
-		refdll temp;
-
-		Q_strncpy( temp.shortName, str, sizeof( temp.shortName ));
-		Q_strncpy( temp.readable, str, sizeof( temp.readable ));
-
-		m_refs.AddToTail( temp );
-	}
-private:
-	struct refdll
-	{
-		char shortName[64];
-		char readable[64];
-	};
-
-	CUtlVector<refdll> m_refs;
-};
-
 class CMenuVidModes : public CMenuFramework
 {
 private:
@@ -103,37 +66,6 @@ public:
 	void SetConfig( );
 	void RevertChanges();
 	void ApplyChanges();
-	void GetRendererConfig()
-	{
-		const char *refdll = EngFuncs::GetCvarString( "r_refdll" );
-
-		if( !refdll[0] )
-		{
-			renderers.SetCurrentValue( 0.0f );
-		}
-
-		int i;
-		for( i = 0; i < renderersModel.GetRows(); i++ )
-		{
-			if( !stricmp( renderersModel.GetShortName( i ), refdll ) )
-			{
-				renderers.SetCurrentValue( i );
-				break;
-			}
-		}
-
-		if( i == renderersModel.GetRows() )
-		{
-			renderersModel.Add( refdll );
-			renderers.SetCurrentValue( i );
-		}
-	}
-
-	void WriteRendererConfig()
-	{
-		int i = renderers.GetCurrentValue();
-		EngFuncs::CvarSetString( "r_refdll", renderersModel.GetShortName( i ));
-	}
 
 	CMenuCheckBox	windowed;
 	CMenuCheckBox	vsync;
@@ -142,9 +74,6 @@ public:
 	CMenuVidModesModel vidListModel;
 
 	CMenuYesNoMessageBox testModeMsgBox;
-
-	CMenuRenderersModel renderersModel;
-	CMenuSpinControl renderers;
 
 	int prevMode;
 	int prevModeX;
@@ -300,11 +229,11 @@ void CMenuVidModes::_Init( void )
 	banner.SetPicture(ART_BANNER);
 
 //	vidList.SetRect( 360, 230, -20, 365 );
-	vidList.SetRect(400, 100, 600, 600);
-	vidList.SetupColumn( 0, L( "Resolution" ), 1.0f );
+	vidList.SetRect(400, 200, 600, 600);
+	vidList.SetupColumn( 0, L( "GameUI_Resolution" ), 1.0f );
 	vidList.SetModel( &vidListModel );
 
-	windowed.SetNameAndStatus( L( "Windowed mode" ), L( "Windowed" ) );
+	windowed.SetNameAndStatus( L( "GameUI_Windowed" ), L( "GameUI_Windowed" ) );
 	windowed.SetCoord( 360, MenuYOffset/2 + 620 );
 	SET_EVENT_MULTI( windowed.onChanged,
 	{
@@ -320,7 +249,7 @@ void CMenuVidModes::_Init( void )
 			parent->vidList.SetCurrentIndex( VID_AUTOMODE_POS );
 	});
 
-	vsync.SetNameAndStatus( L( "Vertical sync" ), L( "VSync" ) );
+	vsync.SetNameAndStatus( L( "GameUI_VSync" ), L( "GameUI_VSync" ) );
 	vsync.SetCoord( 360, MenuYOffset/2 + 670 );
 	vsync.LinkCvar( "gl_vsync" );
 
@@ -329,25 +258,13 @@ void CMenuVidModes::_Init( void )
 	testModeMsgBox.onNegative = VoidCb( &CMenuVidModes::RevertChanges );
 	testModeMsgBox.Link( this );
 
-//	renderersModel.Update();
-//	renderers.szName = L( "Renderer" );
-//	renderers.Setup( &renderersModel );
-//	renderers.SetRect( 80, 480, 250, 32 );
-//	renderers.SetCharSize( QM_SMALLFONT );
-//	renderers.onCvarGet = VoidCb( &CMenuVidModes::GetRendererConfig );
-//	renderers.onCvarWrite = VoidCb( &CMenuVidModes::WriteRendererConfig );
-//	renderers.bUpdateImmediately = true;
-
 	AddItem( background );
 	AddItem( banner );
 	AddButton( L( "GameUI_Apply" ), L( "Apply changes" ), PC_OK, VoidCb( &CMenuVidModes::SetConfig ) );
 	AddButton( L( "GameUI_Cancel" ), L( "Return back to previous menu" ), PC_CANCEL, VoidCb( &CMenuVidModes::Hide ) );
-//	AddItem( renderers );
 	AddItem( windowed );
 	AddItem( vsync );
 	AddItem( vidList );
-
-//	renderers.LinkCvar( "r_refdll", CMenuEditable::CVAR_STRING );
 }
 
 void CMenuVidModes::_VidInit()

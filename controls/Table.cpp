@@ -23,20 +23,20 @@ GNU General Public License for more details.
 #define HEADER_HEIGHT_FRAC 1.75f
 
 CMenuTable::CMenuTable() : BaseClass(),
-	bFramedHintText( false ),
-	bAllowSorting( false ),
-	bShowScrollBar( true ),
-	szBackground(),
-	szUpArrow( UI_UPARROW ), szUpArrowFocus( UI_UPARROWFOCUS ), szUpArrowPressed( UI_UPARROWPRESSED ),
-	szDownArrow( UI_DOWNARROW ), szDownArrowFocus( UI_DOWNARROWFOCUS ), szDownArrowPressed( UI_DOWNARROWPRESSED ),
-	iTopItem( 0 ),
-	iScrollBarSliding( false ),
-	iHighlight( -1 ), iCurItem( 0 ), iNumRows( 0 ),
-	m_iLastItemMouseChange( 0 ),
-	m_iSortingColumn( -1 ),
-	m_pModel( NULL )
+bFramedHintText( false ),
+bAllowSorting( false ),
+bShowScrollBar( true ),
+szBackground(),
+szUpArrow( UI_UPARROW ), szUpArrowFocus( UI_UPARROWFOCUS ), szUpArrowPressed( UI_UPARROWPRESSED ),
+szDownArrow( UI_DOWNARROW ), szDownArrowFocus( UI_DOWNARROWFOCUS ), szDownArrowPressed( UI_DOWNARROWPRESSED ),
+iTopItem( 0 ),
+iScrollBarSliding( false ),
+iHighlight( -1 ), iCurItem( 0 ), iNumRows( 0 ),
+m_iLastItemMouseChange( 0 ),
+m_iSortingColumn( -1 ),
+m_pModel( NULL )
 {
-	memset( szHeaderTexts, 0, sizeof(szHeaderTexts) );
+	memset( szHeaderTexts, 0, sizeof( szHeaderTexts ) );
 	memset( columns, 0, sizeof( columns ) );
 	eFocusAnimation = QM_HIGHLIGHTIFFOCUS;
 	SetCharSize( QM_SMALLFONT );
@@ -54,7 +54,7 @@ void CMenuTable::VidInit()
 
 	if( iStrokeWidth == 0 ) iStrokeWidth = uiStatic.outlineWidth;
 
-	iNumRows = ( m_scSize.h - iStrokeWidth * 2 ) / m_scChSize - 1;
+	iNumRows = (m_scSize.h - iStrokeWidth * 2) / m_scChSize - 1;
 
 	if( !iCurItem )
 	{
@@ -187,18 +187,11 @@ bool CMenuTable::MouseMove( int x, int y )
 	return true;
 }
 
-float CMenuTable::Step()
-{
-	float step = (m_pModel->GetRows() <= 1) ? 1 : (downArrow.y - upArrow.y - arrow.h) / (float)(m_pModel->GetRows() - 1);
-
-	return step;
-}
-
-bool CMenuTable::MoveView(int delta )
+bool CMenuTable::MoveView( int delta )
 {
 	iTopItem += delta;
 
-	if( iTopItem < abs(delta) )
+	if( iTopItem < abs( delta ) )
 	{
 		iTopItem = 0;
 		return false;
@@ -215,7 +208,7 @@ bool CMenuTable::MoveView(int delta )
 	return true;
 }
 
-bool CMenuTable::MoveCursor(int delta)
+bool CMenuTable::MoveCursor( int delta )
 {
 	iCurItem += delta;
 
@@ -253,96 +246,103 @@ void CMenuTable::SetCurrentIndex( int idx )
 	}
 }
 
+float CMenuTable::Step()
+{
+	float step = (m_pModel->GetRows() <= 1) ? 1 : (downArrow.y - upArrow.y - arrow.h) / (float)(m_pModel->GetRows() - 1);
+
+	return step;
+}
+
 bool CMenuTable::KeyUp( int key )
 {
 	const char *sound = 0;
 	int i;
 	bool noscroll = false;
+
 	iScrollBarSliding = false;
 
-	switch( key )
+	if( UI::Key::IsLeftMouse( key ) )
 	{
-	case K_MOUSE1:
 		noscroll = true; // don't scroll to current when mouse used
 
-		if( !( iFlags & QMF_HASMOUSEFOCUS ) )
-			break;
-
-		// test for arrows
-		if( UI_CursorInRect( upArrow, arrow ) )
+		if( FBitSet( iFlags, QMF_HASMOUSEFOCUS ) )
 		{
-			if( MoveView( -5 ) )
-				sound = uiStatic.sounds[SND_MOVE];
-			else sound = uiStatic.sounds[SND_BUZZ];
-		}
-		else if( UI_CursorInRect( downArrow, arrow ))
-		{
-			if( MoveView( 5 ) )
-				sound = uiStatic.sounds[SND_MOVE];
-			else sound = uiStatic.sounds[SND_BUZZ];
-		}
-		else if( UI_CursorInRect( boxPos, boxSize ))
-		{
-			// test for item select
-			int starty = boxPos.y + iStrokeWidth;
-			int endy = starty + iNumRows * m_scChSize;
-			if( uiStatic.cursorY > starty && uiStatic.cursorY < endy )
+			// test for arrows
+			if( UI_CursorInRect( upArrow, arrow ) )
 			{
-				int offsety = uiStatic.cursorY - starty;
-				int newCur = iTopItem + offsety / m_scChSize;
-
-				if( newCur < m_pModel->GetRows() )
+				if( MoveView( -5 ) )
+					sound = uiStatic.sounds[SND_MOVE];
+				else sound = uiStatic.sounds[SND_BUZZ];
+			}
+			else if( UI_CursorInRect( downArrow, arrow ) )
+			{
+				if( MoveView( 5 ) )
+					sound = uiStatic.sounds[SND_MOVE];
+				else sound = uiStatic.sounds[SND_BUZZ];
+			}
+			else if( UI_CursorInRect( boxPos, boxSize ) )
+			{
+				// test for item select
+				int starty = boxPos.y + iStrokeWidth;
+				int endy = starty + iNumRows * m_scChSize;
+				if( uiStatic.cursorY > starty && uiStatic.cursorY < endy )
 				{
-					if( newCur == iCurItem )
+					int offsety = uiStatic.cursorY - starty;
+					int newCur = iTopItem + offsety / m_scChSize;
+
+					if( newCur < m_pModel->GetRows() )
 					{
-						if( uiStatic.realTime - m_iLastItemMouseChange < 200 ) // 200 msec to double click
+						if( newCur == iCurItem )
 						{
-							m_pModel->OnActivateEntry( iCurItem );
+							if( uiStatic.realTime - m_iLastItemMouseChange < 200 ) // 200 msec to double click
+							{
+								m_pModel->OnActivateEntry( iCurItem );
+							}
+						}
+						else
+						{
+							iCurItem = newCur;
+							sound = uiStatic.sounds[SND_NULL];
+						}
+
+						m_iLastItemMouseChange = uiStatic.realTime;
+					}
+				}
+			}
+			else if( bAllowSorting && UI_CursorInRect( m_scPos, headerSize ) )
+			{
+				Point p = m_scPos;
+				Size sz;
+				sz.h = headerSize.h;
+
+				for( i = 0; i < m_pModel->GetColumns(); i++, p.x += sz.w )
+				{
+					if( columns[i].fStaticWidth )
+						sz.w = columns[i].flWidth * uiStatic.scaleX;
+					else
+						sz.w = ((float)headerSize.w - flFixedSumm) * columns[i].flWidth / flDynamicSumm;
+
+					if( UI_CursorInRect( p, sz ) )
+					{
+						if( GetSortingColumn() != i )
+						{
+							SetSortingColumn( i );
+						}
+						else
+						{
+							SwapOrder();
 						}
 					}
-					else
-					{
-						iCurItem = newCur;
-						sound = uiStatic.sounds[SND_NULL];
-					}
-
-					m_iLastItemMouseChange = uiStatic.realTime;
 				}
 			}
 		}
-		else if( bAllowSorting && UI_CursorInRect( m_scPos, headerSize ))
-		{
-			Point p = m_scPos;
-			Size sz;
-			sz.h = headerSize.h;
-
-			for( i = 0; i < m_pModel->GetColumns(); i++, p.x += sz.w )
-			{
-				if( columns[i].fStaticWidth )
-					sz.w = columns[i].flWidth * uiStatic.scaleX;
-				else
-					sz.w = ((float)headerSize.w - flFixedSumm) * columns[i].flWidth / flDynamicSumm;
-
-				if( UI_CursorInRect( p, sz ))
-				{
-					if( GetSortingColumn() != i )
-					{
-						SetSortingColumn( i );
-					}
-					else
-					{
-						SwapOrder();
-					}
-				}
-			}
-		}
-		break;
-	case K_ENTER:
-	case K_AUX1:
-	case K_AUX31:
-	case K_AUX32:
-		m_pModel->OnActivateEntry( iCurItem ); // activate only on release
-		break;
+	}
+	else if( UI::Key::IsEnter( key ) )
+	{
+		if( m_pModel->GetRows() )
+			m_pModel->OnActivateEntry( iCurItem ); // activate only on release
+		else
+			sound = uiStatic.sounds[SND_BUZZ]; // list is empty, can't activate anything
 	}
 
 	if( !noscroll )
@@ -373,65 +373,46 @@ bool CMenuTable::KeyDown( int key )
 	const char *sound = 0;
 	bool noscroll = false;
 
-	switch( key )
+	if( UI::Key::IsUpArrow( key ) )
+		sound = MoveCursor( -1 ) ? uiStatic.sounds[SND_MOVE] : 0;
+	else if( UI::Key::IsDownArrow( key ) )
+		sound = MoveCursor( 1 ) ? uiStatic.sounds[SND_MOVE] : 0;
+	else if( key == K_MWHEELUP )
+		sound = MoveCursor( -1 ) ? uiStatic.sounds[SND_MOVE] : uiStatic.sounds[SND_BUZZ];
+	else if( key == K_MWHEELDOWN )
+		sound = MoveCursor( 1 ) ? uiStatic.sounds[SND_MOVE] : uiStatic.sounds[SND_BUZZ];
+	else if( UI::Key::IsPageUp( key ) )
+		sound = MoveCursor( -2 ) ? uiStatic.sounds[SND_MOVE] : uiStatic.sounds[SND_BUZZ];
+	else if( UI::Key::IsPageDown( key ) )
+		sound = MoveCursor( 2 ) ? uiStatic.sounds[SND_MOVE] : uiStatic.sounds[SND_BUZZ];
+	else if( UI::Key::IsHome( key ) )
 	{
-	case K_MOUSE1:
+		sound = iCurItem > 0 ? uiStatic.sounds[SND_MOVE] : uiStatic.sounds[SND_BUZZ];
+		iCurItem = 0;
+	}
+	else if( UI::Key::IsEnd( key ) )
+	{
+		int lastItem = Q_min( m_pModel->GetRows() - 1, 0 );
+		sound = iCurItem < lastItem ? uiStatic.sounds[SND_MOVE] : uiStatic.sounds[SND_BUZZ];
+		iCurItem = lastItem;
+	}
+	else if( UI::Key::IsDelete( key ) )
+	{
+		if( m_pModel->GetRows() )
+			m_pModel->OnDeleteEntry( iCurItem ); // allow removing entries on repeating
+		else
+			sound = uiStatic.sounds[SND_BUZZ];
+	}
+	else if( UI::Key::IsLeftMouse( key ) )
 	{
 		noscroll = true; // don't scroll to current when mouse used
 
-		if( !( iFlags & QMF_HASMOUSEFOCUS ) )
-			break;
-
-		// test for scrollbar
-		if( UI_CursorInRect( sbarPos, sbarSize ) )
-			iScrollBarSliding = true;
-		break;
-	}
-	case K_HOME:
-	case K_KP_HOME:
-		if( iCurItem )
+		if( FBitSet( iFlags, QMF_HASMOUSEFOCUS ) )
 		{
-			iCurItem = 0;
-			sound = uiStatic.sounds[SND_MOVE];
+			// test for scrollbar
+			if( UI_CursorInRect( sbarPos, sbarSize ) )
+				iScrollBarSliding = true;
 		}
-		else sound = uiStatic.sounds[SND_BUZZ];
-		break;
-	case K_END:
-	case K_KP_END:
-		if( iCurItem != m_pModel->GetRows() - 1 )
-		{
-			iCurItem = m_pModel->GetRows() - 1;
-			sound = uiStatic.sounds[SND_MOVE];
-		}
-		else sound = uiStatic.sounds[SND_BUZZ];
-		break;
-	case K_PGDN:
-	case K_KP_PGDN:
-	case K_R1_BUTTON:
-		sound = MoveCursor( 2 ) ? uiStatic.sounds[SND_MOVE] : uiStatic.sounds[SND_BUZZ];
-		break;
-	case K_PGUP:
-	case K_KP_PGUP:
-	case K_L1_BUTTON:
-		sound = MoveCursor( -2 ) ? uiStatic.sounds[SND_MOVE] : uiStatic.sounds[SND_BUZZ];
-		break;
-	case K_UPARROW:
-	case K_KP_UPARROW:
-	case K_DPAD_UP:
-	case K_MWHEELUP:
-		sound = MoveCursor( -1 ) ? uiStatic.sounds[SND_MOVE] : uiStatic.sounds[SND_BUZZ];
-		break;
-	case K_DOWNARROW:
-	case K_KP_DOWNARROW:
-	case K_DPAD_DOWN:
-	case K_MWHEELDOWN:
-		sound = MoveCursor( 1 ) ? uiStatic.sounds[SND_MOVE] : uiStatic.sounds[SND_BUZZ];
-		break;
-	case K_BACKSPACE:
-	case K_DEL:
-	case K_AUX30:
-		m_pModel->OnDeleteEntry( iCurItem ); // allow removing entries on repeating
-		break;
 	}
 
 	if( !noscroll )
@@ -524,7 +505,7 @@ void CMenuTable::DrawLine( Point p, int line, uint textColor, bool forceCol, uin
 
 	unsigned int newFillColor;
 	bool forceFillColor = false;
-	if( m_pModel->GetLineColor( line, newFillColor, forceFillColor ))
+	if( m_pModel->GetLineColor( line, newFillColor, forceFillColor ) )
 	{
 		if( !fillColor || forceFillColor )
 			fillColor = newFillColor;
@@ -550,7 +531,7 @@ void CMenuTable::DrawLine( Point p, int line, uint textColor, bool forceCol, uin
 		const char *str = m_pModel->GetCellText( line, i );
 		const ECellType type = m_pModel->GetCellType( line, i );
 
-		if( !str /* && type != CELL_ITEM  */) // headers may be null, cells too
+		if( !str /* && type != CELL_ITEM  */ ) // headers may be null, cells too
 			continue;
 
 		bool useCustomColors = m_pModel->GetCellColors( line, i, newFillColor, forceFillColor );
@@ -568,7 +549,7 @@ void CMenuTable::DrawLine( Point p, int line, uint textColor, bool forceCol, uin
 		{
 		case CELL_TEXT:
 			UI_DrawString( font, p, sz, str, textColor, m_scChSize, m_pModel->GetAlignmentForColumn( i ),
-				textflags | ( m_pModel->IsCellTextWrapped( line, i ) ? 0 : ETF_NOSIZELIMIT ) );
+				textflags | (m_pModel->IsCellTextWrapped( line, i ) ? 0 : ETF_NOSIZELIMIT) );
 			break;
 		case CELL_IMAGE_ADDITIVE:
 		case CELL_IMAGE_DEFAULT:
@@ -582,14 +563,14 @@ void CMenuTable::DrawLine( Point p, int line, uint textColor, bool forceCol, uin
 
 			Point picPos = p;
 			Size picSize = EngFuncs::PIC_Size( pic );
-			float scale = (float)m_scChSize/(float)picSize.h;
+			float scale = (float)m_scChSize / (float)picSize.h;
 
 			picSize = picSize * scale;
 
 			switch( m_pModel->GetAlignmentForColumn( i ) )
 			{
-			case QM_RIGHT: picPos.x += ( sz.w - picSize.w ); break;
-			case QM_CENTER: picPos.x += ( sz.w - picSize.w ) / 2; break;
+			case QM_RIGHT: picPos.x += (sz.w - picSize.w); break;
+			case QM_CENTER: picPos.x += (sz.w - picSize.w) / 2; break;
 			default: break;
 			}
 
@@ -634,13 +615,13 @@ void CMenuTable::Draw()
 	int upFocus, downFocus, scrollbarFocus;
 
 	// HACKHACK: recalc iNumRows, to be not greater than iNumItems
-	iNumRows = ( m_scSize.h - iStrokeWidth * 2 ) / m_scChSize - 1;
+	iNumRows = (m_scSize.h - iStrokeWidth * 2) / m_scChSize - 1;
 	if( iNumRows > m_pModel->GetRows() )
 		iNumRows = m_pModel->GetRows();
 
 	if( UI_CursorInRect( boxPos, boxSize ) )
 	{
-		int newCur = iTopItem + ( uiStatic.cursorY - boxPos.y ) / m_scChSize;
+		int newCur = iTopItem + (uiStatic.cursorY - boxPos.y) / m_scChSize;
 
 		if( newCur < m_pModel->GetRows() )
 			iHighlight = newCur;
@@ -693,15 +674,15 @@ void CMenuTable::Draw()
 
 	float step = Step();
 
-	if(((downArrow.y - upArrow.y - arrow.h) - (((m_pModel->GetRows()-1)*m_scChSize)/2)) < 2)
+	if( ((downArrow.y - upArrow.y - arrow.h) - (((m_pModel->GetRows() - 1) * m_scChSize) / 2)) < 2 )
 	{
 		sbarSize.h = (downArrow.y - upArrow.y - arrow.h) - (step * (m_pModel->GetRows() - iNumRows));
-		sbarPos.y = upArrow.y + arrow.h + (step*iTopItem);
+		sbarPos.y = upArrow.y + arrow.h + (step * iTopItem);
 	}
 	else
 	{
-		sbarSize.h = downArrow.y - upArrow.y - arrow.h - (((m_pModel->GetRows()- iNumRows) * m_scChSize) / 2);
-		sbarPos.y = upArrow.y + arrow.h + (((iTopItem) * m_scChSize)/2);
+		sbarSize.h = downArrow.y - upArrow.y - arrow.h - (((m_pModel->GetRows() - iNumRows) * m_scChSize) / 2);
+		sbarPos.y = upArrow.y + arrow.h + (((iTopItem)*m_scChSize) / 2);
 	}
 
 	// draw the arrows base
@@ -709,7 +690,6 @@ void CMenuTable::Draw()
 		arrow.w, downArrow.y - upArrow.y - arrow.h, uiInputFgColor );
 
 	// ADAMIX
-
 	if( iScrollBarSliding )
 	{
 		// Draw scrollbar background
@@ -733,7 +713,7 @@ void CMenuTable::Draw()
 		// Draw scrollbar itself
 		UI_FillRect( sbarPos, sbarSize, scrollbarFocus ? uiInputTextColor : uiColorBlack );
 
-		if(this != m_pParent->ItemAtCursor())
+		if( this != m_pParent->ItemAtCursor() )
 		{
 			UI_DrawPic( upArrow, arrow, uiColorWhite, szUpArrow );
 			UI_DrawPic( downArrow, arrow, uiColorWhite, szDownArrow );
@@ -753,7 +733,7 @@ void CMenuTable::Draw()
 			{
 				int	color;
 
-				color = PackAlpha( colorBase, 255 * (0.5f + 0.5f * sin( (float)uiStatic.realTime / UI_PULSE_DIVISOR )));
+				color = PackAlpha( colorBase, 255 * (0.5f + 0.5f * sin( (float)uiStatic.realTime / UI_PULSE_DIVISOR )) );
 
 				UI_DrawPic( upArrow, arrow, (upFocus) ? color : (int)colorBase, (upFocus) ? szUpArrowFocus : szUpArrow );
 				UI_DrawPic( downArrow, arrow, (downFocus) ? color : (int)colorBase, (downFocus) ? szDownArrowFocus : szDownArrow );
@@ -784,7 +764,7 @@ void CMenuTable::Draw()
 				if( eFocusAnimation == QM_HIGHLIGHTIFFOCUS )
 					color = colorFocus;
 				else if( eFocusAnimation == QM_PULSEIFFOCUS )
-					color = PackAlpha( colorBase, 255 * (0.5f + 0.5f * sin( (float)uiStatic.realTime / UI_PULSE_DIVISOR )));
+					color = PackAlpha( colorBase, 255 * (0.5f + 0.5f * sin( (float)uiStatic.realTime / UI_PULSE_DIVISOR )) );
 
 				fillColor = selColor;
 			}

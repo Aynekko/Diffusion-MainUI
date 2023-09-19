@@ -275,7 +275,6 @@ void CWindowStack::Remove( CMenuBaseWindow *menu )
 	else
 		min = 0;
 
-
 	if( stack.Count() > min )
 	{
 		SetBits( menu->iFlags, QMF_CLOSING );
