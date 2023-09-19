@@ -184,6 +184,8 @@ bool CMenuTable::MouseMove( int x, int y )
 			iTopItem = m_pModel->GetRows() - iNumRows - 1;
 	}
 
+	iTopItem = bound( 0, iTopItem, m_pModel->GetRows() - iNumRows );
+
 	return true;
 }
 
@@ -497,7 +499,7 @@ void CMenuTable::DrawLine( Point p, const char **psz, size_t size, uint textColo
 }
 
 void CMenuTable::DrawLine( Point p, int line, uint textColor, bool forceCol, uint fillColor )
-{
+{	
 	int i;
 	Size sz;
 

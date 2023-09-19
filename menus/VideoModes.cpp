@@ -228,8 +228,7 @@ void CMenuVidModes::_Init( void )
 {
 	banner.SetPicture(ART_BANNER);
 
-//	vidList.SetRect( 360, 230, -20, 365 );
-	vidList.SetRect(400, 200, 600, 600);
+	vidList.SetRect(400, 100, 600, 600);
 	vidList.SetupColumn( 0, L( "GameUI_Resolution" ), 1.0f );
 	vidList.SetModel( &vidListModel );
 
