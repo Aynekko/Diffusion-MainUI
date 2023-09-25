@@ -48,13 +48,11 @@ private:
 public:
 	CMenuVidOptions() : CMenuFramework( "CMenuVidOptions" ) { }
 	void SaveAndPopMenu() override;
-//	void GammaUpdate();
-//	void GammaGet();
 	void UpdateConfig();
 	void GetConfig();
 	void Show();
 	void Hide();
-//	void SetSettingsTo( int Quality );
+	void Draw( void );
 
 	void WriteAnisotropy( void );
 
@@ -336,6 +334,17 @@ void CMenuVidOptions::CMenuVidPreview::Draw( )
 	UI_DrawRectangleExt( m_scPos, m_scSize, color, ((CMenuVidOptions*)Parent())->outlineWidth );
 }
 
+void CMenuVidOptions::Draw( void )
+{
+	char fps[32];
+	sprintf_s( fps, "Current FPS: %i", UI_GetFPS() );
+	
+	// I can't figure out how point positioning works in this function, but this does nicely.
+	UI_DrawString( font, Point( 0, ScreenHeight / 2 ), m_scSize, fps, uiColorHelp, m_scChSize, QM_CENTER, ETF_SHADOW );
+
+	BaseClass::Draw();
+}
+
 /*
 =================
 CMenuVidOptions::Init
@@ -409,6 +418,7 @@ void CMenuVidOptions::_Init( void )
 	maxFPS.Setup( 25, 200, 5 );
 	maxFPS.LinkCvar( "fps_max", CMenuEditable::CVAR_VALUE );
 	maxFPS.SetRect( 72, MenuYOffset + 200, 220, 32 );
+	maxFPS.onChanged = CMenuEditable::WriteCvarCb;
 
 	gl_msaa.SetNameAndStatus( L( "GameUI_MSAA" ), L( "-" ) );
 	gl_msaa.iFlags |= QMF_NOTIFY;

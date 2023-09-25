@@ -184,6 +184,8 @@ inline bool UI_CursorInRect( Point pos, Size size )
 void UI_EnableAlphaFactor( float a );
 void UI_DisableAlphaFactor();
 
+int UI_GetFPS( void );
+
 enum ETextFlags
 {
 	ETF_FORCECOL    = BIT( 0 ),

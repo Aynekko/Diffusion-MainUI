@@ -150,6 +150,32 @@ bool UI_CursorInRect( int x, int y, int w, int h )
 	return true;
 }
 
+int UI_GetFPS( void )
+{
+	float calc;
+	double newtime;
+	static double nexttime = 0, lasttime = 0;
+	static double framerate = 0;
+	static int framecount = 0;
+	
+	newtime = EngFuncs::DoubleTime();
+	if( newtime >= nexttime )
+	{
+		framerate = framecount / (newtime - lasttime);
+		lasttime = newtime;
+		nexttime = Q_max( nexttime + 1.0, lasttime - 1.0 );
+		framecount = 0;
+	}
+
+	calc = framerate;
+	framecount++;
+
+	if( calc < 1.0f )
+		return 1;
+	else
+		return (int)(calc + 0.5f);
+}
+
 /*
 =================
 UI_EnableAlphaFactor
