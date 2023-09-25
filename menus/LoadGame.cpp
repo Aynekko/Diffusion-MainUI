@@ -96,13 +96,13 @@ public:
 	void SetSaveMode( bool saveMode );
 	bool IsSaveMode() { return m_fSaveMode; }
 	void UpdateList() { savesListModel.Update(); }
+	void UpdateGame();
 
 private:
 	void _Init( void );
 
 	void LoadGame();
-	void SaveGame();
-	void UpdateGame();
+	void SaveGame();	
 	void DeleteGame();
 
 	CMenuPicButton	load;
@@ -267,7 +267,7 @@ UI_LoadGame_Init
 */
 void CMenuLoadGame::_Init( void )
 {
-	save.SetNameAndStatus( L( "GameUI_Save" ), L( "Save curret game" ) );
+	save.SetNameAndStatus( L( "GameUI_Save" ), L( "Save current game" ) );
 	save.SetPicture( PC_SAVE_GAME );
 	save.onReleased = VoidCb( &CMenuLoadGame::SaveGame );
 	save.SetCoord( 72, MenuYOffset + 25 + 230 );
@@ -428,6 +428,7 @@ void UI_LoadSaveGame_Menu( bool saveMode )
 	menu_loadgame->Show();
 	menu_loadgame->SetSaveMode( saveMode );
 	menu_loadgame->UpdateList();
+	menu_loadgame->UpdateGame();
 }
 
 void UI_LoadSaveGame_Shutdown( void )
