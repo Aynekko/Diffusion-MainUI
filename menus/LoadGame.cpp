@@ -41,7 +41,7 @@ class CMenuLoadGame;
 class CMenuSavePreview : public CMenuBaseItem
 {
 public:
-	CMenuSavePreview() : CMenuBaseItem(), fallback( "{GRAF001" )
+	CMenuSavePreview() : CMenuBaseItem(), fallback( "gfx/shell/save_default" )
 	{
 		iFlags = QMF_INACTIVE;
 	}
@@ -137,10 +137,10 @@ void CMenuSavePreview::Draw()
 		if( EngFuncs::FileExists( saveshot ))
 			UI_DrawPic( m_scPos, m_scSize, uiColorWhite, saveshot );
 		else
-			UI_DrawPic( m_scPos, m_scSize, uiColorWhite, fallback, QM_DRAWADDITIVE );
+			UI_DrawPic( m_scPos, m_scSize, uiColorWhite, fallback );
 	}
 	else
-		UI_DrawPic( m_scPos, m_scSize, uiColorWhite, fallback, QM_DRAWADDITIVE );
+		UI_DrawPic( m_scPos, m_scSize, uiColorWhite, fallback );
 
 	// draw the rectangle
 	UI_DrawRectangle( m_scPos, m_scSize, uiInputFgColor );
