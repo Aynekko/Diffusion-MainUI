@@ -76,7 +76,6 @@ public:
 			return QM_RIGHT;
 		return QM_LEFT;
 	}
-	void OnDeleteEntry( int line ) override;
 
 	char		saveName[UI_MAXGAMES][CS_SIZE];
 	char		delName[UI_MAXGAMES][CS_SIZE];
@@ -97,6 +96,7 @@ public:
 	bool IsSaveMode() { return m_fSaveMode; }
 	void UpdateList() { savesListModel.Update(); }
 	void UpdateGame();
+	void CheckEntry( void );
 
 private:
 	void _Init( void );
@@ -117,7 +117,9 @@ private:
 	char		hintText[MAX_HINT_TEXT];
 
 	// prompt dialog
-	CMenuYesNoMessageBox msgBox;
+	CMenuYesNoMessageBox msgBoxDelete;
+	CMenuYesNoMessageBox msgBoxSave;
+	CMenuYesNoMessageBox msgBoxLoad;
 	CMenuSavesListModel savesListModel;
 
 	friend class CMenuSavesListModel;
@@ -255,9 +257,12 @@ void CMenuSavesListModel::Update( void )
 	else parent->remove.SetGrayed( false );
 }
 
-void CMenuSavesListModel::OnDeleteEntry(int line)
+void CMenuLoadGame::CheckEntry( void )
 {
-	parent->msgBox.Show();
+	if( savesList.GetCurrentIndex() != 0 )
+		msgBoxSave.Show();
+	else
+		SaveGame();
 }
 
 /*
@@ -269,17 +274,18 @@ void CMenuLoadGame::_Init( void )
 {
 	save.SetNameAndStatus( L( "GameUI_Save" ), L( "Save current game" ) );
 	save.SetPicture( PC_SAVE_GAME );
-	save.onReleased = VoidCb( &CMenuLoadGame::SaveGame );
+	save.onReleased = VoidCb( &CMenuLoadGame::CheckEntry );
 	save.SetCoord( 72, MenuYOffset + 25 + 230 );
 
 	load.SetNameAndStatus( L( "GameUI_Load" ), L( "Load saved game" ) );
 	load.SetPicture( PC_LOAD_GAME );
 	load.onReleased = VoidCb( &CMenuLoadGame::LoadGame );
 	load.SetCoord( 72, MenuYOffset + 25 + 230 );
+	load.onReleasedClActive = msgBoxLoad.MakeOpenEvent();
 
 	remove.SetNameAndStatus( L( "Delete" ), L( "Delete saved game" ) );
 	remove.SetPicture( PC_DELETE );
-	remove.onReleased = msgBox.MakeOpenEvent();
+	remove.onReleased = msgBoxDelete.MakeOpenEvent();
 	remove.SetCoord( 72, MenuYOffset + 25 + 280 );
 
 	cancel.SetNameAndStatus( L( "GameUI_Cancel" ), L( "Return back to main menu" ) );
@@ -289,7 +295,6 @@ void CMenuLoadGame::_Init( void )
 
 	savesList.szName = hintText;
 	savesList.onChanged = VoidCb( &CMenuLoadGame::UpdateGame );
-	// savesList.onDeleteEntry = msgBox.MakeOpenEvent();
 	savesList.SetupColumn( 0, L( "Time" ), 0.30f );
 	savesList.SetupColumn( 1, L( "Game" ), 0.55f );
 	savesList.SetupColumn( 2, L( "Elapsed time" ), 0.15f );
@@ -298,9 +303,17 @@ void CMenuLoadGame::_Init( void )
 	savesList.SetCharSize( QM_SMALLFONT );
 	savesList.SetRect( 650, 230, 800, 666 );
 
-	msgBox.SetMessage( L( "Delete this saved game?" ) );
-	msgBox.onPositive = VoidCb( &CMenuLoadGame::DeleteGame );
-	msgBox.Link( this );
+	msgBoxDelete.SetMessage( L( "GameUI_DeleteGameConfirm" ) );
+	msgBoxDelete.onPositive = VoidCb( &CMenuLoadGame::DeleteGame );
+	msgBoxDelete.Link( this );
+
+	msgBoxSave.SetMessage( L( "GameUI_OverwriteGameConfirm" ) );
+	msgBoxSave.onPositive = VoidCb( &CMenuLoadGame::SaveGame );
+	msgBoxSave.Link( this );
+
+	msgBoxLoad.SetMessage( L( "GameUI_LoadGameConfirm" ) );
+	msgBoxLoad.onPositive = VoidCb( &CMenuLoadGame::LoadGame );
+	msgBoxLoad.Link( this );
 
 	levelShot.SetRect( LEVELSHOT_X, LEVELSHOT_Y, LEVELSHOT_W, LEVELSHOT_H );
 
@@ -333,9 +346,10 @@ void CMenuLoadGame::LoadGame()
 void CMenuLoadGame::SaveGame()
 {
 	const char *saveName = savesListModel.saveName[savesList.GetCurrentIndex()];
+
 	if( saveName[0] )
 	{
-		char	cmd[128];
+		char cmd[128];
 
 		sprintf( cmd, "save/%s.bmp", saveName );
 		EngFuncs::PIC_Free( cmd );
@@ -368,7 +382,10 @@ void CMenuLoadGame::DeleteGame()
 
 	if( delName[0] )
 	{
-		char	cmd[128];
+		if( savesList.GetCurrentIndex() == savesListModel.GetRows() - 1 )
+			savesList.SetCurrentIndex( savesListModel.GetRows() - 2 );
+		
+		char cmd[128];
 		sprintf( cmd, "killsave \"%s\"\n", delName );
 
 		EngFuncs::ClientCmd( TRUE, cmd );
