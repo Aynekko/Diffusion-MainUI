@@ -109,7 +109,8 @@ void UI_LoadBmpButtons( void )
 
 	uiStatic.buttons_width = pInfoHdr->biWidth;
 //	uiStatic.buttons_height = 78;	// fixed height (26 * 3)
-	uiStatic.buttons_height = 312; // fixed height (26 * 3) * 3 * 2 // btns_main.bmp scaled x 4   (??? mind blown)  // diffusionmenu
+//	uiStatic.buttons_height = 312; // fixed height (26 * 3) * 3 * 2 // btns_main.bmp scaled x 4   (??? mind blown)  // diffusionmenu
+	uiStatic.buttons_height = 156; // btns_main.bmp scaled x2
 
 	// determine buttons count by image height...
 	int pic_count = ( pInfoHdr->biHeight / uiStatic.buttons_height );

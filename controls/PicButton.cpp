@@ -156,169 +156,6 @@ void CMenuPicButton::DrawButton(int r, int g, int b, int a, wrect_t *rects, int 
 CMenuPicButton::Draw
 =================
 */
-/*
-void CMenuPicButton::Draw( )
-{
-	int state = BUTTON_NOFOCUS;
-
-#ifdef CS16CLIENT
-	if( UI_CursorInRect( m_scPos, m_scSize ) &&
-		m_pParent && m_pParent->IsVisible() )
-	{
-		if( !bRollOver )
-		{
-			PlayLocalSound( uiSoundRollOver );
-			bRollOver = true;
-		}
-	}
-	else
-	{
-		if( bRollOver )
-			bRollOver = false;
-	}
-#endif // CS16CLIENT
-
-	if( iFlags & (QMF_HASMOUSEFOCUS|QMF_HASKEYBOARDFOCUS))
-	{
-		state = BUTTON_FOCUS;
-	}
-
-	// make sure what cursor in rect
-	if( m_bPressed )
-		state = BUTTON_PRESSED;
-
-	if( iOldState == BUTTON_NOFOCUS && state != BUTTON_NOFOCUS )
-		iFocusStartTime = uiStatic.realTime;
-
-#ifndef CS16CLIENT
-	if( szStatusText && iFlags & QMF_NOTIFY )
-	{
-		Point coord;
-
-		coord.x = m_scPos.x + 290 * uiStatic.scaleX;
-		coord.y = m_scPos.y + m_scSize.h / 2 - EngFuncs::ConsoleCharacterHeight() / 2;
-
-		int	r, g, b;
-
-		UnpackRGB( r, g, b, uiColorHelp );
-		EngFuncs::DrawSetTextColor( r, g, b );
-		EngFuncs::DrawConsoleString( coord, szStatusText );
-	}
-#endif
-
-	int a = (512 - (uiStatic.realTime - m_iLastFocusTime)) >> 1;
-
-	if( hPic )
-	{
-		if( ButtonStackDepth && ButtonStack[ButtonStackDepth-1] == this )
-			return;
-
-		int r, g, b;
-
-		UnpackRGB( r, g, b, iFlags & QMF_GRAYED ? uiColorDkGrey : uiColorWhite );
-
-		wrect_t rects[] =
-		{
-	//	{ 0, uiStatic.buttons_width, 0,  26 },
-	//	{ 0, uiStatic.buttons_width, 26, 52 },
-	//	{ 0, uiStatic.buttons_width, 52, 78 },
-	
-		{ 0, uiStatic.buttons_width, 0, 104 },   // * 4  (btns_main.bmp scaled x4 ) // diffusionmenu
-		{ 0, uiStatic.buttons_width, 104, 208 },
-		{ 0, uiStatic.buttons_width, 208, 312 },
-		};
-		if( state == BUTTON_NOFOCUS && a > 0 )
-		{
-			DrawButton( r, g, b, a, rects, BUTTON_FOCUS );
-		}
-
-		// pulse code.
-		if( ( state == BUTTON_NOFOCUS && bPulse ) ||
-			( state == BUTTON_FOCUS   && eFocusAnimation == QM_PULSEIFFOCUS ) )
-		{
-			EngFuncs::PIC_Set( hPic, r, g, b, 255 *(0.5f + 0.5f * sin( (float)uiStatic.realTime / ( UI_PULSE_DIVISOR * 2 ))));
-			EngFuncs::PIC_DrawAdditive( m_scPos.x, m_scPos.y, uiStatic.buttons_draw_width, uiStatic.buttons_draw_height, &rects[BUTTON_FOCUS] );
-
-			EngFuncs::PIC_DrawAdditive( m_scPos.x, m_scPos.y, uiStatic.buttons_draw_width, uiStatic.buttons_draw_height, &rects[BUTTON_NOFOCUS] );
-		}
-		else
-		{
-			// special handling for focused
-			if( state == BUTTON_FOCUS )
-			{
-				EngFuncs::PIC_Set( hPic, r, g, b, 255 );
-				EngFuncs::PIC_DrawAdditive( m_scPos.x, m_scPos.y, uiStatic.buttons_draw_width, uiStatic.buttons_draw_height, &rects[BUTTON_FOCUS] );
-
-				EngFuncs::PIC_Set( hPic, r, g, b, 255 ); // set colors again
-				EngFuncs::PIC_DrawAdditive( m_scPos.x, m_scPos.y, uiStatic.buttons_draw_width, uiStatic.buttons_draw_height, &rects[BUTTON_NOFOCUS] );
-			}
-			else
-			{
-				// just draw
-				EngFuncs::PIC_Set( hPic, r, g, b, 255 );
-				EngFuncs::PIC_DrawAdditive( m_scPos.x, m_scPos.y, uiStatic.buttons_draw_width, uiStatic.buttons_draw_height, &rects[state] );
-			}
-		}
-	}
-	else if( !uiStatic.lowmemory )
-	{
-		uint textflags = ETF_NOSIZELIMIT | ETF_FORCECOL;
-
-		SetBits( textflags, ETF_ADDITIVE );
-
-		if( iFlags & QMF_GRAYED )
-		{
-
-			if( a > 0 )
-			{
-				UI_DrawString( uiStatic.hHeavyBlur, m_scPos, m_scSize, szName,
-					InterpColor( uiColorBlack, uiColorDkGrey, a / 255.0f ), m_scChSize, eTextAlignment, textflags );
-			}
-
-			UI_DrawString( font, m_scPos, m_scSize, szName, uiColorDkGrey, m_scChSize, eTextAlignment, textflags );
-			return; // grayed
-		}
-
-		if(this != m_pParent->ItemAtCursor())
-		{
-#ifdef MAINUI_RENDER_PICBUTTON_TEXT
-			if( a > 0 )
-			{
-				UI_DrawString( uiStatic.hHeavyBlur, m_scPos, m_scSize, szName,
-					InterpColor( uiColorBlack, colorBase, a / 255.0f ), m_scChSize, eTextAlignment, textflags );
-			}
-#endif
-			UI_DrawString( font, m_scPos, m_scSize, szName, colorBase, m_scChSize, eTextAlignment, textflags );
-			return; // no focus
-		}
-
-		if( eFocusAnimation == QM_HIGHLIGHTIFFOCUS )
-		{
-#ifdef MAINUI_RENDER_PICBUTTON_TEXT
-			UI_DrawString( uiStatic.hHeavyBlur, m_scPos, m_scSize, szName, colorBase, m_scChSize, eTextAlignment, textflags );
-			UI_DrawString( font, m_scPos, m_scSize, szName, colorBase, m_scChSize, eTextAlignment, textflags );
-#else
-			UI_DrawString( font, m_scPos, m_scSize, szName, colorFocus, m_scChSize, eTextAlignment, textflags );
-#endif
-		}
-		else if( eFocusAnimation == QM_PULSEIFFOCUS )
-		{
-			float pulsar = 0.5f + 0.5f * sin( (float)uiStatic.realTime / UI_PULSE_DIVISOR );
-#ifdef MAINUI_RENDER_PICBUTTON_TEXT
-
-			UI_DrawString( uiStatic.hHeavyBlur, m_scPos, m_scSize, szName,
-				InterpColor( uiColorBlack, colorBase, pulsar ), m_scChSize, eTextAlignment, textflags );
-			UI_DrawString( font, m_scPos, m_scSize, szName, colorBase, m_scChSize, eTextAlignment, textflags );
-#else
-			UI_DrawString( font, m_scPos, m_scSize, szName,
-				InterpColor( colorBase, colorFocus, pulsar ), m_scChSize, eTextAlignment, textflags );
-#endif
-		}
-	}
-
-	iOldState = state;
-}*/
-
 void CMenuPicButton::Draw()
 {
 	int state = BUTTON_NOFOCUS;
@@ -379,9 +216,12 @@ void CMenuPicButton::Draw()
 	//	{ 0, uiStatic.buttons_width, 0,  26 },
 	//	{ 0, uiStatic.buttons_width, 26, 52 },
 	//	{ 0, uiStatic.buttons_width, 52, 78 },
-		{ 0, uiStatic.buttons_width, 0, 104 },   // * 4  (btns_main.bmp scaled x4 ) // diffusionmenu
-		{ 0, uiStatic.buttons_width, 104, 208 },
-		{ 0, uiStatic.buttons_width, 208, 312 },
+	//	{ 0, uiStatic.buttons_width, 0, 104 },   // * 4  (btns_main.bmp scaled x4 ) // diffusionmenu
+	//	{ 0, uiStatic.buttons_width, 104, 208 },
+	//	{ 0, uiStatic.buttons_width, 208, 312 },
+		{ 0, uiStatic.buttons_width, 0, 52 },   // * 2  (btns_main.bmp scaled x2 ) // diffusionmenu
+		{ 0, uiStatic.buttons_width, 52, 104 },
+		{ 0, uiStatic.buttons_width, 104, 156 },
 		};
 		if( state == BUTTON_NOFOCUS && a > 0 )
 		{
