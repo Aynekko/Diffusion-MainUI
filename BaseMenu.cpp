@@ -331,15 +331,21 @@ int UI_DrawString( HFont font, int x, int y, int w, int h,
 	if( justify & QM_TOP )
 	{
 		yy = y;
+		h -= h % charH;
 	}
 	else if( justify & QM_BOTTOM )
 	{
 		yy = y + h - charH;
+		h -= h % charH;
 	}
 	else
 	{
 		yy = y + (h - charH)/2;
+		h -= charH;
 	}
+
+	if( flags & ETF_NO_WRAP )
+		h = charH;
 
 	int i = 0;
 	int ellipsisWide = g_FontMgr->GetEllipsisWide( font );
@@ -384,8 +390,8 @@ int UI_DrawString( HFont font, int x, int y, int w, int h,
 			{
 				int charWide;
 
-				// does we have free space for new line?
-				if( yy < (yy + h ) - charH )
+				// do we have free space for a new line?
+				if( yy < (y + h) - charH )
 				{
 					if( uch == ' ' && pixelWide < w ) // remember last whitespace
 					{
@@ -407,8 +413,8 @@ int UI_DrawString( HFont font, int x, int y, int w, int h,
 
 				if( !(flags & ETF_NOSIZELIMIT) && pixelWide + charWide > w )
 				{
-					// do we have free space for new line?
-					if( yy < (yy + h) - charH )
+					// do we have free space for a new line?
+					if( yy < (y + h) - charH )
 					{
 						// try to word wrap
 						if( save_j != 0 && save_pixelWide != 0 )
