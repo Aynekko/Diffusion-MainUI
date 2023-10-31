@@ -380,10 +380,10 @@ void CMenuMain::VidInit( bool connected )
 	saveRestore.SetCoord(72, MenuYOffset + (bTrainMap ? 380 : 330));
 	configuration.SetCoord(72, MenuYOffset + (bTrainMap ? 430 : 380));
 	multiPlayer.SetCoord(72, MenuYOffset + (bTrainMap ? 480 : 430));
-	customGame.SetCoord(72, MenuYOffset + (bTrainMap ? 530 : 480));
+//	customGame.SetCoord(72, MenuYOffset + (bTrainMap ? 530 : 480));
+	achievements.SetCoord( 72, MenuYOffset + (bTrainMap ? 630 : 480) );
 	previews.SetCoord(72, MenuYOffset + ((bCustomGame) ? (bTrainMap ? 580 : 530) : (bTrainMap ? 530 : 480)));
 	quit.SetCoord(72, MenuYOffset + ((bCustomGame) ? (bTrainMap ? 630 : 580) : (bTrainMap ? 580 : 530)));
-	achievements.SetCoord( ScreenWidth - (ScreenWidth / 10), MenuYOffset + 580 );
 }
 
 void CMenuMain::_VidInit()
