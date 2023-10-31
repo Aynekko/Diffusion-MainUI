@@ -25,6 +25,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "keydefs.h"
 #include "TabView.h"
 #include "CheckBox.h"
+#include "SpinControl.h"
+#include "StringArrayModel.h"
 
 #define ART_BANNER	     	"gfx/shell/head_config"
 
@@ -47,6 +49,7 @@ public:
 	CMenuCheckBox cl_tutor;
 	CMenuCheckBox cl_showhealthbars;
 	CMenuCheckBox cl_hitsound;
+	CMenuSpinControl cl_crosshair;
 
 	// update dialog
 	CMenuYesNoMessageBox msgBox;
@@ -105,10 +108,22 @@ void CMenuOptions::_Init( void )
 	cl_hitsound.iFlags |= QMF_NOTIFY;
 	cl_hitsound.SetCoord( 300, MenuYOffset + 380 );
 
+	static const char *cl_crosshair_str[] =
+	{
+		L( "GameUI_Off" ), L( "GameUI_Diffusion" ), L( "GameUI_Simple" )
+	};
+	static CStringArrayModel crossy( cl_crosshair_str, V_ARRAYSIZE( cl_crosshair_str ) );
+	cl_crosshair.SetNameAndStatus( L( "GameUI_CrosshairStyle" ), L( "Set crosshair style" ) );
+	cl_crosshair.Setup( &crossy );
+	cl_crosshair.onChanged = CMenuEditable::WriteCvarCb;
+	cl_crosshair.font = QM_SMALLFONT;
+	cl_crosshair.SetRect( 300, MenuYOffset + 470, 200, 32 );
+
 	AddItem( cl_achievement_notify );
 	AddItem( cl_tutor );
 	AddItem( cl_showhealthbars );
 	AddItem( cl_hitsound );
+	AddItem( cl_crosshair );
 }
 
 void CMenuOptions::Show(void)
@@ -134,6 +149,7 @@ void CMenuOptions::GetConfig()
 	cl_tutor.LinkCvar( "cl_tutor" );
 	cl_showhealthbars.LinkCvar( "cl_showhealthbars" );
 	cl_hitsound.LinkCvar( "cl_hitsound" );
+	cl_crosshair.LinkCvar( "cl_crosshair", CMenuEditable::CVAR_VALUE );
 }
 
 void CMenuOptions::_VidInit()
