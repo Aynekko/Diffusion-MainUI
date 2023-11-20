@@ -173,7 +173,6 @@ void CMenuAudio::_Init( void )
 	reverseChannels.onChanged = CMenuEditable::WriteCvarCb;
 	reverseChannels.SetCoord( 320, 620 );
 
-	AddItem( background );
 	AddItem( banner );
 	AddButton( L( "Done" ), L( "Go back to the Configuration Menu" ), PC_DONE,
 		VoidCb( &CMenuAudio::SaveAndPopMenu ) );

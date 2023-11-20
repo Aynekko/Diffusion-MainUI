@@ -548,7 +548,6 @@ void CMenuVidOptions::_Init( void )
 	ssaoQ.font = QM_SMALLFONT;
 	ssaoQ.SetRect( 72, MenuYOffset + 300, 220, 32 );
 
-	AddItem( background );
 	AddItem( banner );
 	AddItem( done );
 	AddItem( SetToLow );

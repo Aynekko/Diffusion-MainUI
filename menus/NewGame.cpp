@@ -106,7 +106,6 @@ CMenuNewGame::Init
 */
 void CMenuNewGame::_Init( void )
 {
-	AddItem( background );
 	AddItem( banner );
 
 	banner.SetPicture( ART_BANNER );

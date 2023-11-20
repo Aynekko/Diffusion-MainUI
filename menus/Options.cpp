@@ -69,7 +69,6 @@ void CMenuOptions::_Init( void )
 
 	msgBox.Link( this );
 
-	AddItem( background );
 	AddItem( banner );
 	CMenuPicButton *controls = AddButton( L( "Controls" ), L( "Change keyboard and mouse settings" ),
 		PC_CONTROLS, UI_Controls_Menu, QMF_NOTIFY );

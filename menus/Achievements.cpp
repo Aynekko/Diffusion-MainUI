@@ -170,7 +170,6 @@ void CMenuAchievements::_Init( void )
 
 	msgBox.Link( this );
 
-	AddItem( background );
 	AddItem( banner );
 
 //	AddButton( L( "Update" ), L( "Check for updates" ),

@@ -438,7 +438,6 @@ void CMenuControls::_Init( void )
 	sensitivity.Setup( 0.0, 20.0f, 0.1 );
 	sensitivity.SetCoord( 72, 500 );
 
-	AddItem( background );
 	AddItem( banner );
 
 	CMenuPicButton *UseDefaults = AddButton( L( "GameUI_UseDefaults" ), L( "Are you sure to load default key values?" ), PC_USE_DEFAULTS, msgBox2.MakeOpenEvent() );

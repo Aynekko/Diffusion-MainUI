@@ -181,7 +181,7 @@ int UI_GetFPS( void )
 UI_EnableAlphaFactor
 =================
 */
-void UI_EnableAlphaFactor(float a)
+void UI_EnableAlphaFactor( float a )
 {
 	uiStatic.enableAlphaFactor = true;
 	uiStatic.alphaFactor = bound( 0.0f, a, 1.0f );
@@ -651,8 +651,12 @@ void UI_UpdateMenu( float flTime )
 
 	static bool loadStuff = true;
 
+	// can't do this in Init, since these are dependent on cvar values set from user configs
 	if( loadStuff )
 	{
+		// init global background, root windows don't have background anymore
+		uiStatic.background = new CMenuBackgroundBitmap();
+
 		// load localized strings
 		UI_LoadCustomStrings();
 
@@ -664,6 +668,7 @@ void UI_UpdateMenu( float flTime )
 
 	UI_DrawFinalCredits();
 
+	// also moved opening main menu here from SetActiveMenu, so translation strings could will be loaded at this moment
 	if( uiStatic.nextFrameActive )
 	{
 		if( !uiStatic.menu.IsActive() )
@@ -672,57 +677,36 @@ void UI_UpdateMenu( float flTime )
 		uiStatic.nextFrameActive = false;
 	}
 
+	// advance global time
+	uiStatic.realTime = flTime * 1000;
+
 	// let's use engine credits "feature" for drawing client windows
 	if( uiStatic.client.IsActive() )
-	{
 		uiStatic.client.Update();
-		uiStatic.realTime = flTime * 1000;
-		uiStatic.framecount++;
-	}
-
-	if( !uiStatic.menu.IsActive() )
-	{
-		if( uiStatic.framecount )
-			uiStatic.framecount = 0;
-		return;
-	}
 
 	if( !uiStatic.menu.IsActive() )
 		return;
 
-	uiStatic.realTime = flTime * 1000;
-	uiStatic.framecount++;
-
-	if( !EngFuncs::ClientInGame() && EngFuncs::GetCvarFloat( "cl_background" ) )
+	if( !EngFuncs::ClientInGame() && EngFuncs::GetCvarFloat( "cl_background" ) != 0.0f )
 		return;	// don't draw menu while level is loading
 
 	if( uiStatic.firstDraw )
 	{
 		// we loading background so skip SCR_Update
-		if( UI_StartBackGroundMap() ) return;
+		if( UI_StartBackGroundMap() )
+			return;
 
 		uiStatic.firstDraw = false;
-		static int first = TRUE;
-
-		if( first )
-		{
-			// if game was launched with commandline e.g. +map or +load ignore the music
-			if( !CL_IsActive() )
-				EngFuncs::PlayBackgroundTrack( "media/gamestartup", "media/gamestartup" );
-			first = FALSE;
-		}
 	}
 
 	// draw cursor
 	UI_DrawMouseCursor();
 
-	// delay playing the enter sound until after the menu has been
-	// drawn, to avoid delay while caching images
-	if( uiStatic.enterSound > 0.0f && uiStatic.enterSound <= gpGlobals->time )
-	{
-		EngFuncs::PlayLocalSound( uiStatic.sounds[SND_IN] );
-		uiStatic.enterSound = -1;
-	}
+	// background doesn't need to be drawn with transparency
+	bool enableAlphaFactor = uiStatic.enableAlphaFactor;
+	uiStatic.enableAlphaFactor = false;
+	uiStatic.background->Draw();
+	uiStatic.enableAlphaFactor = enableAlphaFactor;
 
 	uiStatic.menu.Update();
 }
@@ -844,8 +828,6 @@ void UI_SetActiveMenu( int fActive )
 
 	// don't continue firing if we leave game
 	EngFuncs::KEY_ClearStates();
-
-	uiStatic.framecount = 0;
 
 	if( fActive )
 	{
@@ -1242,6 +1224,7 @@ void UI_Shutdown( void )
 
 	UI_FreeCustomStrings();
 
+	delete uiStatic.background;
 	delete g_FontMgr;
 
 	memset( &uiStatic, 0, sizeof( uiStatic_t ));

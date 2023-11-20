@@ -144,7 +144,6 @@ void CMenuZoo::_Init()
 
 	scrollView.SetRect( 0, 0, 1024, 768 );
 
-	AddItem( background );
 	AddItem( scrollView );
 }
 

@@ -296,7 +296,6 @@ void CMenuMain::_Init( void )
 	achievements.iFlags |= QMF_NOTIFY;
 	achievements.onReleased = UI_Achievements_Menu;
 
-	AddItem( background );
 	AddItem( banner );
 
 	AddItem( console );

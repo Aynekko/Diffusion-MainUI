@@ -35,20 +35,17 @@ public:
 	void SetInactive(bool) override { }
 	void ToggleInactive() override { }
 
-	bool bForceWON; // if true, szPic will be drawn, instead of Steam-background
 	bool bForceColor; // dialogs should set this
 
 	static void LoadBackground();
 	static bool ShouldDrawLogoMovie() { return s_bEnableLogoMovie; }
 private:
-	void DrawBackgroundLayout( Point p, float xScale, float yScale );
-	// void DrawSplash( Point p, float xScale, float yScale );
+	void DrawBackgroundLayout( Point p, int xOffset, float xScale, float yScale );
 	void DrawColor();
 	void DrawInGameBackground();
 
 	static bool LoadBackgroundImage( const bool gamedirOnly ); // Steam background loader
 	static bool CheckBackgroundSplash( const bool gamedirOnly ); // WON background loader
-
 
 	//==========
 	// WON-style

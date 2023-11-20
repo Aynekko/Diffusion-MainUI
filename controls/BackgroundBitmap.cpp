@@ -28,7 +28,6 @@ CMenuBackgroundBitmap::CMenuBackgroundBitmap() : CMenuBitmap()
 {
 	szPic = 0;
 	iFlags = QMF_INACTIVE|QMF_DISABLESCAILING;
-	bForceWON = false;
 	bForceColor = false;
 }
 
@@ -68,7 +67,7 @@ void CMenuBackgroundBitmap::DrawColor()
 	UI_FillRect( m_scPos, m_scSize, colorBase );
 }
 
-void CMenuBackgroundBitmap::DrawBackgroundLayout( Point p, float xScale, float yScale )
+void CMenuBackgroundBitmap::DrawBackgroundLayout( Point p, int xOffset, float xScale, float yScale )
 {
 	// iterate and draw all the background pieces
 	for( int i = 0; i < s_Backgrounds.Count(); i++ )
@@ -80,38 +79,9 @@ void CMenuBackgroundBitmap::DrawBackgroundLayout( Point p, float xScale, float y
 		int dt = (int)ceil(bimage.size.h * yScale);
 
 		EngFuncs::PIC_Set( bimage.hImage, 255, 255, 255, 255 );
-		EngFuncs::PIC_Draw( p.x + dx, p.y + dy, dw, dt );
+		EngFuncs::PIC_Draw( p.x + dx + xOffset, p.y + dy, dw, dt );
 	}
 }
-
-class OverrideAlphaFactor
-{
-public:
-	OverrideAlphaFactor()
-	{
-		bOverride = false;
-		flAlphaFactor = 1.0f;
-	}
-
-	~OverrideAlphaFactor()
-	{
-		if( bOverride )
-			UI_EnableAlphaFactor( flAlphaFactor );
-	}
-
-	void Override()
-	{
-		if( uiStatic.enableAlphaFactor )
-		{
-			bOverride = true;
-			flAlphaFactor = uiStatic.alphaFactor;
-			UI_DisableAlphaFactor();
-		}
-	}
-
-	bool bOverride;
-	float flAlphaFactor;
-};
 
 /*
 =================
@@ -120,21 +90,6 @@ CMenuBackgroundBitmap::Draw
 */
 void CMenuBackgroundBitmap::Draw()
 {
-	// HACKHACK: Don't draw background for root windows, which goes out and in transition
-	// for window which is goes in and in transition, alpha factor should be ignored
-	OverrideAlphaFactor alphaFactor;
-	if( m_pParent && m_pParent->IsWindow() )
-	{
-		CMenuBaseWindow *window = (CMenuBaseWindow*)m_pParent;
-		if( window->IsRoot() && window->eTransitionType )
-		{
-			alphaFactor.Override();
-
-			if( window->eTransitionType == CMenuBaseWindow::ANIM_CLOSING )
-				return;
-		}
-	}
-
 	if( bForceColor )
 	{
 		DrawColor();
@@ -204,7 +159,12 @@ void CMenuBackgroundBitmap::Draw()
 	}
 #endif
 
-	DrawBackgroundLayout( p, xScale, yScale );
+	// center wide background (for example if background is wider than our window)
+	int xOffset = 0;
+	if( s_BackgroundImageSize.w * xScale > ScreenWidth )
+		xOffset = (ScreenWidth - s_BackgroundImageSize.w * xScale) / 2;
+
+	DrawBackgroundLayout( p, xOffset, xScale, yScale );
 }
 
 bool CMenuBackgroundBitmap::LoadBackgroundImage( bool gamedirOnly )

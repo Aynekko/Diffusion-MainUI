@@ -192,7 +192,6 @@ void CAdvancedControls::_Init( void )
 	inputDev.SetCoord( 72, 230 );
 
 	// diffusion - disabled some unnecessary stuff
-	AddItem( background );
 	AddItem( banner );
 	AddItem( done );
 //	AddItem( inputDev );
