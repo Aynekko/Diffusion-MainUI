@@ -258,7 +258,7 @@ void CMenuVidModes::_Init( void )
 	testModeMsgBox.onNegative = VoidCb( &CMenuVidModes::RevertChanges );
 	testModeMsgBox.Link( this );
 
-	windowMode.SetNameAndStatus( "Window mode", "Select desired window mode" );
+	windowMode.SetNameAndStatus( L("Window mode"), L("Select desired window mode") );
 	windowMode.Setup( &windowModeModel );
 	windowMode.SetRect( 72, MenuYOffset + 60, 250, 32 ); // windowed.SetCoord( 360, MenuYOffset/2 + 620 );
 	windowMode.SetCharSize( QM_SMALLFONT );

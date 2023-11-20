@@ -16,9 +16,11 @@ GNU General Public License for more details.
 #ifndef GAMEINFO_H
 #define GAMEINFO_H
 
-#define GFL_NOMODELS	(1<<0)
-#define GFL_NOSKILLS	(1<<1)
-#define GFL_RENDER_PICBUTTON_TEXT   (1<<2)
+#define GFL_NOMODELS				(1<<0)
+#define GFL_NOSKILLS				(1<<1)
+#define GFL_RENDER_PICBUTTON_TEXT	(1<<2)
+#define GFL_HD_BACKGROUND			(1<<3)
+#define GFL_ANIMATED_TITLE			(1<<4)
 
 /*
 ========================================================================
