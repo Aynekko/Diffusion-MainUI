@@ -654,9 +654,6 @@ void UI_UpdateMenu( float flTime )
 	// can't do this in Init, since these are dependent on cvar values set from user configs
 	if( loadStuff )
 	{
-		// init global background, root windows don't have background anymore
-		uiStatic.background = new CMenuBackgroundBitmap();
-
 		// load localized strings
 		UI_LoadCustomStrings();
 
@@ -1089,6 +1086,11 @@ int UI_VidInit( void )
 
 	// load button sounds
 	UI_LoadSounds();
+
+	// init global background, root windows don't have background anymore
+	if( !uiStatic.background )
+		uiStatic.background = new CMenuBackgroundBitmap();
+	uiStatic.background->VidInit();
 
 	uiStatic.menu.VidInit( calledOnce );
 
