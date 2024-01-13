@@ -49,6 +49,7 @@ public:
 	CMenuCheckBox cl_tutor;
 	CMenuCheckBox cl_showhealthbars;
 	CMenuCheckBox cl_hitsound;
+	CMenuCheckBox cl_useicon;
 	CMenuSpinControl cl_crosshair;
 
 	// update dialog
@@ -107,6 +108,10 @@ void CMenuOptions::_Init( void )
 	cl_hitsound.iFlags |= QMF_NOTIFY;
 	cl_hitsound.SetCoord( 300, MenuYOffset + 380 );
 
+	cl_useicon.SetNameAndStatus( L( "Interaction icon" ), L( "-" ) );
+	cl_useicon.iFlags |= QMF_NOTIFY;
+	cl_useicon.SetCoord( 300, MenuYOffset + 430 );
+
 	static const char *cl_crosshair_str[] =
 	{
 		L( "GameUI_Off" ), L( "GameUI_Diffusion" ), L( "GameUI_Simple" )
@@ -116,12 +121,13 @@ void CMenuOptions::_Init( void )
 	cl_crosshair.Setup( &crossy );
 	cl_crosshair.onChanged = CMenuEditable::WriteCvarCb;
 	cl_crosshair.font = QM_SMALLFONT;
-	cl_crosshair.SetRect( 300, MenuYOffset + 470, 200, 32 );
+	cl_crosshair.SetRect( 300, MenuYOffset + 520, 200, 32 );
 
 	AddItem( cl_achievement_notify );
 	AddItem( cl_tutor );
 	AddItem( cl_showhealthbars );
 	AddItem( cl_hitsound );
+	AddItem( cl_useicon );
 	AddItem( cl_crosshair );
 }
 
@@ -137,6 +143,7 @@ void CMenuOptions::Hide(void)
 	cl_tutor.WriteCvar();
 	cl_showhealthbars.WriteCvar();
 	cl_hitsound.WriteCvar();
+	cl_useicon.WriteCvar();
 
 	CMenuFramework::Hide();
 	EngFuncs::ClientCmd(FALSE, "menuactivate mainmenu\n");
@@ -148,6 +155,7 @@ void CMenuOptions::GetConfig()
 	cl_tutor.LinkCvar( "cl_tutor" );
 	cl_showhealthbars.LinkCvar( "cl_showhealthbars" );
 	cl_hitsound.LinkCvar( "cl_hitsound" );
+	cl_useicon.LinkCvar( "cl_useicon" );
 	cl_crosshair.LinkCvar( "cl_crosshair", CMenuEditable::CVAR_VALUE );
 }
 
