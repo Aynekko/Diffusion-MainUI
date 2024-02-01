@@ -70,7 +70,7 @@ public:
 	CMenuSlider	screenSize;
 #endif
 	CMenuSlider	gammaIntensity;
-	CMenuSlider	glareReduction;
+	CMenuSlider	Brightness;
 	CMenuCheckBox	fastSky;
 	CMenuCheckBox   vbo;
 	CMenuCheckBox   bump;
@@ -182,7 +182,7 @@ void SetSettingsTo( int Quality )
 void CMenuVidOptions::UpdateConfig( void )
 {
 	float val1 = RemapVal( gammaIntensity.GetCurrentValue(), 0.0, 1.0, 1.8, 3.0 );
-	float val2 = RemapVal( glareReduction.GetCurrentValue(), 0.0, 1.0, 0.0, 3.0 );
+	float val2 = RemapVal( Brightness.GetCurrentValue(), 0.0, 1.0, 0.0, 2.0 );
 	EngFuncs::CvarSetValue( "gamma", val1 );
 	EngFuncs::CvarSetValue( "brightness", val2 );
 }
@@ -193,10 +193,10 @@ void CMenuVidOptions::GetConfig( void )
 	float val2 = EngFuncs::GetCvarFloat( "brightness" );
 
 	gammaIntensity.SetCurrentValue( RemapVal( val1, 1.8f, 3.0f, 0.0f, 1.0f ) );
-	glareReduction.SetCurrentValue( RemapVal( val2, 0.0f, 3.0f, 0.0f, 1.0f ) );
+	Brightness.SetCurrentValue( RemapVal( val2, 0.0f, 3.0f, 0.0f, 1.0f ) );
 
 	gammaIntensity.SetOriginalValue( val1 );
-	glareReduction.SetOriginalValue( val2 );
+	Brightness.SetOriginalValue( val2 );
 
 	cl_muzzlelight.LinkCvar( "cl_muzzlelight" );
 	sv_fadecorpses.LinkCvar( "sv_fadecorpses" );
@@ -252,8 +252,6 @@ void CMenuVidOptions::SaveAndPopMenu( void )
 	screenSize.WriteCvar();
 #endif
 	// gamma and brightness are already written
-//	glareReduction.WriteCvar();
-
 	
 	maxFPS.WriteCvar();
 	cl_muzzlelight.WriteCvar();
@@ -444,14 +442,11 @@ void CMenuVidOptions::_Init( void )
 	gammaIntensity.onChanged = VoidCb( &CMenuVidOptions::UpdateConfig );
 	gammaIntensity.onCvarGet = VoidCb( &CMenuVidOptions::GetConfig );
 
-	glareReduction.SetCoord( 72, MenuYOffset + 460 );
-	glareReduction.SetNameAndStatus( L( "GameUI_Brightness" ), L( "Set brightness level" ) );
-	glareReduction.Setup( 0, 1.0, 0.025 );
-	glareReduction.onChanged = VoidCb( &CMenuVidOptions::UpdateConfig );
-	glareReduction.onCvarGet = VoidCb( &CMenuVidOptions::GetConfig );
-
-//	vbo.SetNameAndStatus( L( "Use VBO" ), L( "Use new world renderer. Faster, but rarely glitchy" ) );
-//	vbo.SetCoord( 72, MenuYOffset + 565 );
+	Brightness.SetCoord( 72, MenuYOffset + 460 );
+	Brightness.SetNameAndStatus( L( "GameUI_Brightness" ), L( "Set brightness level" ) );
+	Brightness.Setup( 0, 1.0, 0.025 );
+	Brightness.onChanged = VoidCb( &CMenuVidOptions::UpdateConfig );
+	Brightness.onCvarGet = VoidCb( &CMenuVidOptions::GetConfig );
 
 	static CStringArrayModel mi( MirrorqualityStr, V_ARRAYSIZE( MirrorqualityStr ) );
 	mirrorQ.SetNameAndStatus( L( "GameUI_MirrorQuality" ), L( "Mirror reflection quality" ) );
@@ -498,10 +493,7 @@ void CMenuVidOptions::_Init( void )
 	AddItem( screenSize );
 #endif
 	AddItem( gammaIntensity );
-	AddItem( glareReduction );
-	/*
-			AddItem( vbo );
-	*/
+	AddItem( Brightness );
 	AddItem( gl_sunshafts );
 	AddItem( sv_fadecorpses );
 	AddItem( cl_muzzlelight );
@@ -526,8 +518,7 @@ void CMenuVidOptions::_Init( void )
 	screenSize.LinkCvar( "viewsize" );
 #endif
 	gammaIntensity.LinkCvar( "gamma" );
-	glareReduction.LinkCvar( "brightness" );
-//	vbo.LinkCvar( "gl_vbo" );
+	Brightness.LinkCvar( "brightness" );
 }
 
 void CMenuVidOptions::_VidInit()
