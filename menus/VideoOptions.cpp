@@ -56,12 +56,7 @@ public:
 
 	void WriteAnisotropy( void );
 
-	int		outlineWidth;
-
-	class CMenuVidPreview : public CMenuBitmap
-	{
-		void Draw() override;
-	} testImage;
+	int	outlineWidth;
 
 	CMenuPicButton done;
 	CMenuSpinControl maxFPS;
@@ -98,8 +93,6 @@ public:
 	CMenuCheckBox gl_exposure;
 	CMenuCheckBox gl_cubemaps;
 	CMenuCheckBox gl_water_planar;
-
-	HIMAGE		hTestImage;
 };
 
 void SetSettingsTo( int Quality )
@@ -192,7 +185,6 @@ void CMenuVidOptions::UpdateConfig( void )
 	float val2 = RemapVal( glareReduction.GetCurrentValue(), 0.0, 1.0, 0.0, 3.0 );
 	EngFuncs::CvarSetValue( "gamma", val1 );
 	EngFuncs::CvarSetValue( "brightness", val2 );
-	EngFuncs::ProcessImage( hTestImage, val1, val2 );
 }
 
 void CMenuVidOptions::GetConfig( void )
@@ -202,7 +194,6 @@ void CMenuVidOptions::GetConfig( void )
 
 	gammaIntensity.SetCurrentValue( RemapVal( val1, 1.8f, 3.0f, 0.0f, 1.0f ) );
 	glareReduction.SetCurrentValue( RemapVal( val2, 0.0f, 3.0f, 0.0f, 1.0f ) );
-	EngFuncs::ProcessImage( hTestImage, val1, val2 );
 
 	gammaIntensity.SetOriginalValue( val1 );
 	glareReduction.SetOriginalValue( val2 );
@@ -291,49 +282,6 @@ void CMenuVidOptions::SaveAndPopMenu( void )
 	CMenuFramework::SaveAndPopMenu();
 }
 
-/*
-=================
-CMenuVidOptions::Ownerdraw
-=================
-*/
-void CMenuVidOptions::CMenuVidPreview::Draw( )
-{
-	int		color = 0xFFFF0000; // 255, 0, 0, 255
-	int		viewport[4];
-	int		viewsize, size, sb_lines;
-
-#if LEGACY_VIEWSIZE
-	viewsize = EngFuncs::GetCvarFloat( "viewsize" );
-#else
-	viewsize = 120;
-#endif
-
-	if( viewsize >= 120 )
-		sb_lines = 0;	// no status bar at all
-	else if( viewsize >= 110 )
-		sb_lines = 24;	// no inventory
-	else sb_lines = 48;
-
-	size = Q_min( viewsize, 100 );
-
-	viewport[2] = m_scSize.w * size / 100;
-	viewport[3] = m_scSize.h * size / 100;
-
-	if( viewport[3] > m_scSize.h - sb_lines )
-		viewport[3] = m_scSize.h - sb_lines;
-	if( viewport[3] > m_scSize.h )
-		viewport[3] = m_scSize.h;
-
-	viewport[2] &= ~7;
-	viewport[3] &= ~1;
-
-	viewport[0] = (m_scSize.w - viewport[2]) / 2;
-	viewport[1] = (m_scSize.h - sb_lines - viewport[3]) / 2;
-
-	UI_DrawPic( m_scPos.x + viewport[0], m_scPos.y + viewport[1], viewport[2], viewport[3], uiColorWhite, szPic );
-	UI_DrawRectangleExt( m_scPos, m_scSize, color, ((CMenuVidOptions*)Parent())->outlineWidth );
-}
-
 void CMenuVidOptions::Draw( void )
 {
 	char fps[32];
@@ -352,12 +300,6 @@ CMenuVidOptions::Init
 */
 void CMenuVidOptions::_Init( void )
 {
-#ifdef PIC_KEEP_RGBDATA
-	hTestImage = EngFuncs::PIC_Load( ART_GAMMA, PIC_KEEP_RGBDATA );
-#else
-	hTestImage = EngFuncs::PIC_Load( ART_GAMMA, PIC_KEEP_SOURCE | PIC_EXPAND_SOURCE );
-#endif
-
 	static const char *ShadowqualityStr[] =
 	{
 	//	L( "Low (256p)" ), L( "Medium (512p)" ), L( "High (1024p)" ), L( "Maximum (2048p)" ), L( "Extreme (4096p)" )
@@ -380,10 +322,6 @@ void CMenuVidOptions::_Init( void )
 	};
 
 	banner.SetPicture( ART_BANNER );
-
-	testImage.iFlags = QMF_INACTIVE;
-	testImage.SetRect( 390, 225, 480, 450 );
-	testImage.SetPicture( ART_GAMMA );
 
 	gl_sunshafts.SetNameAndStatus( L( "GameUI_Sunshafts" ), L( "-" ) );
 	gl_sunshafts.iFlags |= QMF_NOTIFY;
@@ -564,7 +502,6 @@ void CMenuVidOptions::_Init( void )
 	/*
 			AddItem( vbo );
 	*/
-	//	AddItem( testImage );
 	AddItem( gl_sunshafts );
 	AddItem( sv_fadecorpses );
 	AddItem( cl_muzzlelight );
