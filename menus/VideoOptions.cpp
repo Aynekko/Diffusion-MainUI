@@ -193,7 +193,7 @@ void CMenuVidOptions::GetConfig( void )
 	float val2 = EngFuncs::GetCvarFloat( "brightness" );
 
 	gammaIntensity.SetCurrentValue( RemapVal( val1, 1.8f, 3.0f, 0.0f, 1.0f ) );
-	Brightness.SetCurrentValue( RemapVal( val2, 0.0f, 3.0f, 0.0f, 1.0f ) );
+	Brightness.SetCurrentValue( RemapVal( val2, 0.0f, 2.0f, 0.0f, 1.0f ) );
 
 	gammaIntensity.SetOriginalValue( val1 );
 	Brightness.SetOriginalValue( val2 );
