@@ -140,7 +140,7 @@
       <AdditionalIncludeDirectories>.;miniutl\;font\;controls\;menus\;model\;common;engine;pm_shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <DebugInformationFormat>None</DebugInformationFormat>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>HAVE_STDINT_H=1;STDINT_H="stdint.h";HAVE_TGMATH_H=1;_CRT_SILENCE_NONCONFORMING_TGMATH_H=1;XASH_BUILD_COMMIT="notset";XASH_LOW_MEMORY=0;MAINUI_USE_CUSTOM_FONT_RENDER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>
