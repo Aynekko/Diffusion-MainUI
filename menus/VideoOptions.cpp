@@ -29,6 +29,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define ART_BANNER	  	"gfx/shell/head_vidoptions"
 #define ART_GAMMA		"gfx/shell/gamma"
 
+#define GAMMA_MAX 3.0f
+#define BRIGHTNESS_MAX 3.0f
+
 #define LEGACY_VIEWSIZE 0
 
 enum
@@ -181,8 +184,8 @@ void SetSettingsTo( int Quality )
 
 void CMenuVidOptions::UpdateConfig( void )
 {
-	float val1 = RemapVal( gammaIntensity.GetCurrentValue(), 0.0, 1.0, 1.8, 3.0 );
-	float val2 = RemapVal( Brightness.GetCurrentValue(), 0.0, 1.0, 0.0, 2.0 );
+	float val1 = RemapVal( gammaIntensity.GetCurrentValue(), 0.0, 1.0, 1.8, GAMMA_MAX );
+	float val2 = RemapVal( Brightness.GetCurrentValue(), 0.0, 1.0, 0.0, BRIGHTNESS_MAX );
 	EngFuncs::CvarSetValue( "gamma", val1 );
 	EngFuncs::CvarSetValue( "brightness", val2 );
 }
@@ -192,8 +195,8 @@ void CMenuVidOptions::GetConfig( void )
 	float val1 = EngFuncs::GetCvarFloat( "gamma" );
 	float val2 = EngFuncs::GetCvarFloat( "brightness" );
 
-	gammaIntensity.SetCurrentValue( RemapVal( val1, 1.8f, 3.0f, 0.0f, 1.0f ) );
-	Brightness.SetCurrentValue( RemapVal( val2, 0.0f, 2.0f, 0.0f, 1.0f ) );
+	gammaIntensity.SetCurrentValue( RemapVal( val1, 1.8f, GAMMA_MAX, 0.0f, 1.0f ) );
+	Brightness.SetCurrentValue( RemapVal( val2, 0.0f, BRIGHTNESS_MAX, 0.0f, 1.0f ) );
 
 	gammaIntensity.SetOriginalValue( val1 );
 	Brightness.SetOriginalValue( val2 );
