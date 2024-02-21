@@ -59,9 +59,6 @@
     <ClInclude Include="menufont.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="unicode_strtools.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="miniutl\bitstring.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -416,6 +413,9 @@
     <ClInclude Include="StringVectorModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="utflib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseMenu.cpp">
@@ -640,10 +640,10 @@
     <ClCompile Include="udll_int.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="unicode_strtools.cpp">
+    <ClCompile Include="menus\Achievements.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="menus\Achievements.cpp">
+    <ClCompile Include="utflib.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
