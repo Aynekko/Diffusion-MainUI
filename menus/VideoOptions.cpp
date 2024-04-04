@@ -78,14 +78,13 @@ public:
 	CMenuCheckBox   vbo;
 	CMenuCheckBox   bump;
 	CMenuCheckBox	cl_muzzlelight;
-	CMenuCheckBox	sv_fadecorpses;
+	CMenuCheckBox	gl_ssao;
 	CMenuCheckBox	gl_sunshafts;
 //	CMenuCheckBox	r_shadows;
 	CMenuCheckBox	r_bloom;
 	CMenuCheckBox	r_blur;
 	CMenuSpinControl shadowQ;
 	CMenuSpinControl mirrorQ;
-	CMenuSpinControl ssaoQ;
 	CMenuCheckBox	gl_msaa;
 	CMenuCheckBox	gl_lensflare;
 	CMenuCheckBox	gl_emboss;
@@ -138,7 +137,7 @@ void SetSettingsTo( int Quality )
 		EngFuncs::CvarSetValue( "gl_water_planar", 0 );
 		EngFuncs::CvarSetValue( "r_mirrorquality", 2 );
 		EngFuncs::CvarSetValue( "r_shadowquality", 1 );
-		EngFuncs::CvarSetValue( "gl_ssao", 1 );
+		EngFuncs::CvarSetValue( "gl_ssao", 0 );
 	}
 	else if( Quality == PRESET_HIGH )
 	{
@@ -158,7 +157,7 @@ void SetSettingsTo( int Quality )
 		EngFuncs::CvarSetValue( "gl_water_planar", 0 );
 		EngFuncs::CvarSetValue( "r_mirrorquality", 3 );
 		EngFuncs::CvarSetValue( "r_shadowquality", 2 );
-		EngFuncs::CvarSetValue( "gl_ssao", 2 );
+		EngFuncs::CvarSetValue( "gl_ssao", 1 );
 	}
 	else if( Quality == PRESET_MAXIMUM )
 	{
@@ -178,7 +177,7 @@ void SetSettingsTo( int Quality )
 		EngFuncs::CvarSetValue( "gl_water_planar", 0 );
 		EngFuncs::CvarSetValue( "r_mirrorquality", 4 );
 		EngFuncs::CvarSetValue( "r_shadowquality", 3 );
-		EngFuncs::CvarSetValue( "gl_ssao", 3 );
+		EngFuncs::CvarSetValue( "gl_ssao", 1 );
 	}
 }
 
@@ -202,14 +201,13 @@ void CMenuVidOptions::GetConfig( void )
 	Brightness.SetOriginalValue( val2 );
 
 	cl_muzzlelight.LinkCvar( "cl_muzzlelight" );
-	sv_fadecorpses.LinkCvar( "sv_fadecorpses" );
+	gl_ssao.LinkCvar( "gl_ssao" );
 	gl_sunshafts.LinkCvar( "gl_sunshafts" );
 	//	r_shadows.LinkCvar( "r_shadows" );
 	r_bloom.LinkCvar( "r_bloom" );
 	r_blur.LinkCvar( "r_blur" );
 	shadowQ.LinkCvar( "r_shadowquality", CMenuEditable::CVAR_VALUE );
 	mirrorQ.LinkCvar( "r_mirrorquality", CMenuEditable::CVAR_VALUE );
-	ssaoQ.LinkCvar( "gl_ssao", CMenuEditable::CVAR_VALUE );
 	gl_msaa.LinkCvar( "gl_msaa" );
 	gl_lensflare.LinkCvar( "gl_lensflare" );
 	gl_emboss.LinkCvar( "gl_emboss" );
@@ -258,14 +256,13 @@ void CMenuVidOptions::SaveAndPopMenu( void )
 	
 	maxFPS.WriteCvar();
 	cl_muzzlelight.WriteCvar();
-	sv_fadecorpses.WriteCvar();
+	gl_ssao.WriteCvar();
 	gl_sunshafts.WriteCvar();
 	//	r_shadows.WriteCvar();
 	r_bloom.WriteCvar();
 	r_blur.WriteCvar();
 	shadowQ.WriteCvar();
 	mirrorQ.WriteCvar();
-	ssaoQ.WriteCvar();
 	gl_msaa.WriteCvar();
 	gl_lensflare.WriteCvar();
 	gl_emboss.WriteCvar();
@@ -312,11 +309,6 @@ void CMenuVidOptions::_Init( void )
 		L( "GameUI_Off" ), L( "GameUI_Low" ), L( "GameUI_Medium" ), L( "GameUI_High" ), L( "GameUI_Maximum" )
 	};
 
-	static const char *SSAOqualityStr[] =
-	{
-		L( "GameUI_Off" ), L( "GameUI_Low" ), L( "GameUI_Medium" ), L( "GameUI_Maximum" )
-	};
-
 	static const char *AnisotropyStr[] =
 	{
 		L( "1x" ), L( "2x" ), L( "4x" ), L( "8x" ), L( "16x" )
@@ -348,9 +340,10 @@ void CMenuVidOptions::_Init( void )
 	cl_muzzlelight.iFlags |= QMF_NOTIFY;
 	cl_muzzlelight.SetCoord( 372, MenuYOffset + 0 );
 
-	sv_fadecorpses.SetNameAndStatus( L( "GameUI_FadeCorpses" ), L( "-" ) );
-	sv_fadecorpses.iFlags |= QMF_NOTIFY;
-	sv_fadecorpses.SetCoord( 372, MenuYOffset + 50 );
+	gl_ssao.SetNameAndStatus( L( "GameUI_SSAO" ), L( "-" ) );
+	gl_ssao.iFlags |= QMF_NOTIFY;
+	gl_ssao.SetCoord( 372, MenuYOffset + 50 );
+	gl_ssao.onChanged = CMenuEditable::WriteCvarCb;
 
 	maxFPS.szName = L( "GameUI_FPSlimit" );
 	maxFPS.szStatusText = L( "Cap your game frame rate" );
@@ -477,13 +470,6 @@ void CMenuVidOptions::_Init( void )
 	shadowQ.font = QM_SMALLFONT;
 	shadowQ.SetRect( 972, MenuYOffset + 200, 300, 32 );
 
-	static CStringArrayModel ssao( SSAOqualityStr, V_ARRAYSIZE( SSAOqualityStr ) );
-	ssaoQ.SetNameAndStatus( L( "GameUI_SSAOQuality" ), L( "SSAO quality" ) );
-	ssaoQ.Setup( &ssao );
-	ssaoQ.onChanged = CMenuEditable::WriteCvarCb;
-	ssaoQ.font = QM_SMALLFONT;
-	ssaoQ.SetRect( 72, MenuYOffset + 300, 220, 32 );
-
 	AddItem( banner );
 	AddItem( done );
 	AddItem( SetToLow );
@@ -498,7 +484,7 @@ void CMenuVidOptions::_Init( void )
 	AddItem( gammaIntensity );
 	AddItem( Brightness );
 	AddItem( gl_sunshafts );
-	AddItem( sv_fadecorpses );
+	AddItem( gl_ssao );
 	AddItem( cl_muzzlelight );
 	//	AddItem( r_shadows );
 	AddItem( r_bloom );
@@ -506,7 +492,6 @@ void CMenuVidOptions::_Init( void )
 	AddItem( maxFPS );
 	AddItem( shadowQ );
 	AddItem( mirrorQ );
-	AddItem( ssaoQ );
 	AddItem( gl_anisotropy );
 	AddItem( gl_msaa );
 	AddItem( gl_lensflare );

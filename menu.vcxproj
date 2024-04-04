@@ -154,7 +154,7 @@
       <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "D:\!DIFFUSION 2020\source code 2022\engine\build\mainui\msdev\menu.dll" "D:\!DIFFUSION 2020\!GAME_developer\menu.dll"</Command>
+      <Command>copy /Y "D:\!DIFFUSION 2020\source code 2022\Diffusion-main-ui\x64\Release\menu.dll" "D:\!DIFFUSION 2020\!GAME_developer\menu.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
