@@ -445,7 +445,7 @@ void CMenuControls::_Init( void )
 
 //	AddButton( L( "Adv. Controls" ), L( "Change mouse sensitivity, enable autoaim, mouselook and crosshair" ), PC_ADV_CONTROLS, UI_AdvControls_Menu );
 
-	CMenuPicButton *Done = AddButton( L( "GameUI_Done" ), L( "Save changed and return to configuration menu" ), PC_DONE, VoidCb( &CMenuControls::SaveAndPopMenu ) );
+	CMenuPicButton *Done = AddButton( L( "GameUI_OK" ), L( "Save changed and return to configuration menu" ), PC_OK, VoidCb( &CMenuControls::SaveAndPopMenu ) );
 	Done->pos.y = 800;
 
 //	CMenuPicButton *Cancel = AddButton( L( "GameUI_Cancel" ), L( "Discard changes and return to configuration menu" ), PC_CANCEL, VoidCb( &CMenuControls::Cancel ) );
