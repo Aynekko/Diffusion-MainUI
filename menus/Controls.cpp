@@ -457,6 +457,9 @@ void CMenuControls::_Init( void )
 	AddItem( mouseLook );
 	AddItem( lookFilter );
 	AddItem( sensitivity );
+
+	CMenuPicButton *Joystick = AddButton( L( "GameUI_Joystick" ), L( "Change gamepad axis and button settings" ), PC_GAMEPAD, UI_GamePad_Menu, QMF_NOTIFY );
+	Joystick->pos.y = 650;
 }
 
 void CMenuControls::_VidInit()
