@@ -45,6 +45,7 @@ public:
 	void GetConfig( void );
 	int	outlineWidth;
 
+	CMenuCheckBox cl_showdamage;
 	CMenuCheckBox cl_achievement_notify;
 	CMenuCheckBox cl_tutor;
 	CMenuCheckBox cl_showhealthbars;
@@ -92,23 +93,27 @@ void CMenuOptions::_Init( void )
 		PC_DONE, VoidCb( &CMenuOptions::Hide ), QMF_NOTIFY );
 	done->pos.y += 50;
 
-	cl_achievement_notify.SetNameAndStatus( L( "Enable achievement notifications" ), L( "-" ) );
+	cl_showdamage.SetNameAndStatus( L( "GameUI_ShowDamage" ), L( "-" ) );
+	cl_showdamage.iFlags |= QMF_NOTIFY;
+	cl_showdamage.SetCoord( 300, MenuYOffset + 180 );
+
+	cl_achievement_notify.SetNameAndStatus( L( "GameUI_AchievementNotify" ), L( "-" ) );
 	cl_achievement_notify.iFlags |= QMF_NOTIFY;
 	cl_achievement_notify.SetCoord( 300, MenuYOffset + 230 );
 
-	cl_tutor.SetNameAndStatus( L( "Enable tutorials" ), L( "-" ) );
+	cl_tutor.SetNameAndStatus( L( "GameUI_Tutorials" ), L( "-" ) );
 	cl_tutor.iFlags |= QMF_NOTIFY;
 	cl_tutor.SetCoord( 300, MenuYOffset + 280 );
 
-	cl_showhealthbars.SetNameAndStatus( L( "Enable healthbars" ), L( "-" ) );
+	cl_showhealthbars.SetNameAndStatus( L( "GameUI_Healthbars" ), L( "-" ) );
 	cl_showhealthbars.iFlags |= QMF_NOTIFY;
 	cl_showhealthbars.SetCoord( 300, MenuYOffset + 330 );
 
-	cl_hitsound.SetNameAndStatus( L( "Hitmark sound" ), L( "-" ) );
+	cl_hitsound.SetNameAndStatus( L( "GameUI_HitmarkSound" ), L( "-" ) );
 	cl_hitsound.iFlags |= QMF_NOTIFY;
 	cl_hitsound.SetCoord( 300, MenuYOffset + 380 );
 
-	cl_useicon.SetNameAndStatus( L( "Interaction icon" ), L( "-" ) );
+	cl_useicon.SetNameAndStatus( L( "GameUI_InteractionIcon" ), L( "-" ) );
 	cl_useicon.iFlags |= QMF_NOTIFY;
 	cl_useicon.SetCoord( 300, MenuYOffset + 430 );
 
@@ -123,6 +128,7 @@ void CMenuOptions::_Init( void )
 	cl_crosshair.font = QM_SMALLFONT;
 	cl_crosshair.SetRect( 300, MenuYOffset + 520, 200, 32 );
 
+	AddItem( cl_showdamage );
 	AddItem( cl_achievement_notify );
 	AddItem( cl_tutor );
 	AddItem( cl_showhealthbars );
@@ -139,6 +145,7 @@ void CMenuOptions::Show(void)
 
 void CMenuOptions::Hide(void)
 {
+	cl_showdamage.WriteCvar();
 	cl_achievement_notify.WriteCvar();
 	cl_tutor.WriteCvar();
 	cl_showhealthbars.WriteCvar();
@@ -151,6 +158,7 @@ void CMenuOptions::Hide(void)
 
 void CMenuOptions::GetConfig()
 {
+	cl_showdamage.LinkCvar( "cl_showdamage" );
 	cl_achievement_notify.LinkCvar( "cl_achievement_notify" );
 	cl_tutor.LinkCvar( "cl_tutor" );
 	cl_showhealthbars.LinkCvar( "cl_showhealthbars" );
