@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define ART_CLOSEBTN_N	"gfx/shell/cls_n"
 #define ART_CLOSEBTN_F	"gfx/shell/cls_f"
 #define ART_CLOSEBTN_D	"gfx/shell/cls_d"
+#define ART_GAMEICON	"gfx/shell/game_icon.tga"
 
 class CMenuMain: public CMenuFramework
 {
@@ -82,6 +83,12 @@ private:
 
 	bool bTrainMap;
 	bool bCustomGame;
+
+	class CGameLogo : public CMenuBitmap
+	{
+		void Draw() override;
+	} gameLogo;
+	HIMAGE	hGameLogo;
 };
 
 void CMenuMain::CMenuMainBanner::Draw()
@@ -196,6 +203,12 @@ void CMenuMain::_Init( void )
 	if( EngFuncs::GetCvarFloat( "host_allow_changegame" ))
 		bCustomGame = true;
 	else bCustomGame = false;
+
+	// game logo/icon
+	hGameLogo = EngFuncs::PIC_Load( ART_GAMEICON, PIC_KEEP_SOURCE | PIC_EXPAND_SOURCE );
+	gameLogo.iFlags = QMF_INACTIVE;
+	gameLogo.SetRect( 390, 225, 480, 450 );
+	gameLogo.SetPicture( ART_GAMEICON );
 
 	// console
 	console.SetNameAndStatus( L( "GameUI_Console" ), L( "Show console" ) );
@@ -321,6 +334,7 @@ void CMenuMain::_Init( void )
 //	AddItem( quitButton );
 
 	AddItem( achievements );
+	AddItem( gameLogo );
 }
 
 /*
@@ -396,3 +410,8 @@ void CMenuMain::Draw(void)
 }
 
 ADD_MENU( menu_main, CMenuMain, UI_Main_Menu );
+
+void CMenuMain::CGameLogo::Draw()
+{
+	UI_DrawPic( 50, 50, m_scSize.w * 0.625, m_scSize.w * 0.625, uiColorWhite, szPic, QM_DRAWTRANS ); // using w twice to make sure it's a square...
+}
