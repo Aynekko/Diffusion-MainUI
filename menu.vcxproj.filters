@@ -416,6 +416,9 @@
     <ClInclude Include="utflib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="engine\cursor_type.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseMenu.cpp">

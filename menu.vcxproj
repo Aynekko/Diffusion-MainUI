@@ -253,6 +253,7 @@
     <ClInclude Include="controls\YesNoMessageBox.h" />
     <ClInclude Include="Coord.h" />
     <ClInclude Include="enginecallback_menu.h" />
+    <ClInclude Include="engine\cursor_type.h" />
     <ClInclude Include="EventSystem.h" />
     <ClInclude Include="extdll_menu.h" />
     <ClInclude Include="font\BaseFontBackend.h" />

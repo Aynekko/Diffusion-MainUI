@@ -28,9 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "YesNoMessageBox.h"
 #include "BackgroundBitmap.h"
 #include "FontManager.h"
-#ifdef CS16CLIENT
-#include "Scoreboard.h"
-#endif
+#include "cursor_type.h"
 
 
 cvar_t		*ui_showmodels;
@@ -537,22 +535,27 @@ UI_DrawMouseCursor
 */
 void UI_DrawMouseCursor( void )
 {
-#if 0 // a1ba: disable until we will manage to provide an API for crossplatform cursor replacing
 	CMenuBaseItem *item;
-	HICON hCursor = NULL;
-	int		i;
+	void *hCursor = (void *)dc_arrow;
 
-	if( uiStatic.hideCursor ) return;
+#if 0
+	if( !UI_IsXashFWGS() )
+	{
+#ifdef _WIN32
+		EngFuncs::SetCursor( (HICON)LoadCursor( NULL, (LPCTSTR)OCR_NORMAL ) );
+#endif // _WIN32
+		return;
+	}
+#endif // 0
 
 	int cursor = uiStatic.menu.Current()->GetCursor();
 	item = uiStatic.menu.Current()->GetItemByIndex( cursor );
 
-	if( item->iFlags & QMF_HASMOUSEFOCUS ) 	// fast approach
+	if( FBitSet( item->iFlags, QMF_HASMOUSEFOCUS ) ) 	// fast approach
 	{
-		if( item->iFlags & QMF_GRAYED )
-		{
-			hCursor = (HICON)LoadCursor( NULL, (LPCTSTR)OCR_NO );
-		}
+		if( FBitSet( item->iFlags, QMF_GRAYED ) )
+			hCursor = (void *)dc_no;
+		else hCursor = (void *)item->CursorAction();
 	}
 	else
 	{
@@ -563,22 +566,18 @@ void UI_DrawMouseCursor( void )
 			if( !item->IsVisible() )
 				continue;
 
-			if( !(item->iFlags & QMF_HASMOUSEFOCUS) )
+			if( !FBitSet( item->iFlags, QMF_HASMOUSEFOCUS ) )
 				continue;
 
-			if( item->iFlags & QMF_GRAYED )
-			{
-				hCursor = (HICON)LoadCursor( NULL, (LPCTSTR)OCR_NO );
-			}
+			if( FBitSet( item->iFlags, QMF_GRAYED ) )
+				hCursor = (void *)dc_no;
+			else hCursor = (void *)item->CursorAction();
+
 			break;
 		}
 	}
 
-	if( !hCursor )
-		hCursor = (HICON)LoadCursor( NULL, (LPCTSTR)OCR_NORMAL );
-
 	EngFuncs::SetCursor( hCursor );
-#endif
 }
 
 // =====================================================================
