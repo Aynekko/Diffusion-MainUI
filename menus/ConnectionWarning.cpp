@@ -113,16 +113,14 @@ void CMenuConnectionWarning::WriteSettings( const EPresets preset)
 		float rate;
 	} presets[EPRESET_LAST] =
 	{
-	{ 1400, 0,    30, 60, 25000 },
-	{ 1200, 1000, 30, 60, 25000 },
-	{ 900,  700,  25, 30, 7500 }
+	{ 30, 60, 25000 },
+	{ 30, 60, 25000 },
+	{ 25, 30, 7500 }
 	};
 
-	EngFuncs::CvarSetValue("cl_maxpacket",  presets[preset].cl_maxpacket );
-	EngFuncs::CvarSetValue("cl_maxpayload", presets[preset].cl_maxpayload );
-	EngFuncs::CvarSetValue("cl_cmdrate",    presets[preset].cl_cmdrate );
-	EngFuncs::CvarSetValue("cl_updaterate", presets[preset].cl_updaterate );
-	EngFuncs::CvarSetValue("rate",          presets[preset].rate );
+	EngFuncs::CvarSetValue( "cl_cmdrate", presets[preset].cl_cmdrate );
+	EngFuncs::CvarSetValue( "cl_updaterate", presets[preset].cl_updaterate );
+	EngFuncs::CvarSetValue( "rate", presets[preset].rate );
 
 	normal.bChecked  = preset == EPRESET_NORMAL;
 	dsl.bChecked     = preset == EPRESET_DSL;

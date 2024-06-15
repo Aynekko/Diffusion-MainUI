@@ -70,7 +70,7 @@ void CMenuAudio::GetConfig( void )
 	vibration.LinkCvar( "vibration_length" );
 
 	lerping.LinkCvar( "s_lerping", CMenuEditable::CVAR_VALUE );
-	noDSP.LinkCvar( "dsp_off" );
+	noDSP.LinkCvar( "room_off" );
 	muteFocusLost.LinkCvar( "snd_mute_losefocus" );
 	vibrationEnable.LinkCvar( "vibration_enable" );
 	reverseChannels.LinkCvar( "s_reverse_channels" );
