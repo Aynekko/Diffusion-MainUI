@@ -287,9 +287,6 @@
     <ClInclude Include="..\common\mathlib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\net_api.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\netadr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -338,9 +335,6 @@
     <ClInclude Include="..\common\wrect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\xash3d_types.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\engine\alias.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -366,9 +360,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\engine\keydefs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\engine\menu_int.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\engine\mobility_int.h">
@@ -417,6 +408,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="engine\cursor_type.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="common\net_api.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="common\xash3d_types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\menu_int.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -647,6 +647,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="utflib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="menus\ServerInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -61,16 +61,12 @@ public:
 	int GetSortingColumn( void ) { return m_iSortingColumn; }
 	bool IsAscend( void ) { return m_bAscend; }
 	bool MouseMove( int x, int y ) override;
-	void SetSortingColumn( int column, bool ascend )
+	void SetSortingColumn( int column, bool ascend = true )
 	{
 		m_iSortingColumn = column;
 		m_bAscend = ascend;
 		if( !m_pModel->Sort( column, ascend ) )
 			m_iSortingColumn = -1; // sorting is not supported
-	}
-	void SetSortingColumn( int column )
-	{
-		SetSortingColumn( column, true );
 	}
 	void SwapOrder( void )
 	{

@@ -184,7 +184,6 @@
     <ClInclude Include="..\common\lightstyle.h" />
     <ClInclude Include="..\common\mathlib.h" />
     <ClInclude Include="..\common\netadr.h" />
-    <ClInclude Include="..\common\net_api.h" />
     <ClInclude Include="..\common\particledef.h" />
     <ClInclude Include="..\common\pmtrace.h" />
     <ClInclude Include="..\common\port.h" />
@@ -200,7 +199,6 @@
     <ClInclude Include="..\common\wadfile.h" />
     <ClInclude Include="..\common\weaponinfo.h" />
     <ClInclude Include="..\common\wrect.h" />
-    <ClInclude Include="..\common\xash3d_types.h" />
     <ClInclude Include="..\engine\alias.h" />
     <ClInclude Include="..\engine\anorms.h" />
     <ClInclude Include="..\engine\cdll_exp.h" />
@@ -210,7 +208,6 @@
     <ClInclude Include="..\engine\edict.h" />
     <ClInclude Include="..\engine\eiface.h" />
     <ClInclude Include="..\engine\keydefs.h" />
-    <ClInclude Include="..\engine\menu_int.h" />
     <ClInclude Include="..\engine\mobility_int.h" />
     <ClInclude Include="..\engine\physint.h" />
     <ClInclude Include="..\engine\progdefs.h" />
@@ -229,6 +226,8 @@
     <ClInclude Include="BtnsBMPTable.h" />
     <ClInclude Include="CFGScript.h" />
     <ClInclude Include="Color.h" />
+    <ClInclude Include="common\net_api.h" />
+    <ClInclude Include="common\xash3d_types.h" />
     <ClInclude Include="controls\Action.h" />
     <ClInclude Include="controls\BackgroundBitmap.h" />
     <ClInclude Include="controls\BaseClientWindow.h" />
@@ -254,6 +253,7 @@
     <ClInclude Include="Coord.h" />
     <ClInclude Include="enginecallback_menu.h" />
     <ClInclude Include="engine\cursor_type.h" />
+    <ClInclude Include="engine\menu_int.h" />
     <ClInclude Include="EventSystem.h" />
     <ClInclude Include="extdll_menu.h" />
     <ClInclude Include="font\BaseFontBackend.h" />
@@ -353,6 +353,7 @@
     <ClCompile Include="menus\PlayerSetup.cpp" />
     <ClCompile Include="menus\SaveLoad.cpp" />
     <ClCompile Include="menus\ServerBrowser.cpp" />
+    <ClCompile Include="menus\ServerInfo.cpp" />
     <ClCompile Include="menus\Touch.cpp" />
     <ClCompile Include="menus\TouchButtons.cpp" />
     <ClCompile Include="menus\TouchEdit.cpp" />
