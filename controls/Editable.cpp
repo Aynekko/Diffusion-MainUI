@@ -57,10 +57,7 @@ void CMenuEditable::SetCvarValue( float value )
 void CMenuEditable::SetCvarString(const char *string)
 {
 	if( string != m_szString )
-	{
-		Q_strncpy( m_szString, string, CS_SIZE );
-		m_szString[CS_SIZE-1] = 0;
-	}
+		Q_strncpy( m_szString, string, sizeof( m_szString ) );
 
 	if( onCvarChange ) onCvarChange( this );
 	if( bUpdateImmediately ) WriteCvar();
@@ -68,16 +65,14 @@ void CMenuEditable::SetCvarString(const char *string)
 
 void CMenuEditable::SetOriginalString( const char *psz )
 {
-	Q_strncpy( m_szString, psz, CS_SIZE );
-	Q_strncpy( m_szOriginalString, m_szString, CS_SIZE );
-	m_szOriginalString[CS_SIZE-1] = 0;
+	Q_strncpy( m_szOriginalString, psz, sizeof( m_szOriginalString ) );
 
 	SetCvarString( m_szOriginalString );
 }
 
 void CMenuEditable::SetOriginalValue( float val )
 {
-	m_flValue =	m_flOriginalValue = val;
+	m_flOriginalValue = val;
 
 	SetCvarValue( m_flOriginalValue );
 }

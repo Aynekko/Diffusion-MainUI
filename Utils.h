@@ -148,60 +148,39 @@ inline float RemapVal( const float val, const float A, const float B, const floa
 	return C + (D - C) * (val - A) / (B - A);
 }
 
+extern const unsigned int g_iColorTable[8];
 int colorstricmp( const char *a, const char *b );
 int colorstrcmp( const char *a, const char *b );
-extern int ColorStrlen( const char *str );	// returns string length without color symbols
-extern int ColorPrexfixCount( const char *str );
-extern const unsigned int g_iColorTable[8];
-extern void COM_FileBase( const char *in, char *out );		// ripped out from hlsdk 2.3
-extern int UI_FadeAlpha( int starttime, int endtime );
-extern const char *Info_ValueForKey( const char *s, const char *key );
-extern int KEY_GetKey( const char *binding );			// ripped out from engine
-extern char *StringCopy( const char *input );			// copy string into new memory
-extern int COM_CompareSaves( const void **a, const void **b );
-extern void Com_EscapeCommand( char *newCommand, const char *oldCommand, int len );
-extern void UI_EnableTextInput( bool enable );
+int ColorStrlen( const char *str );	// returns string length without color symbols
+void COM_FileBase( const char *in, char *out, size_t size );
+int UI_FadeAlpha( int starttime, int endtime );
+const char *Info_ValueForKey( const char *s, const char *key );
+int KEY_GetKey( const char *binding );			// ripped out from engine
+char *StringCopy( const char *input );			// copy string into new memory
+int COM_CompareSaves( const void **a, const void **b );
+void Com_EscapeCommand( char *newCommand, const char *oldCommand, int len );
+void UI_EnableTextInput( bool enable );
 
 void UI_LoadCustomStrings( void );
 const char *L( const char *szStr ); // L means Localize!
 void UI_FreeCustomStrings( void );
 
-#ifdef __APPLE__
-#define register
-#endif // __APPLE__
-
 inline size_t Q_strncpy( char *dst, const char *src, size_t size )
 {
-	char *d = dst;
-	const char *s = src;
-	size_t	n = size;
-
-	if( !dst || !src || !size )
+	size_t len;
+	if( unlikely( !dst || !src || !size ) )
 		return 0;
 
-	// copy as many bytes as will fit
-	if( n != 0 && --n != 0 )
+	len = strlen( src );
+	if( len + 1 > size ) // check if truncate
 	{
-		do
-		{
-			if( (*d++ = *s++) == 0 )
-				break;
-		} while( --n != 0 );
+		memcpy( dst, src, size - 1 );
+		dst[size - 1] = 0;
 	}
+	else memcpy( dst, src, len + 1 );
 
-	// not enough room in dst, add NULL and traverse rest of src
-	if( n == 0 )
-	{
-		if( size != 0 )
-			*d = '\0'; // NULL-terminate dst
-		while( *s++ );
-	}
-	return (s - src - 1); // count does not include NULL
+	return len; // count does not include NULL
 }
-
-#ifdef register
-#undef register
-#endif // register
 
 #define CS_SIZE			64	// size of one config string
 #define CS_TIME			16	// size of time string
