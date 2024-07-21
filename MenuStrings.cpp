@@ -72,6 +72,49 @@ EMPTY_STRINGS_50, // 540..589
 EMPTY_STRINGS_10, // 590..599
 };
 
+static uint Localize_ProcessString( char *dst, const char *src )
+{
+	const char *p;
+	uint i = 0;
+
+	p = src;
+
+	while( *p )
+	{
+		if( *p == '\\' )
+		{
+			char replace = 0;
+
+			switch( p[1] )
+			{
+			case '\\': replace = '\\'; break;
+			case 'n': replace = '\n'; break;
+			}
+
+			if( replace )
+			{
+				if( dst )
+					dst[i] = replace;
+				i++;
+				p += 2;
+				continue;
+			}
+		}
+
+		if( dst )
+			dst[i] = *p;
+		i++;
+		p++;
+	}
+
+	// null terminator
+	if( dst )
+		dst[i] = '\0';
+	i++;
+
+	return i;
+}
+
 const char *L( const char *szStr ) // L means Localize!
 {
 	if( szStr )
@@ -373,6 +416,7 @@ static void Localize_AddToDictionary( const char *name, const char *lang )
 		if( pfile )
 		{
 			// Con_DPrintf("New token: %s %s\n", token, szLocString );
+			Localize_ProcessString( token, token );
 			Dictionary_Insert( token, szLocString );
 			i++;
 		}
