@@ -41,7 +41,7 @@ public:
 	CMenuOptions() : CMenuFramework("CMenuOptions") { }
 	void Show();
 	void Hide();
-//	void SaveAndPopMenu() override;
+	void Think() override;
 	void GetConfig( void );
 	int	outlineWidth;
 
@@ -52,10 +52,17 @@ public:
 	CMenuCheckBox cl_hitsound;
 	CMenuCheckBox cl_useicon;
 	CMenuSpinControl cl_crosshair;
+	CMenuCheckBox allowConsole;
 
 	// update dialog
 	CMenuYesNoMessageBox msgBox;
 };
+
+void CMenuOptions::Think()
+{
+	allowConsole.bChecked = gpGlobals->developer;
+	CMenuFramework::Think();
+}
 
 /*
 =================
@@ -95,27 +102,27 @@ void CMenuOptions::_Init( void )
 
 	cl_showdamage.SetNameAndStatus( L( "GameUI_ShowDamage" ), L( "-" ) );
 	cl_showdamage.iFlags |= QMF_NOTIFY;
-	cl_showdamage.SetCoord( 300, MenuYOffset + 180 );
+	cl_showdamage.SetCoord( 300, MenuYOffset + 130 );
 
 	cl_achievement_notify.SetNameAndStatus( L( "GameUI_AchievementNotify" ), L( "-" ) );
 	cl_achievement_notify.iFlags |= QMF_NOTIFY;
-	cl_achievement_notify.SetCoord( 300, MenuYOffset + 230 );
+	cl_achievement_notify.SetCoord( 300, MenuYOffset + 180 );
 
 	cl_tutor.SetNameAndStatus( L( "GameUI_Tutorials" ), L( "-" ) );
 	cl_tutor.iFlags |= QMF_NOTIFY;
-	cl_tutor.SetCoord( 300, MenuYOffset + 280 );
+	cl_tutor.SetCoord( 300, MenuYOffset + 230 );
 
 	cl_showhealthbars.SetNameAndStatus( L( "GameUI_Healthbars" ), L( "-" ) );
 	cl_showhealthbars.iFlags |= QMF_NOTIFY;
-	cl_showhealthbars.SetCoord( 300, MenuYOffset + 330 );
+	cl_showhealthbars.SetCoord( 300, MenuYOffset + 280 );
 
 	cl_hitsound.SetNameAndStatus( L( "GameUI_HitmarkSound" ), L( "-" ) );
 	cl_hitsound.iFlags |= QMF_NOTIFY;
-	cl_hitsound.SetCoord( 300, MenuYOffset + 380 );
+	cl_hitsound.SetCoord( 300, MenuYOffset + 330 );
 
 	cl_useicon.SetNameAndStatus( L( "GameUI_InteractionIcon" ), L( "-" ) );
 	cl_useicon.iFlags |= QMF_NOTIFY;
-	cl_useicon.SetCoord( 300, MenuYOffset + 430 );
+	cl_useicon.SetCoord( 300, MenuYOffset + 380 );
 
 	static const char *cl_crosshair_str[] =
 	{
@@ -126,7 +133,11 @@ void CMenuOptions::_Init( void )
 	cl_crosshair.Setup( &crossy );
 	cl_crosshair.onChanged = CMenuEditable::WriteCvarCb;
 	cl_crosshair.font = QM_SMALLFONT;
-	cl_crosshair.SetRect( 300, MenuYOffset + 520, 200, 32 );
+	cl_crosshair.SetRect( 300, MenuYOffset + 470, 200, 32 );
+
+	allowConsole.SetNameAndStatus( L( "GameUI_EnableConsole" ), L( "-" ) );
+	allowConsole.SetCoord( 300, MenuYOffset + 520 );
+	allowConsole.onChanged.SetCommand( FALSE, "ui_allowconsole\n" );
 
 	AddItem( cl_showdamage );
 	AddItem( cl_achievement_notify );
@@ -135,6 +146,7 @@ void CMenuOptions::_Init( void )
 	AddItem( cl_hitsound );
 	AddItem( cl_useicon );
 	AddItem( cl_crosshair );
+	AddItem( allowConsole );
 }
 
 void CMenuOptions::Show(void)
