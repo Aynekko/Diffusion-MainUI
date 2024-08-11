@@ -186,6 +186,7 @@ void UI_EnableAlphaFactor( float a );
 void UI_DisableAlphaFactor();
 
 int UI_GetFPS( void );
+bool UI_LoadBackgroundMap( void );
 
 enum ETextFlags
 {

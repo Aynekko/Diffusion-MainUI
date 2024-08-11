@@ -371,9 +371,6 @@
     <ClInclude Include="..\engine\progdefs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\ref_api.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\engine\sequence.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -582,6 +582,22 @@ void UI_DrawMouseCursor( void )
 
 // =====================================================================
 
+bool UI_LoadBackgroundMap( void ) // force load background map
+{
+	int bgmapid = EngFuncs::RandomLong( 0, uiStatic.bgmapcount - 1 );
+	char cmd[128];
+	snprintf( cmd, sizeof( cmd ), "maps/%s.bsp", uiStatic.bgmaps[bgmapid] );
+
+	if( EngFuncs::FileExists( cmd, TRUE ) )
+	{
+		snprintf( cmd, sizeof( cmd ), "map_background %s\n", uiStatic.bgmaps[bgmapid] );
+		EngFuncs::ClientCmd( FALSE, cmd );
+		return true;
+	}
+
+	return false;
+}
+
 /*
 =================
 UI_StartBackGroundMap
@@ -589,26 +605,20 @@ UI_StartBackGroundMap
 */
 bool UI_StartBackGroundMap( void )
 {
-	static bool	first = TRUE;
+	static bool	first = true;
 
-	if( !first ) return FALSE;
+	if( !first ) return false;
 
-	first = FALSE;
+	first = false;
 
 	// some map is already running
 	if( !uiStatic.bgmapcount || CL_IsActive() || gpGlobals->demoplayback )
-		return FALSE;
+		return false;
 
-	int bgmapid = EngFuncs::RandomLong( 0, uiStatic.bgmapcount - 1 );
+	if( UI_LoadBackgroundMap() )
+		return true;
 
-	char cmd[128];
-	snprintf( cmd, sizeof( cmd ), "maps/%s.bsp", uiStatic.bgmaps[bgmapid] );
-	if( !EngFuncs::FileExists( cmd, TRUE )) return FALSE;
-
-	snprintf( cmd, sizeof( cmd ), "map_background %s\n", uiStatic.bgmaps[bgmapid] );
-	EngFuncs::ClientCmd( FALSE, cmd );
-
-	return TRUE;
+	return false;
 }
 
 // =====================================================================

@@ -408,6 +408,9 @@ void CMenuMain::_VidInit()
 
 void CMenuMain::Draw(void)
 {
+	if( !EngFuncs::ClientInGame() )
+		UI_LoadBackgroundMap();
+
 	BaseClass::Draw();
 }
 
