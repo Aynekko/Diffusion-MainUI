@@ -91,6 +91,7 @@ enum EDefaultBtns
 	PC_SPECTATE_GAMES,
 	PC_ACHIEVEMENTS,
 	PC_RESET,
+	PC_BACK_TO_MENU,
 	PC_BUTTONCOUNT		// must be last
 };
 

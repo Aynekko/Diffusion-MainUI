@@ -116,11 +116,7 @@ void CMenuMain::CMenuMainBanner::Draw()
 
 void CMenuMain::QuitDialog(void *pExtra)
 {
-	if( CL_IsActive() && EngFuncs::GetCvarFloat( "host_serverstate" ) && EngFuncs::GetCvarFloat( "maxplayers" ) == 1.0f )
-		dialog.SetMessage( L( "StringsList_235" ) );
-	else
-		dialog.SetMessage( L( "*softly* Don't." ) );
-
+	dialog.SetMessage( L( "GameUI_QuitConfirmationText" ) );
 	dialog.onPositive.SetCommand( FALSE, "quit\n" );
 	dialog.Show();
 }
@@ -134,7 +130,7 @@ void CMenuMain::DisconnectCb()
 void CMenuMain::DisconnectDialogCb()
 {
 	dialog.onPositive = VoidCb( &CMenuMain::DisconnectCb );
-	dialog.SetMessage( L( "Really disconnect?" ) );
+	dialog.SetMessage( L( "GameUI_GameMenu_DisconnectD" ) );
 	dialog.Show();
 }
 
@@ -372,9 +368,21 @@ void CMenuMain::VidInit( bool connected )
 	if( connected )
 	{
 		resumeGame.Show();
-		if( CL_IsActive() && !isSingle )
+		if( CL_IsActive() )
 		{
 			disconnect.Show();
+			if( gpGlobals->maxClients == 1 )
+			{
+				disconnect.SetNameAndStatus( L( "GameUI_GameMenu_BackToMenu" ), L( "Back to main menu" ) );
+				disconnect.SetPicture( PC_BACK_TO_MENU );
+				dialog.SetMessage( L( "GameUI_GameMenu_BackToMenuD" ) );
+			}
+			else
+			{
+				disconnect.SetNameAndStatus( L( "GameUI_GameMenu_Disconnect" ), L( "Disconnect from server" ) );
+				disconnect.SetPicture( PC_DISCONNECT );
+				dialog.SetMessage( L( "GameUI_GameMenu_DisconnectD" ) );
+			}
 			console.pos.y = MenuYOffset + 130;
 		}
 		else
