@@ -351,7 +351,7 @@ void CMenuVidOptions::_Init( void )
 	maxFPS.LinkCvar( "fps_max", CMenuEditable::CVAR_VALUE );
 	maxFPS.SetRect( 72, MenuYOffset + 200, 220, 32 );
 	maxFPS.onChanged = CMenuEditable::WriteCvarCb;
-
+	
 	gl_msaa.SetNameAndStatus( L( "GameUI_MSAA" ), L( "-" ) );
 	gl_msaa.iFlags |= QMF_NOTIFY;
 	gl_msaa.SetCoord( 372, MenuYOffset + 100 );
@@ -391,7 +391,7 @@ void CMenuVidOptions::_Init( void )
 	gl_water_refraction.iFlags |= QMF_NOTIFY;
 	gl_water_refraction.SetCoord( 972, MenuYOffset - 50 );
 	gl_water_refraction.onChanged = CMenuEditable::WriteCvarCb;
-
+	
 	done.SetNameAndStatus( L( "GameUI_OK" ), L( "Go back to the Video Menu" ) );
 	done.SetCoord( 72, MenuYOffset + 500 );
 	done.SetPicture( PC_DONE );
@@ -399,25 +399,21 @@ void CMenuVidOptions::_Init( void )
 
 	SetToLow.SetNameAndStatus( L( "GameUI_SetToLow" ), L( "-" ) );
 	SetToLow.SetCoord( 72, MenuYOffset - 50 );
-	SetToLow.SetPicture( 0 );
 	SET_EVENT( SetToLow.onPressed, SetSettingsTo( 0 ) );
 	SetToLow.onReleased = VoidCb( &CMenuVidOptions::GetConfig );
 
 	SetToMedium.SetNameAndStatus( L( "GameUI_SetToMedium" ), L( "-" ) );
 	SetToMedium.SetCoord( 72, MenuYOffset + 0 );
-	//	SetToMedium.SetPicture( PC_DONE );
 	SET_EVENT( SetToMedium.onPressed, SetSettingsTo( 1 ) );
 	SetToMedium.onReleased = VoidCb( &CMenuVidOptions::GetConfig );
 
 	SetToHigh.SetNameAndStatus( L( "GameUI_SetToHigh" ), L( "-" ) );
 	SetToHigh.SetCoord( 72, MenuYOffset + 50 );
-	//	SetToHigh.SetPicture( PC_DONE );
 	SET_EVENT( SetToHigh.onPressed, SetSettingsTo( 2 ) );
 	SetToHigh.onReleased = VoidCb( &CMenuVidOptions::GetConfig );
 
 	SetToMaximum.SetNameAndStatus( L( "GameUI_SetToMaximum" ), L( "-" ) );
 	SetToMaximum.SetCoord( 72, MenuYOffset + 100 );
-	//	SetToMaximum.SetPicture( PC_DONE );
 	SET_EVENT( SetToMaximum.onPressed, SetSettingsTo( 3 ) );
 	SetToMaximum.onReleased = VoidCb( &CMenuVidOptions::GetConfig );
 
