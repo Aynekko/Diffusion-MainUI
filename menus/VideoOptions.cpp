@@ -516,12 +516,18 @@ void CMenuVidOptions::Show( void )
 {
 	CMenuFramework::Show();
 	EngFuncs::ClientCmd( FALSE, "menuactivate vidoptions\n" );
+
+	if( (int)EngFuncs::GetCvarFloat( "ui_videooptions_active" ) == 0 )
+		EngFuncs::CvarSetValue( "ui_videooptions_active", 1 );
 }
 
 void CMenuVidOptions::Hide( void )
 {
 	CMenuFramework::Hide();
 	EngFuncs::ClientCmd( FALSE, "menuactivate options\n" );
+
+	if( (int)EngFuncs::GetCvarFloat( "ui_videooptions_active" ) > 0 )
+		EngFuncs::CvarSetValue( "ui_videooptions_active", 0 );
 }
 
 ADD_MENU( menu_vidoptions, CMenuVidOptions, UI_VidOptions_Menu );
