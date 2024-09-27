@@ -157,7 +157,7 @@ void SetSettingsTo( int Quality )
 		EngFuncs::CvarSetValue( "gl_water_planar", 0 );
 		EngFuncs::CvarSetValue( "r_mirrorquality", 3 );
 		EngFuncs::CvarSetValue( "r_shadowquality", 2 );
-		EngFuncs::CvarSetValue( "gl_ssao", 1 );
+		EngFuncs::CvarSetValue( "gl_ssao", 0 );
 	}
 	else if( Quality == PRESET_MAXIMUM )
 	{
