@@ -131,8 +131,8 @@ void SetSettingsTo( int Quality )
 		EngFuncs::CvarSetValue( "gl_emboss", 1 );
 		EngFuncs::CvarSetValue( "gl_water_refraction", 1 );
 		EngFuncs::CvarSetValue( "gl_exposure", 0 );
-		EngFuncs::CvarSetValue( "gl_bump", 0 );
-		EngFuncs::CvarSetValue( "gl_specular", 1 );
+		EngFuncs::CvarSetValue( "gl_bump", 1 );
+		EngFuncs::CvarSetValue( "gl_specular", 0 );
 		EngFuncs::CvarSetValue( "gl_cubemaps", 1 );
 		EngFuncs::CvarSetValue( "gl_water_planar", 0 );
 		EngFuncs::CvarSetValue( "r_mirrorquality", 2 );
