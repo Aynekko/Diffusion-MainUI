@@ -128,7 +128,7 @@ void SetSettingsTo( int Quality )
 		EngFuncs::CvarSetValue( "r_bloom", 0 );
 		EngFuncs::CvarSetValue( "r_blur", 0 );
 		EngFuncs::CvarSetValue( "gl_lensflare", 0 );
-		EngFuncs::CvarSetValue( "gl_emboss", 1 );
+		EngFuncs::CvarSetValue( "gl_emboss", 0 );
 		EngFuncs::CvarSetValue( "gl_water_refraction", 1 );
 		EngFuncs::CvarSetValue( "gl_exposure", 0 );
 		EngFuncs::CvarSetValue( "gl_bump", 1 );
@@ -145,7 +145,7 @@ void SetSettingsTo( int Quality )
 		EngFuncs::CvarSetValue( "gl_sunshafts", 1 );
 		EngFuncs::CvarSetValue( "cl_muzzlelight", 1 );
 		EngFuncs::CvarSetValue( "gl_msaa", 1 );
-		EngFuncs::CvarSetValue( "r_bloom", 1 );
+		EngFuncs::CvarSetValue( "r_bloom", 0 );
 		EngFuncs::CvarSetValue( "r_blur", 1 );
 		EngFuncs::CvarSetValue( "gl_lensflare", 1 );
 		EngFuncs::CvarSetValue( "gl_emboss", 1 );
