@@ -126,7 +126,7 @@ void UI_LoadBmpButtons( void )
 	NewInfoHdr.biSizeImage = cutted_img_sz;
 
 	char fname[256];
-	byte *raw_img_buff = (byte *)MALLOC( CuttedBmpSize );
+	byte *raw_img_buff = (byte *)Mem_Malloc( CuttedBmpSize );
 
 	for( int i = 0; i < pic_count; i++ )
 	{
@@ -153,6 +153,6 @@ void UI_LoadBmpButtons( void )
 		img_data -= cutted_img_sz;
 	}
 
-	FREE( raw_img_buff );
+	Mem_Free( raw_img_buff );
 	EngFuncs::COM_FreeFile( bmp_buffer );
 }

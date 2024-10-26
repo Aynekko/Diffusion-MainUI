@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Bitmap.h"
 #include "Action.h"
 #include "Table.h"
-#include "StringArrayModel.h"
+#include "StringVectorModel.h"
 #include "PicButton.h"
 
 #define ART_BANNER	  	"gfx/shell/head_touchoptions"
@@ -33,7 +33,7 @@ uiFileDialogGlobal_t	uiFileDialogGlobal;
 class CMenuFileDialog : public CMenuFramework
 {
 public:
-	CMenuFileDialog() : CMenuFramework("CMenuFileDialog") { }
+	CMenuFileDialog() : CMenuFramework( "CMenuFileDialog" ) { }
 
 private:
 	void _Init( void ) override;
@@ -43,14 +43,11 @@ private:
 	void ApplyChanges( const char *fileName );
 	void UpdateExtra();
 
-	class CFileListModel : public CStringArrayModel
+	class CFileListModel : public CStringVectorModel
 	{
 	public:
-		CFileListModel() : CStringArrayModel( (const char*)filePath, 95, UI_MAXGAMES ) {}
+		CFileListModel() : CStringVectorModel() {}
 		void Update() override;
-
-	private:
-		char		filePath[UI_MAXGAMES][95];
 	} model;
 
 	CMenuTable fileList;
@@ -65,7 +62,7 @@ private:
 
 void CMenuFileDialog::CPreview::Draw()
 {
-	UI_FillRect( m_scPos.x - 2, m_scPos.y - 2,  m_scSize.w + 4, m_scSize.h + 4, 0xFFC0C0C0 );
+	UI_FillRect( m_scPos.x - 2, m_scPos.y - 2, m_scSize.w + 4, m_scSize.h + 4, 0xFFC0C0C0 );
 	UI_FillRect( m_scPos.x, m_scPos.y, m_scSize.w, m_scSize.h, 0xFF808080 );
 	EngFuncs::PIC_Set( image, 255, 255, 255, 255 );
 	EngFuncs::PIC_DrawTrans( m_scPos, m_scSize );
@@ -73,24 +70,20 @@ void CMenuFileDialog::CPreview::Draw()
 
 void CMenuFileDialog::CFileListModel::Update( void )
 {
-	char	**filenames;
+	char **filenames;
 	int	i = 0, numFiles, j, k;
 
 
-	for( k = 0; k < uiFileDialogGlobal.npatterns; k++)
+	for( k = 0; k < uiFileDialogGlobal.npatterns; k++ )
 	{
 		filenames = EngFuncs::GetFilesList( uiFileDialogGlobal.patterns[k], &numFiles, TRUE );
-		for ( j = 0; j < numFiles; i++, j++ )
-		{
-			if( i >= UI_MAXGAMES ) break;
-			Q_strncpy( filePath[i],filenames[j], sizeof( filePath[0] ) );
-		}
+		for( j = 0; j < numFiles; i++, j++ )
+			AddToTail( filenames[j] );
 	}
 
-	m_iCount = i;
 }
 
-void CMenuFileDialog::ApplyChanges(const char *fileName)
+void CMenuFileDialog::ApplyChanges( const char *fileName )
 {
 	Q_strncpy( uiFileDialogGlobal.result, fileName, sizeof( uiFileDialogGlobal.result ) );
 	uiFileDialogGlobal.result[255] = 0;

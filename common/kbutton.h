@@ -15,4 +15,6 @@ typedef struct kbutton_s
 	int		state;			// low bit is down state
 } kbutton_t;
 
+STATIC_CHECK_SIZEOF( kbutton_t, 12, 12 );
+
 #endif // !KBUTTONH

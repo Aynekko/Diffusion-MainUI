@@ -34,6 +34,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define LEVELSHOT_W		540//192
 #define LEVELSHOT_H		304//160
 
+#define UI_MAXGAMES		1024	// slots for savegame/demos
+
 #define MAX_CELLSTRING CS_SIZE
 
 class CMenuLoadGame;
