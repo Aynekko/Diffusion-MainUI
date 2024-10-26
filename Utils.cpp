@@ -572,3 +572,67 @@ void Com_EscapeCommand( char *newCommand, const char *oldCommand, int len )
 
 	*newCommand++ = 0;
 }
+
+char *Q_pretifymem( float value, int digitsafterdecimal )
+{
+	static char	output[8][32];
+	static int	current;
+	const float onekb = 1024.0f;
+	const float onemb = onekb * onekb;
+	const char *suffix;
+	char *out = output[current];
+	char		val[32], *i, *o, *dot;
+	int		pos;
+	current = (current + 1) & (8 - 1);
+	// first figure out which bin to use
+	if( value > onemb )
+	{
+		value /= onemb;
+		suffix = " Mb";
+	}
+	else if( value > onekb )
+	{
+		value /= onekb;
+		suffix = " Kb";
+	}
+	else
+	{
+		suffix = " bytes";
+	}
+	// clamp to >= 0
+	digitsafterdecimal = Q_max( digitsafterdecimal, 0 );
+	// if it's basically integral, don't do any decimals
+	if( fabs( value - (int)value ) < 0.00001f )
+	{
+		snprintf( val, sizeof( val ), "%i%s", (int)value, suffix );
+	}
+	else
+	{
+		char fmt[32];
+		// otherwise, create a format string for the decimals
+		snprintf( fmt, sizeof( fmt ), "%%.%if%s", digitsafterdecimal, suffix );
+		snprintf( val, sizeof( val ), fmt, (double)value );
+	}
+	// copy from in to out
+	i = val;
+	o = out;
+	// search for decimal or if it was integral, find the space after the raw number
+	dot = strchr( i, '.' );
+	if( !dot ) dot = strchr( i, ' ' );
+	pos = dot - i;	// compute position of dot
+	pos -= 3;		// don't put a comma if it's <= 3 long
+	while( *i )
+	{
+		// if pos is still valid then insert a comma every third digit, except if we would be
+		// putting one in the first spot
+		if( pos >= 0 && !(pos % 3) )
+		{
+			// never in first spot
+			if( o != out ) *o++ = ',';
+		}
+		pos--;		// count down comma position
+		*o++ = *i++;	// copy rest of data as normal
+	}
+	*o = 0; // terminate
+	return out;
+}

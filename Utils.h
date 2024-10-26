@@ -408,4 +408,7 @@ int Con_UtfProcessChar( int in );
 int Con_UtfMoveLeft( const char *str, int pos );
 int Con_UtfMoveRight( const char *str, int pos, int length );
 
+char *Q_pretifymem( float value, int digitsafterdecimal );
+#define Q_memprint( val ) Q_pretifymem( val, 2 )
+
 #endif//UTILS_H

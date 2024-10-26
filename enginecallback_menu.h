@@ -381,14 +381,14 @@ public:
 	}
 
 	// collect info from engine
-	static inline int	GetGameInfo( GAMEINFO *pgameinfo )
+	static inline gameinfo2_t *GetGameInfo( void )
 	{
-		return engfuncs.pfnGetGameInfo( pgameinfo );
+		return textfuncs.pfnGetGameInfo( GAMEINFO_VERSION );
 	}
 
-	static inline GAMEINFO **GetGamesList( int *numGames ) // collect info about all mods
+	static inline gameinfo2_t *GetModInfo( int i ) // collect info about all mods
 	{
-		return  engfuncs.pfnGetGamesList( numGames );
+		return textfuncs.pfnGetModInfo( GAMEINFO_VERSION, i );
 	}
 
 	static inline char **GetFilesList( const char *pattern, int *numFiles, int gamedironly ) // find in files
