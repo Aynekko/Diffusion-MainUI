@@ -42,6 +42,8 @@ public:
 
 	int GetState() { return m_iState; }
 
+	void SetState( int state );
+
 	bool bMouseToggle;
 	bool bKeepToggleWidth;
 	bool bChangeOnPressed;

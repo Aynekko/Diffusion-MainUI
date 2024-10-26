@@ -106,6 +106,10 @@ public:
 
 	CMenuCheckBox	showModels;
 	//	CMenuCheckBox	hiModels;
+	CMenuCheckBox voiceEnable;
+	CMenuSlider transmitVolume;
+	CMenuSlider receiveVolume;
+	CMenuAction noProprietaryCodecNotice;
 	CMenuSlider	topColor;
 	CMenuSlider	bottomColor;
 
@@ -145,6 +149,10 @@ void CMenuPlayerSetup::CMenuLogoPreview::Draw()
 			EngFuncs::PIC_Set( hImage, 255, 255, 255 );
 		EngFuncs::PIC_DrawTrans( m_scPos, m_scSize );
 	}
+
+	int textHeight = m_scPos.y - (m_scChSize * 1.5f);
+	uint textflags = (iFlags & QMF_DROPSHADOW) ? ETF_SHADOW : 0;
+	UI_DrawString( font, m_scPos.x, textHeight, m_scSize.w, m_scChSize, szName, uiColorHelp, m_scChSize, QM_LEFT, textflags | ETF_FORCECOL );
 
 	// draw the rectangle
 	if( eFocusAnimation == QM_HIGHLIGHTIFFOCUS && IsCurrentSelected() )
@@ -418,7 +426,7 @@ void CMenuPlayerSetup::_Init( void )
 	name.szStatusText = L( "Enter your multiplayer nickname" );
 	name.iMaxLength = 32;
 	name.LinkCvar( "name" );
-	name.SetRect( 320, 260, 256, 36 );
+	name.SetRect( 320, 260, 300, 36 );
 
 	modelsModel.Update();
 	if( !modelsModel.GetRows() )
@@ -435,22 +443,21 @@ void CMenuPlayerSetup::_Init( void )
 	}
 
 	topColor.iFlags |= addFlags;
-	topColor.SetNameAndStatus( L( "GameUI_PrimaryColor" ), L( "Set a player model top color" ) );
-	topColor.Setup( 0.0, 255, 1 );
+	topColor.szName = L( "Colors" );
+	topColor.Setup( 0, 255, 1 );
 	topColor.LinkCvar( "topcolor" );
 	topColor.onCvarChange = CMenuEditable::WriteCvarCb;
 	topColor.onChanged = VoidCb( &CMenuPlayerSetup::ApplyColorToImagePreview );
 	topColor.SetCoord( MenuXOffset + 340, 520 );
-	topColor.size.w = 300;
+	topColor.size.w = 260;
 
 	bottomColor.iFlags |= addFlags;
-	bottomColor.SetNameAndStatus( L( "GameUI_SecondaryColor" ), L( "Set a player model bottom color" ) );
-	bottomColor.Setup( 0.0, 255.0, 1 );
+	bottomColor.Setup( 0, 255, 1 );
 	bottomColor.LinkCvar( "bottomcolor" );
 	bottomColor.onCvarChange = CMenuEditable::WriteCvarCb;
 	bottomColor.onChanged = VoidCb( &CMenuPlayerSetup::ApplyColorToImagePreview );;
-	bottomColor.SetCoord( MenuXOffset + 340, 590 );
-	bottomColor.size.w = 300;
+	bottomColor.SetCoord( MenuXOffset + 340, 560 );
+	bottomColor.size.w = 260;
 
 	showModels.iFlags |= addFlags;
 	showModels.SetNameAndStatus( L( "Show 3D preview" ), L( "Show 3D player models instead of preview thumbnails" ) );
@@ -513,7 +520,33 @@ void CMenuPlayerSetup::_Init( void )
 		}
 	}
 
+	voiceEnable.szName = L( "GameUI_EnableVoice" );
+	voiceEnable.onCvarChange = CMenuEditable::WriteCvarCb;
+	voiceEnable.LinkCvar( "voice_modenable" ); // unlike engine's voice_enable, this is synchronized with server
+	voiceEnable.SetCoord( logo.pos.x, logo.pos.y + 90 );
+	transmitVolume.szName = L( "GameUI_VoiceTransmitVolume" );
+	transmitVolume.onCvarChange = CMenuEditable::WriteCvarCb;
+	transmitVolume.Setup( 0, 1, 0.05f );
+	transmitVolume.LinkCvar( "voice_transmit_scale" );
+	transmitVolume.SetCoord( logo.pos.x, voiceEnable.pos.y + 100 );
+	transmitVolume.size.w = 300;
+	receiveVolume.szName = L( "GameUI_VoiceReceiveVolume" );
+	receiveVolume.onCvarChange = CMenuEditable::WriteCvarCb;
+	receiveVolume.Setup( 0, 1, 0.05f );
+	receiveVolume.LinkCvar( "voice_scale" );
+	receiveVolume.SetCoord( logo.pos.x, transmitVolume.pos.y + 50 );
+	receiveVolume.size.w = 300;
+	noProprietaryCodecNotice.szName = L( "* Uses Opus Codec.\nOpen, royalty-free, highly versatile audio codec." );
+	noProprietaryCodecNotice.colorBase = uiColorHelp;
+	noProprietaryCodecNotice.SetCharSize( QM_SMALLFONT );
+	noProprietaryCodecNotice.SetRect( logo.pos.x, receiveVolume.pos.y + 30, 400, 100 );
+
 	AddItem( name );
+	AddItem( voiceEnable );
+	AddItem( transmitVolume );
+	AddItem( receiveVolume );
+	AddItem( noProprietaryCodecNotice );
+
 	if( !hideLogos )
 	{
 		UpdateLogo();

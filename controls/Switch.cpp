@@ -49,6 +49,15 @@ void CMenuSwitch::AddSwitch( const char *text )
 	m_switches.AddToTail( sw );
 }
 
+void CMenuSwitch::SetState( int i )
+{
+	if( !m_switches.IsValidIndex( i ) )
+		return;
+	m_iState = i;
+	SetCvarValue( m_iState );
+	_Event( QM_CHANGED );
+}
+
 int CMenuSwitch::IsNewStateByMouseClick()
 {
 	int state = m_iState;
@@ -210,6 +219,12 @@ void CMenuSwitch::Draw( void )
 	{
 		Point pt = m_switches[i].pt;
 
+		Size sz = m_switches[i].sz;
+		if( i == m_switches.Count() - 1 )
+		{
+			sz.w = m_scSize.w - (pt.x - m_scPos.x);
+		}
+
 		pt.x += fTextOffsetX * uiStatic.scaleX;
 		pt.y += fTextOffsetY * uiStatic.scaleY;
 
@@ -219,8 +234,8 @@ void CMenuSwitch::Draw( void )
 			uint tempflags = textflags;
 			tempflags |= ETF_FORCECOL;
 
-			UI_FillRect( m_switches[i].pt, m_switches[i].sz, selectColor );
-			UI_DrawString( font, pt, m_switches[i].sz, m_switches[i].name, iFgTextColor, m_scChSize, eTextAlignment, tempflags );
+			UI_FillRect( m_switches[i].pt, sz, selectColor );
+			UI_DrawString( font, pt, sz, m_switches[i].name, iFgTextColor, m_scChSize, eTextAlignment, tempflags );
 		}
 		else
 		{
@@ -228,14 +243,14 @@ void CMenuSwitch::Draw( void )
 			uint textColor = iBgTextColor;
 			uint tempflags = textflags;
 
-			if( UI_CursorInRect( m_switches[i].pt, m_switches[i].sz ) && !(iFlags & (QMF_GRAYED | QMF_INACTIVE)) )
+			if( UI_CursorInRect( m_switches[i].pt, sz ) && !(iFlags & (QMF_GRAYED | QMF_INACTIVE)) )
 			{
 				bgColor = colorFocus;
 				tempflags |= ETF_FORCECOL;
 			}
 
-			UI_FillRect( m_switches[i].pt, m_switches[i].sz, bgColor );
-			UI_DrawString( font, pt, m_switches[i].sz, m_switches[i].name,
+			UI_FillRect( m_switches[i].pt, sz, bgColor );
+			UI_DrawString( font, pt, sz, m_switches[i].name,
 				textColor, m_scChSize, eTextAlignment, tempflags );
 		}
 	}
