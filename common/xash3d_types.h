@@ -80,7 +80,8 @@ typedef uint64_t longtime_t;
 #endif
 
 #define MALLOC __attribute__(( malloc ))
-	// added in GCC 11
+
+// added in GCC 11
 #if __GNUC__ >= 11
 	// might want to set noclone due to https://gcc.gnu.org/bugzilla/show_bug.cgi?id=116893
 	// but it's easier to not force mismatched-dealloc to error yet
@@ -88,7 +89,6 @@ typedef uint64_t longtime_t;
 #else
 #define MALLOC_LIKE( x, y ) MALLOC
 #endif
-
 #define NORETURN           __attribute__(( noreturn ))
 #define NONNULL            __attribute__(( nonnull ))
 #define _format( x )       __attribute__(( format( printf, x, x + 1 )))
@@ -110,6 +110,19 @@ typedef uint64_t longtime_t;
 #define _format( x )
 #define ALLOC_CHECK( x )
 #define RENAME_SYMBOL( x )
+#define MALLOC
+#define MALLOC_LIKE( x, y )
+#define WARN_UNUSED_RESULT
+#endif
+
+#if defined( __has_feature )
+#if __has_feature( address_sanitizer )
+#define USE_ASAN 1
+#endif // __has_feature
+#endif // defined( __has_feature )
+
+#if !defined( USE_ASAN ) && defined( __SANITIZE_ADDRESS__ )
+#define USE_ASAN 1
 #endif
 
 #if __GNUC__ >= 3
