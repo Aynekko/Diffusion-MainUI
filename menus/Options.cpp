@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "CheckBox.h"
 #include "SpinControl.h"
 #include "StringArrayModel.h"
+#include "Slider.h"
 
 #define ART_BANNER	     	"gfx/shell/head_config"
 
@@ -53,6 +54,7 @@ public:
 	CMenuCheckBox cl_useicon;
 	CMenuSpinControl cl_crosshair;
 	CMenuCheckBox allowConsole;
+	CMenuSlider	cl_viewmodel_extras;
 
 	// update dialog
 	CMenuYesNoMessageBox msgBox;
@@ -135,8 +137,13 @@ void CMenuOptions::_Init( void )
 	cl_crosshair.font = QM_SMALLFONT;
 	cl_crosshair.SetRect( 300, MenuYOffset + 470, 200, 32 );
 
+	cl_viewmodel_extras.SetCoord( 300, MenuYOffset + 560 );
+	cl_viewmodel_extras.SetNameAndStatus( L( "GameUI_WeaponAnimInfluence" ), L( "-" ) );
+	cl_viewmodel_extras.Setup( 0.0f, 1.0f, 0.1f );
+	cl_viewmodel_extras.SetSize( 400, 15 );
+
 	allowConsole.SetNameAndStatus( L( "GameUI_EnableConsole" ), L( "-" ) );
-	allowConsole.SetCoord( 300, MenuYOffset + 520 );
+	allowConsole.SetCoord( 300, MenuYOffset + 590 );
 	allowConsole.onChanged.SetCommand( FALSE, "ui_allowconsole\n" );
 
 	AddItem( cl_showdamage );
@@ -147,6 +154,7 @@ void CMenuOptions::_Init( void )
 	AddItem( cl_useicon );
 	AddItem( cl_crosshair );
 	AddItem( allowConsole );
+	AddItem( cl_viewmodel_extras );
 }
 
 void CMenuOptions::Show(void)
@@ -163,6 +171,7 @@ void CMenuOptions::Hide(void)
 	cl_showhealthbars.WriteCvar();
 	cl_hitsound.WriteCvar();
 	cl_useicon.WriteCvar();
+	EngFuncs::CvarSetValue( "cl_viewmodel_extras", cl_viewmodel_extras.GetCurrentValue() );
 
 	CMenuFramework::Hide();
 	EngFuncs::ClientCmd(FALSE, "menuactivate mainmenu\n");
@@ -177,6 +186,7 @@ void CMenuOptions::GetConfig()
 	cl_hitsound.LinkCvar( "cl_hitsound" );
 	cl_useicon.LinkCvar( "cl_useicon" );
 	cl_crosshair.LinkCvar( "cl_crosshair", CMenuEditable::CVAR_VALUE );
+	cl_viewmodel_extras.SetCurrentValue( EngFuncs::GetCvarFloat( "cl_viewmodel_extras" ) );
 }
 
 void CMenuOptions::_VidInit()

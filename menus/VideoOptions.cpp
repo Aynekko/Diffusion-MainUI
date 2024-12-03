@@ -339,6 +339,7 @@ void CMenuVidOptions::_Init( void )
 	cl_muzzlelight.SetNameAndStatus( L( "GameUI_LightFromGunshots" ), L( "-" ) );
 	cl_muzzlelight.iFlags |= QMF_NOTIFY;
 	cl_muzzlelight.SetCoord( 372, MenuYOffset + 0 );
+	cl_muzzlelight.onChanged = CMenuEditable::WriteCvarCb;
 
 	gl_ssao.SetNameAndStatus( L( "GameUI_SSAO" ), L( "-" ) );
 	gl_ssao.iFlags |= QMF_NOTIFY;
