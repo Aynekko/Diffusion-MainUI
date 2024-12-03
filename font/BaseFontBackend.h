@@ -21,7 +21,7 @@ GNU General Public License for more details.
 #include "utlrbtree.h"
 
 // #ifdef XASH_MOBILE_PLATFORM
-#if defined(__ANDROID__) || TARGET_OS_IPHONE || defined(__SAILFISH__) || defined(MAINUI_FONT_SCALE)
+#if defined(__ANDROID__) || TARGET_OS_IPHONE || defined(XASH_SAILFISH) || defined(MAINUI_FONT_SCALE)
 #define SCALE_FONTS
 #endif
 
@@ -51,7 +51,7 @@ class CBaseFont
 {
 public:
 	CBaseFont();
-	virtual ~CBaseFont();
+	virtual ~CBaseFont( );
 
 	virtual bool Create(
 		const char *name,
@@ -65,7 +65,7 @@ public:
 	virtual bool HasChar( int ch ) const = 0;
 	virtual void GetCharABCWidths( int ch, int &a, int &b, int &c );
 	virtual void UploadGlyphsForRanges( charRange_t *range, int rangeSize );
-	virtual int  DrawCharacter( int ch, Point pt, int charH, const unsigned int color, bool forceAdditive = false );
+	virtual int  DrawCharacter(int ch, Point pt, int charH, const unsigned int color, bool forceAdditive = false);
 
 	inline int GetHeight() const       { return m_iHeight + GetEfxOffset(); }
 	inline int GetTall() const         { return m_iTall; }
@@ -80,13 +80,13 @@ public:
 
 	void DebugDraw();
 
-	void GetTextureName( char *dst, size_t len ) const;
+	void GetTextureName(char *dst, size_t len) const;
 
-	inline int GetEllipsisWide() { return m_iEllipsisWide; }
+	inline int GetEllipsisWide( ) { return m_iEllipsisWide; }
 
 protected:
 	void ApplyBlur( Size rgbaSz, byte *rgba );
-	void ApplyOutline( Point pt, Size rgbaSz, byte *rgba );
+	void ApplyOutline(Point pt, Size rgbaSz, byte *rgba );
 	void ApplyScanline( Size rgbaSz, byte *rgba );
 	void ApplyStrikeout( Size rgbaSz, byte *rgba );
 
@@ -111,7 +111,7 @@ private:
 	bool ReadFromCache( const char *filename, charRange_t *range, size_t rangeSize );
 	void SaveToCache( const char *filename, charRange_t *range, size_t rangeSize, CBMP *bmp );
 
-	void GetBlurValueForPixel( float *distribution, byte *src, Point srcPt, Size srcSz, byte *dest );
+	void GetBlurValueForPixel( double *distribution, const byte *src, Point srcPt, Size srcSz, byte *dest );
 
 	struct glyph_t
 	{
@@ -121,7 +121,7 @@ private:
 		HIMAGE texture;
 		wrect_t rect;
 
-		bool operator< ( const glyph_t &a ) const
+		bool operator< (const glyph_t &a) const
 		{
 			return ch < a.ch;
 		}

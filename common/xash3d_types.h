@@ -71,54 +71,54 @@ typedef uint64_t longtime_t;
 #define ColorIndex( c )	((( c ) - '0' ) & 7 )
 
 #if defined( __GNUC__ )
-#if defined( __i386__ )
-#define EXPORT         __attribute__(( visibility( "default" ), force_align_arg_pointer ))
-#define GAME_EXPORT    __attribute(( force_align_arg_pointer ))
-#else
-#define EXPORT         __attribute__(( visibility ( "default" )))
-#define GAME_EXPORT
-#endif
+	#if defined( __i386__ )
+		#define EXPORT         __attribute__(( visibility( "default" ), force_align_arg_pointer ))
+		#define GAME_EXPORT    __attribute(( force_align_arg_pointer ))
+	#else
+		#define EXPORT         __attribute__(( visibility ( "default" )))
+		#define GAME_EXPORT
+	#endif
 
-#define MALLOC __attribute__(( malloc ))
+	#define MALLOC __attribute__(( malloc ))
 
-// added in GCC 11
-#if __GNUC__ >= 11
-	// might want to set noclone due to https://gcc.gnu.org/bugzilla/show_bug.cgi?id=116893
-	// but it's easier to not force mismatched-dealloc to error yet
-#define MALLOC_LIKE( x, y ) __attribute__(( malloc( x, y )))
+	// added in GCC 11
+	#if __GNUC__ >= 11
+		// might want to set noclone due to https://gcc.gnu.org/bugzilla/show_bug.cgi?id=116893
+		// but it's easier to not force mismatched-dealloc to error yet
+		#define MALLOC_LIKE( x, y ) __attribute__(( malloc( x, y )))
+	#else
+		#define MALLOC_LIKE( x, y ) MALLOC
+	#endif
+	#define NORETURN           __attribute__(( noreturn ))
+	#define NONNULL            __attribute__(( nonnull ))
+	#define _format( x )       __attribute__(( format( printf, x, x + 1 )))
+	#define ALLOC_CHECK( x )   __attribute__(( alloc_size( x )))
+	#define NO_ASAN            __attribute__(( no_sanitize( "address" )))
+	#define WARN_UNUSED_RESULT __attribute__(( warn_unused_result ))
+	#define RENAME_SYMBOL( x ) asm( x )
 #else
-#define MALLOC_LIKE( x, y ) MALLOC
-#endif
-#define NORETURN           __attribute__(( noreturn ))
-#define NONNULL            __attribute__(( nonnull ))
-#define _format( x )       __attribute__(( format( printf, x, x + 1 )))
-#define ALLOC_CHECK( x )   __attribute__(( alloc_size( x )))
-#define NO_ASAN            __attribute__(( no_sanitize( "address" )))
-#define WARN_UNUSED_RESULT __attribute__(( warn_unused_result ))
-#define RENAME_SYMBOL( x ) asm( x )
-#else
-#if defined( _MSC_VER )
-#define EXPORT         __declspec( dllexport )
-#define NO_ASAN        __declspec( no_sanitize_address )
-#else
-#define EXPORT
-#define NO_ASAN
-#endif
-#define GAME_EXPORT
-#define NORETURN
-#define NONNULL
-#define _format( x )
-#define ALLOC_CHECK( x )
-#define RENAME_SYMBOL( x )
-#define MALLOC
-#define MALLOC_LIKE( x, y )
-#define WARN_UNUSED_RESULT
+	#if defined( _MSC_VER )
+		#define EXPORT         __declspec( dllexport )
+		#define NO_ASAN        __declspec( no_sanitize_address )
+	#else
+		#define EXPORT
+		#define NO_ASAN
+	#endif
+	#define GAME_EXPORT
+	#define NORETURN
+	#define NONNULL
+	#define _format( x )
+	#define ALLOC_CHECK( x )
+	#define RENAME_SYMBOL( x )
+	#define MALLOC
+	#define MALLOC_LIKE( x, y )
+	#define WARN_UNUSED_RESULT
 #endif
 
 #if defined( __has_feature )
-#if __has_feature( address_sanitizer )
-#define USE_ASAN 1
-#endif // __has_feature
+	#if __has_feature( address_sanitizer )
+		#define USE_ASAN 1
+	#endif // __has_feature
 #endif // defined( __has_feature )
 
 #if !defined( USE_ASAN ) && defined( __SANITIZE_ADDRESS__ )
@@ -126,32 +126,32 @@ typedef uint64_t longtime_t;
 #endif
 
 #if __GNUC__ >= 3
-#define unlikely( x )     __builtin_expect( x, 0 )
-#define likely( x )       __builtin_expect( x, 1 )
+	#define unlikely( x )     __builtin_expect( x, 0 )
+	#define likely( x )       __builtin_expect( x, 1 )
 #elif defined( __has_builtin )
-#if __has_builtin( __builtin_expect ) // this must be after defined() check
-#define unlikely( x )     __builtin_expect( x, 0 )
-#define likely( x )       __builtin_expect( x, 1 )
-#endif
+	#if __has_builtin( __builtin_expect ) // this must be after defined() check
+		#define unlikely( x )     __builtin_expect( x, 0 )
+		#define likely( x )       __builtin_expect( x, 1 )
+	#endif
 #endif
 
 #if !defined( unlikely ) || !defined( likely )
-#define unlikely( x ) ( x )
-#define likely( x )   ( x )
+	#define unlikely( x ) ( x )
+	#define likely( x )   ( x )
 #endif
 
 #if __STDC_VERSION__ >= 202311L || __cplusplus >= 201103L // C23 or C++ static_assert is a keyword
-#define STATIC_ASSERT_( ignore, x, y ) static_assert( x, y )
-#define STATIC_ASSERT  static_assert
+	#define STATIC_ASSERT_( ignore, x, y ) static_assert( x, y )
+	#define STATIC_ASSERT  static_assert
 #elif __STDC_VERSION__ >= 201112L // in C11 it's _Static_assert
-#define STATIC_ASSERT_( ignore, x, y ) _Static_assert( x, y )
-#define STATIC_ASSERT  _Static_assert
+	#define STATIC_ASSERT_( ignore, x, y ) _Static_assert( x, y )
+	#define STATIC_ASSERT  _Static_assert
 #else
-#define STATIC_ASSERT_( id, x, y ) extern int id[( x ) ? 1 : -1]
-// need these to correctly expand the line macro
-#define STATIC_ASSERT_3( line, x, y ) STATIC_ASSERT_( static_assert_ ## line, x, y )
-#define STATIC_ASSERT_2( line, x, y ) STATIC_ASSERT_3( line, x, y )
-#define STATIC_ASSERT( x, y ) STATIC_ASSERT_2( __LINE__, x, y )
+	#define STATIC_ASSERT_( id, x, y ) extern int id[( x ) ? 1 : -1]
+	// need these to correctly expand the line macro
+	#define STATIC_ASSERT_3( line, x, y ) STATIC_ASSERT_( static_assert_ ## line, x, y )
+	#define STATIC_ASSERT_2( line, x, y ) STATIC_ASSERT_3( line, x, y )
+	#define STATIC_ASSERT( x, y ) STATIC_ASSERT_2( __LINE__, x, y )
 #endif
 
 // at least, statically check size of some public structures
@@ -164,11 +164,11 @@ typedef uint64_t longtime_t;
 #endif
 
 #if !defined( __cplusplus ) && __STDC_VERSION__ >= 199101L // not C++ and C99 or newer
-#define XASH_RESTRICT restrict
+	#define XASH_RESTRICT restrict
 #elif _MSC_VER || __GNUC__ || __clang__ // compiler-specific extensions
-#define XASH_RESTRICT __restrict
+	#define XASH_RESTRICT __restrict
 #else
-#define XASH_RESTRICT // nothing
+	#define XASH_RESTRICT // nothing
 #endif
 
 #ifdef XASH_BIG_ENDIAN
@@ -216,20 +216,20 @@ typedef ssize_t fs_size_t;
 
 typedef struct dllfunc_s
 {
-	const char *name;
-	void **func;
+	const char	*name;
+	void		**func;
 } dllfunc_t;
 
 typedef struct dll_info_s
 {
-	const char *name;	// name of library
-	const dllfunc_t *fcts;	// list of dll exports
+	const char	*name;	// name of library
+	const dllfunc_t	*fcts;	// list of dll exports
 	qboolean		crash;	// crash if dll not found
-	void *link;	// hinstance of loading library
+	void		*link;	// hinstance of loading library
 } dll_info_t;
 
-typedef void (*setpair_t)(const char *key, const void *value, const void *buffer, void *numpairs);
-typedef void *(*pfnCreateInterface_t)(const char *, int *);
+typedef void (*setpair_t)( const char *key, const void *value, const void *buffer, void *numpairs );
+typedef void *(*pfnCreateInterface_t)( const char *, int * );
 
 // config strings are a general means of communication from
 // the server to all connected clients.

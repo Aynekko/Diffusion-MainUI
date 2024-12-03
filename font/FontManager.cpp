@@ -69,18 +69,18 @@ void CFontManager::VidInit( void )
 
 	if( !prevScale
 #ifndef SCALE_FONTS // complete disables font re-rendering
-		|| fabs( scale - prevScale ) > 0.1f
+	|| fabs( scale - prevScale ) > 0.1f
 #endif
-		)
+	)
 	{
 		DeleteAllFonts();
 		uiStatic.hDefaultFont = CFontBuilder( DEFAULT_MENUFONT, UI_MED_CHAR_HEIGHT * scale, DEFAULT_WEIGHT )
 			.SetHandleNum( QM_DEFAULTFONT )
 			.Create();
-		uiStatic.hSmallFont = CFontBuilder( DEFAULT_MENUFONT, UI_SMALL_CHAR_HEIGHT * scale, DEFAULT_WEIGHT )
+		uiStatic.hSmallFont   = CFontBuilder( DEFAULT_MENUFONT, UI_SMALL_CHAR_HEIGHT * scale, DEFAULT_WEIGHT )
 			.SetHandleNum( QM_SMALLFONT )
 			.Create();
-		uiStatic.hBigFont = CFontBuilder( DEFAULT_MENUFONT, UI_BIG_CHAR_HEIGHT * scale, DEFAULT_WEIGHT )
+		uiStatic.hBigFont     = CFontBuilder( DEFAULT_MENUFONT, UI_BIG_CHAR_HEIGHT * scale, DEFAULT_WEIGHT )
 			.SetHandleNum( QM_BIGFONT )
 			.Create();
 		uiStatic.hBoldFont = CFontBuilder( DEFAULT_MENUFONT, UI_MED_CHAR_HEIGHT * scale, 1000 )
@@ -114,33 +114,33 @@ void CFontManager::DeleteAllFonts()
 	m_Fonts.RemoveAll();
 }
 
-void CFontManager::DeleteFont( HFont hFont )
+void CFontManager::DeleteFont(HFont hFont)
 {
-	CBaseFont *font = GetIFontFromHandle( hFont );
+	CBaseFont *font = GetIFontFromHandle(hFont);
 	if( font )
 	{
-		m_Fonts[hFont - 1] = NULL;
+		m_Fonts[hFont-1] = NULL;
 
 		delete font;
 	}
 }
 
-CBaseFont *CFontManager::GetIFontFromHandle( HFont font )
+CBaseFont *CFontManager::GetIFontFromHandle(HFont font)
 {
 	if( m_Fonts.IsValidIndex( font - 1 ) )
-		return m_Fonts[font - 1];
+		return m_Fonts[font-1];
 
 	return NULL;
 }
 
-int CFontManager::GetEllipsisWide( HFont font )
+int CFontManager::GetEllipsisWide(HFont font)
 {
 	if( m_Fonts.IsValidIndex( font - 1 ) )
-		return m_Fonts[font - 1]->GetEllipsisWide();
+		return m_Fonts[font-1]->GetEllipsisWide();
 	return 0;
 }
 
-void CFontManager::GetCharABCWide( HFont font, int ch, int &a, int &b, int &c )
+void CFontManager::GetCharABCWide(HFont font, int ch, int &a, int &b, int &c)
 {
 	CBaseFont *pFont = GetIFontFromHandle( font );
 	if( pFont )
@@ -149,23 +149,23 @@ void CFontManager::GetCharABCWide( HFont font, int ch, int &a, int &b, int &c )
 		a = b = c = 0;
 }
 
-int CFontManager::GetCharacterWidth( HFont font, int ch )
+int CFontManager::GetCharacterWidth(HFont font, int ch)
 {
 	int a, b, c;
 	GetCharABCWide( font, ch, a, b, c );
 	return a + b + c;
 }
 
-int CFontManager::GetCharacterWidthScaled( HFont font, int ch, int height )
+int CFontManager::GetCharacterWidthScaled(HFont font, int ch, int height)
 {
 	return GetCharacterWidth( font, ch )
 #ifdef SCALE_FONTS
 		* ((float)height / (float)GetFontTall( font ))
 #endif
-		;
+	;
 }
 
-HFont CFontManager::GetFontByName( const char *name )
+HFont CFontManager::GetFontByName(const char *name)
 {
 	for( int i = 0; i < m_Fonts.Count(); i++ )
 	{
@@ -175,7 +175,7 @@ HFont CFontManager::GetFontByName( const char *name )
 	return -1;
 }
 
-int CFontManager::GetFontTall( HFont font )
+int CFontManager::GetFontTall(HFont font)
 {
 	CBaseFont *pFont = GetIFontFromHandle( font );
 	if( pFont )
@@ -183,7 +183,7 @@ int CFontManager::GetFontTall( HFont font )
 	return 0;
 }
 
-int CFontManager::GetFontAscent( HFont font )
+int CFontManager::GetFontAscent(HFont font)
 {
 	CBaseFont *pFont = GetIFontFromHandle( font );
 	if( pFont )
@@ -191,7 +191,7 @@ int CFontManager::GetFontAscent( HFont font )
 	return 0;
 }
 
-bool CFontManager::GetFontUnderlined( HFont font )
+bool CFontManager::GetFontUnderlined(HFont font)
 {
 	CBaseFont *pFont = GetIFontFromHandle( font );
 	if( pFont )
@@ -199,7 +199,7 @@ bool CFontManager::GetFontUnderlined( HFont font )
 	return false;
 }
 
-void CFontManager::GetTextSize( HFont fontHandle, const char *text, int *wide, int *tall, int size )
+void CFontManager::GetTextSize(HFont fontHandle, const char *text, int *wide, int *tall, int size )
 {
 	CBaseFont *font = GetIFontFromHandle( fontHandle );
 
@@ -218,7 +218,7 @@ void CFontManager::GetTextSize( HFont fontHandle, const char *text, int *wide, i
 
 	EngFuncs::UtfProcessChar( 0 );
 
-	while( *ch && (size < 0 || i < size) )
+	while( *ch && ( size < 0 || i < size ) )
 	{
 		// Skip colorcodes
 		if( IsColorString( ch ) )
@@ -232,7 +232,7 @@ void CFontManager::GetTextSize( HFont fontHandle, const char *text, int *wide, i
 		uch = EngFuncs::UtfProcessChar( (unsigned char)*ch );
 		if( uch )
 		{
-			if( uch == '\n' && *(ch + 1) != '\0' )
+			if( uch == '\n' && *( ch + 1 ) != '\0' )
 			{
 				_tall += fontTall;
 				x = 0;
@@ -255,7 +255,7 @@ void CFontManager::GetTextSize( HFont fontHandle, const char *text, int *wide, i
 	if( wide ) *wide = _wide;
 }
 
-int CFontManager::CutText( HFont fontHandle, const char *text, int height, int visibleSize, bool reverse, bool stopAtWhitespace, int *wide, bool *remaining )
+int CFontManager::CutText(HFont fontHandle, const char *text, int height, int visibleSize, bool reverse, bool stopAtWhitespace, int *wide, bool *remaining )
 {
 	CBaseFont *font = GetIFontFromHandle( fontHandle );
 
@@ -269,7 +269,7 @@ int CFontManager::CutText( HFont fontHandle, const char *text, int height, int v
 	const char *ch = text;
 
 #ifdef SCALE_FONTS
-	visibleSize = (float)visibleSize / (float)height * (float)font->GetTall();
+	visibleSize  = (float)visibleSize / (float)height * (float)font->GetTall();
 #endif
 
 	EngFuncs::UtfProcessChar( 0 );
@@ -370,7 +370,7 @@ int CFontManager::CutText( HFont fontHandle, const char *text, int height, int v
 
 }
 
-int CFontManager::GetTextWide( HFont font, const char *text, int size )
+int CFontManager::GetTextWide(HFont font, const char *text, int size)
 {
 	int wide;
 
@@ -379,7 +379,7 @@ int CFontManager::GetTextWide( HFont font, const char *text, int size )
 	return wide;
 }
 
-int CFontManager::GetTextHeight( HFont fontHandle, const char *text, int size )
+int CFontManager::GetTextHeight(HFont fontHandle, const char *text, int size )
 {
 	CBaseFont *font = GetIFontFromHandle( fontHandle );
 	if( !font || !text || !text[0] )
@@ -391,7 +391,7 @@ int CFontManager::GetTextHeight( HFont fontHandle, const char *text, int size )
 
 	// lightweight variant only for getting text height
 	int i = 0;
-	while( *text && (size < 0 || i < size) )
+	while( *text&&( size < 0 || i < size ) )
 	{
 		if( *text == '\n' )
 			height += height;
@@ -413,7 +413,7 @@ int CFontManager::GetTextHeightExt( HFont fontHandle, const char *text, int heig
 	const char *text2 = text;
 	int y = 0;
 
-	while( *text2 && (size < 0 || text2 - text < size) )
+	while( *text2 && ( size < 0 || text2 - text < size ) )
 	{
 		int pos = CutText( fontHandle, text2, height, w, false, true );
 		if( pos == 0 )
@@ -427,7 +427,7 @@ int CFontManager::GetTextHeightExt( HFont fontHandle, const char *text, int heig
 
 }
 
-int CFontManager::GetTextWideScaled( HFont font, const char *text, const int height, int size )
+int CFontManager::GetTextWideScaled(HFont font, const char *text, const int height, int size)
 {
 	CBaseFont *pFont = GetIFontFromHandle( font );
 	if( pFont )
@@ -436,13 +436,13 @@ int CFontManager::GetTextWideScaled( HFont font, const char *text, const int hei
 #ifdef SCALE_FONTS
 			* ((float)height / (float)pFont->GetTall())
 #endif
-			;
+		;
 	}
 
 	return 0;
 }
 
-void CFontManager::UploadTextureForFont( CBaseFont *font )
+void CFontManager::UploadTextureForFont(CBaseFont *font)
 {
 	// upload only latin needed for english and cyrillic needed for russian
 	// maybe it would be extended someday...
@@ -458,7 +458,7 @@ void CFontManager::UploadTextureForFont( CBaseFont *font )
 	font->UploadGlyphsForRanges( range, V_ARRAYSIZE( range ) );
 }
 
-int CFontManager::DrawCharacter( HFont fontHandle, int ch, Point pt, int charH, const unsigned int color, bool forceAdditive )
+int CFontManager::DrawCharacter(HFont fontHandle, int ch, Point pt, int charH, const unsigned int color, bool forceAdditive )
 {
 	CBaseFont *font = GetIFontFromHandle( fontHandle );
 
@@ -468,9 +468,9 @@ int CFontManager::DrawCharacter( HFont fontHandle, int ch, Point pt, int charH, 
 	return font->DrawCharacter( ch, pt, charH, color, forceAdditive );
 }
 
-void CFontManager::DebugDraw( HFont fontHandle )
+void CFontManager::DebugDraw(HFont fontHandle)
 {
-	CBaseFont *font = GetIFontFromHandle( fontHandle );
+	CBaseFont *font = GetIFontFromHandle(fontHandle);
 
 	font->DebugDraw();
 }
@@ -534,13 +534,13 @@ HFont CFontBuilder::Create()
 		}
 	}
 
-	return g_FontMgr->m_Fonts.AddToTail( font ) + 1;
+	return g_FontMgr->m_Fonts.AddToTail(font) + 1;
 }
 
 byte *CFontManager::LoadFontDataFile( const char *vfspath )
 {
 	int i = m_FontFiles.Find( vfspath );
-	if( i != m_FontFiles.InvalidIndex() )
+	if( i != m_FontFiles.InvalidIndex( ))
 		return m_FontFiles[i];
 
 	byte *p = EngFuncs::COM_LoadFile( vfspath );

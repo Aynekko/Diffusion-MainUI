@@ -128,7 +128,6 @@ typedef struct clientdata_s
 	int		viewmodel;
 	vec3_t		punchangle;
 	int		flags;
-//	int flags2;
 	int		waterlevel;
 	int		watertype;
 	vec3_t		view_ofs;

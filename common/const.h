@@ -717,6 +717,7 @@ enum
 	kRenderFxExplode,			// Scale up really big!
 	kRenderFxGlowShell,			// Glowing Shell
 	kRenderFxClampMinScale,		// Keep this sprite from getting very small (SPRITES only!)
+	kRenderFxLightMultiplier,
 };
 
 typedef int		func_t;
@@ -725,7 +726,6 @@ typedef int		string_t;
 typedef unsigned short	word;
 
 #include "xash3d_types.h"
-#define Q_isspace( ch )	(ch < 32 || ch > 255)
 
 typedef struct
 {

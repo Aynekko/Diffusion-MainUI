@@ -20,6 +20,7 @@ GNU General Public License for more details.
 #include "utlrbtree.h"
 #include "stb_truetype.h"
 
+
 class CStbFont : public CBaseFont
 {
 public:
@@ -37,7 +38,6 @@ public:
 	bool HasChar( int ch ) const override;
 
 private:
-
 	char m_szRealFontFile[4096];
 	bool FindFontDataFile(const char *name, int tall, int weight, int flags, char *dataFile, int dataFileChars);
 
@@ -45,7 +45,6 @@ private:
 	stbtt_fontinfo m_fontInfo;
 
 	float scale;
-
 
 	friend class CFontManager;
 };
