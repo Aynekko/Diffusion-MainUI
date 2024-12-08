@@ -172,6 +172,7 @@
     <ClInclude Include="controls\BaseWindow.h" />
     <ClInclude Include="controls\Bitmap.h" />
     <ClInclude Include="controls\CheckBox.h" />
+    <ClInclude Include="controls\DropDown.h" />
     <ClInclude Include="controls\Editable.h" />
     <ClInclude Include="controls\Field.h" />
     <ClInclude Include="controls\Framework.h" />
@@ -243,6 +244,7 @@
     <ClCompile Include="controls\BaseWindow.cpp" />
     <ClCompile Include="controls\Bitmap.cpp" />
     <ClCompile Include="controls\CheckBox.cpp" />
+    <ClCompile Include="controls\DropDown.cpp" />
     <ClCompile Include="controls\Editable.cpp" />
     <ClCompile Include="controls\Field.cpp" />
     <ClCompile Include="controls\Framework.cpp" />

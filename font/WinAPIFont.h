@@ -30,8 +30,8 @@ GNU General Public License for more details.
 class CWinAPIFont : public CBaseFont
 {
 public:
-	CWinAPIFont( );
-	~CWinAPIFont( );
+	CWinAPIFont();
+	~CWinAPIFont();
 
 	bool Create( const char *name,
 		int tall, int weight,
@@ -42,6 +42,7 @@ public:
 	void GetCharRGBA( int ch, Point pt, Size sz, unsigned char *rgba, Size &drawSize ) override;
 	void GetCharABCWidthsNoCache( int ch, int &a, int &b, int &c ) override;
 	bool HasChar( int ch ) const override;
+	const char *GetBackendName() const override { return "win32"; }
 
 	bool m_bFound;
 
@@ -53,7 +54,7 @@ private:
 	int m_rgiBitmapSize[2];
 
 	// pointer to buffer for use when generated bitmap versions of a texture
-	unsigned char	*m_pBuf;
+	unsigned char *m_pBuf;
 
 	friend class CFontManager;
 	friend int CALLBACK FontEnumProc( const LOGFONT *, const TEXTMETRIC *, DWORD, LPARAM lpParam );

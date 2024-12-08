@@ -62,7 +62,7 @@ const char *uiSounds[] = {
 };
 
 // they match default WON colors.lst now, except alpha
-unsigned int		uiColorHelp         = 0xFF7F7F7F;	// 127, 127, 127, 255	// hint letters color
+unsigned int		uiColorHelp			= 0xFFA0A0A0;	// 160, 160, 160, 255 // hint letters color
 unsigned int		uiPromptBgColor     = 0xFF383838;	// 56,  56,  56,  255	// dialog background color
 unsigned int		uiPromptTextColor   = 0xFFF0B418;	// 240, 180, 24,  255	// dialog or button letters color
 unsigned int		uiPromptFocusColor  = 0xFFFFFF00;	// 255, 255,  0,  255	// dialog or button focus letters color

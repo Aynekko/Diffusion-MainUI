@@ -38,7 +38,7 @@ GNU General Public License for more details.
 #include "Utils.h"
 
 CStbFont::CStbFont() : CBaseFont(),
-	m_szRealFontFile(), m_pFontData( NULL )
+m_pFontData( NULL )
 {
 }
 
@@ -46,24 +46,10 @@ CStbFont::~CStbFont()
 {
 }
 
-bool CStbFont::FindFontDataFile( const char *name, int tall, int weight, int flags, char *dataFile, int dataFileChars )
-{
-	if( !strcmp( name, "Trebuchet MS" ))
-	{
-		Q_strncpy( dataFile, "gfx/shell/FiraSans-Regular.ttf", dataFileChars );
-		return true;
-	}
-	else if( !strcmp( name, "Tahoma" ))
-	{
-		Q_strncpy( dataFile, "gfx/shell/tahoma.ttf", dataFileChars );
-		return true;
-	}
-
-	return false;
-}
-
 bool CStbFont::Create( const char *name, int tall, int weight, int blur, float brighten, int outlineSize, int scanlineOffset, float scanlineScale, int flags )
 {
+	char font_face_path[256];
+
 	Q_strncpy( m_szName, name, sizeof( m_szName ) );
 	m_iTall = tall;
 	m_iWeight = weight;
@@ -78,43 +64,43 @@ bool CStbFont::Create( const char *name, int tall, int weight, int blur, float b
 	m_fScanlineScale = scanlineScale;
 
 
-	if( !FindFontDataFile( name, tall, weight, flags, m_szRealFontFile, sizeof( m_szRealFontFile )))
+	if( !g_FontMgr->FindFontDataFile( name, tall, weight, flags, font_face_path, sizeof( font_face_path ) ) )
 	{
 		Con_Printf( "Unable to find font named %s\n", name );
 		m_szName[0] = 0;
 		return false;
 	}
 
-	m_pFontData = g_FontMgr->LoadFontDataFile( m_szRealFontFile );
+	m_pFontData = g_FontMgr->LoadFontDataFile( font_face_path );
 
 	if( !m_pFontData )
 	{
-		Con_Printf( "Unable to read font file %s!\n", m_szRealFontFile );
+		Con_Printf( "Unable to read font file %s!\n", font_face_path );
 		return false;
 	}
 
 	if( !stbtt_InitFont( &m_fontInfo, m_pFontData, 0 ) )
 	{
-		Con_Printf( "Unable to create font %s!\n", m_szRealFontFile );
+		Con_Printf( "Unable to create font %s!\n", font_face_path );
 		m_szName[0] = 0;
 		return false;
 	}
 
 	// HACKHACK: for some reason size scales between ft2 and stbtt are different
-	scale = stbtt_ScaleForPixelHeight(&m_fontInfo, tall + 2);
+	scale = stbtt_ScaleForPixelHeightPrecision( &m_fontInfo, tall + 4 );
 	int x0, y0, x1, y1;
 
-	stbtt_GetFontVMetrics(&m_fontInfo, &m_iAscent, NULL, NULL );
-	m_iAscent *= scale;
+	stbtt_GetFontVMetrics( &m_fontInfo, &m_iAscent, NULL, NULL );
+	m_iAscent = round( m_iAscent * scale );
 
 	stbtt_GetFontBoundingBox( &m_fontInfo, &x0, &y0, &x1, &y1 );
-	m_iHeight = (( y1 - y0 ) * scale); // maybe wrong!
-	m_iMaxCharWidth = (( x1 - x0 ) * scale); // maybe wrong!
+	m_iHeight = round( (y1 - y0) * scale ); // maybe wrong!
+	m_iMaxCharWidth = round( (x1 - x0) * scale ); // maybe wrong!
 
 	return true;
 }
 
-void CStbFont::GetCharRGBA(int ch, Point pt, Size sz, unsigned char *rgba, Size &drawSize )
+void CStbFont::GetCharRGBA( int ch, Point pt, Size sz, unsigned char *rgba, Size &drawSize )
 {
 	byte *buf, *dst;
 	int a, b, c;
@@ -140,20 +126,20 @@ void CStbFont::GetCharRGBA(int ch, Point pt, Size sz, unsigned char *rgba, Size 
 
 	int yend = bm_rows;
 	if( pushDown + yend > sz.h )
-		yend += sz.h - ( pushDown + yend );
+		yend += sz.h - (pushDown + yend);
 
 	int xend = bm_width;
 	if( pushLeft + xend > sz.w )
-		xend += sz.w - ( pushLeft + xend );
+		xend += sz.w - (pushLeft + xend);
 
-	buf = &buf[ ystart * bm_width ];
-	dst = rgba + 4 * sz.w * ( ystart + pushDown );
+	buf = &buf[ystart * bm_width];
+	dst = rgba + 4 * sz.w * (ystart + pushDown);
 
 	// iterate through copying the generated dib into the texture
-	for (int j = ystart; j < yend; j++, dst += 4 * sz.w, buf += bm_width )
+	for( int j = ystart; j < yend; j++, dst += 4 * sz.w, buf += bm_width )
 	{
-		unsigned int *xdst = (unsigned int*)(dst + 4 * ( m_iBlur + m_iOutlineSize ));
-		for (int i = xstart; i < xend; i++, xdst++)
+		unsigned int *xdst = (unsigned int *)(dst + 4 * (m_iBlur + m_iOutlineSize));
+		for( int i = xstart; i < xend; i++, xdst++ )
 		{
 			if( buf[i] > 0 )
 			{
@@ -177,7 +163,7 @@ void CStbFont::GetCharRGBA(int ch, Point pt, Size sz, unsigned char *rgba, Size 
 	ApplyStrikeout( sz, rgba );
 }
 
-void CStbFont::GetCharABCWidthsNoCache(int ch, int &a, int &b, int &c)
+void CStbFont::GetCharABCWidthsNoCache( int ch, int &a, int &b, int &c )
 {
 	int glyphId = stbtt_FindGlyphIndex( &m_fontInfo, ch );
 
@@ -188,17 +174,12 @@ void CStbFont::GetCharABCWidthsNoCache(int ch, int &a, int &b, int &c)
 	stbtt_GetCodepointHMetrics( &m_fontInfo, ch, &horiAdvance, &horiBearingX );
 	width = x1 - x0;
 
-	a = horiBearingX * scale;
-
-	// HACKHACK: stbtt does not support hinting,
-	// so we add 1 pixel margin here and stbtt
-	// won't look bad on too small screen resolutions
-	b = width * scale + 1;
-
-	c = (horiAdvance - horiBearingX - width) * scale;
+	a = round( horiBearingX * scale );
+	b = round( width * scale );
+	c = round( (horiAdvance - horiBearingX - width) * scale );
 }
 
-bool CStbFont::HasChar(int ch) const
+bool CStbFont::HasChar( int ch ) const
 {
 	return true;
 }
