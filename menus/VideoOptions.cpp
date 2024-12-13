@@ -58,11 +58,20 @@ public:
 	void Draw( void );
 
 	void WriteAnisotropy( void );
+	void SetMaxFps( void );
+	void SetCurFps( void );
+	void SetVSync( void );
+	void HideMenus( void );
 
 	int	outlineWidth;
 
+	int fps_remember;
+
 	CMenuPicButton done;
 	CMenuSpinControl maxFPS;
+	CMenuCheckBox FPSunlimited;
+	CMenuCheckBox gl_vsync;
+	CMenuCheckBox hideMenus;
 
 	CMenuPicButton	SetToLow;
 	CMenuPicButton	SetToMedium;
@@ -231,6 +240,35 @@ void CMenuVidOptions::GetConfig( void )
 	case 8: gl_anisotropy.SetCurrentValue( 3.0f ); break;
 	case 16: gl_anisotropy.SetCurrentValue( 4.0f ); break;
 	}
+
+	bool vsync = (EngFuncs::GetCvarFloat( "gl_vsync" ) == 1.0f);
+	float fps = EngFuncs::GetCvarFloat( "fps_max" );
+	if( fps == 0.0f )
+	{
+		maxFPS.iFlags |= QMF_GRAYED;
+		fps_remember = 100;
+		maxFPS.SetCurrentValue( 100 );
+		FPSunlimited.bChecked = true;
+		EngFuncs::CvarSetValue( "fps_max", 0 ); // SetCurrentValue sets the cvar...duh
+		if( vsync )
+		{
+			gl_vsync.bChecked = true;
+			FPSunlimited.iFlags |= QMF_GRAYED;
+		}
+	}
+	else
+	{
+		maxFPS.iFlags &= ~QMF_GRAYED;
+		fps_remember = fps; // remember fps if user changes his mind
+		maxFPS.SetCurrentValue( fps );
+		FPSunlimited.bChecked = false;
+		if( vsync )
+		{
+			gl_vsync.bChecked = true;
+			FPSunlimited.iFlags |= QMF_GRAYED;
+			maxFPS.iFlags |= QMF_GRAYED;
+		}
+	}
 }
 
 void CMenuVidOptions::WriteAnisotropy(void)
@@ -254,7 +292,6 @@ void CMenuVidOptions::SaveAndPopMenu( void )
 #endif
 	// gamma and brightness are already written
 	
-	maxFPS.WriteCvar();
 	cl_muzzlelight.WriteCvar();
 	gl_ssao.WriteCvar();
 	gl_sunshafts.WriteCvar();
@@ -277,6 +314,8 @@ void CMenuVidOptions::SaveAndPopMenu( void )
 //	gl_anisotropy.WriteCvar();
 	WriteAnisotropy();
 
+	SetMaxFps();
+
 	CMenuFramework::SaveAndPopMenu();
 }
 
@@ -291,6 +330,110 @@ void CMenuVidOptions::Draw( void )
 	BaseClass::Draw();
 }
 
+void CMenuVidOptions::SetMaxFps( void )
+{
+	maxFPS.SetCurrentValue( fps_remember );
+
+	if( FPSunlimited.bChecked )
+	{
+		maxFPS.iFlags |= QMF_GRAYED;
+		EngFuncs::CvarSetValue( "fps_max", 0 );
+	}
+	else
+	{
+		maxFPS.iFlags &= ~QMF_GRAYED;
+		EngFuncs::CvarSetValue( "fps_max", fps_remember );
+	}
+}
+
+void CMenuVidOptions::SetCurFps( void )
+{
+	EngFuncs::CvarSetValue( "fps_max", (int)maxFPS.GetCurrentValue() );
+	fps_remember = (int)maxFPS.GetCurrentValue();
+}
+
+void CMenuVidOptions::SetVSync( void )
+{
+	if( gl_vsync.bChecked )
+	{
+		EngFuncs::CvarSetValue( "gl_vsync", 1 );
+		maxFPS.iFlags |= QMF_GRAYED;
+		FPSunlimited.iFlags |= QMF_GRAYED;
+	}
+	else
+	{
+		EngFuncs::CvarSetValue( "gl_vsync", 0 );
+		maxFPS.iFlags &= ~QMF_GRAYED;
+		FPSunlimited.iFlags &= ~QMF_GRAYED;
+	}
+}
+
+void CMenuVidOptions::HideMenus( void )
+{
+	if( hideMenus.bChecked )
+	{
+		SetToLow.iFlags |= QMF_HIDDEN;
+		SetToMedium.iFlags |= QMF_HIDDEN;
+		SetToHigh.iFlags |= QMF_HIDDEN;
+		SetToMaximum.iFlags |= QMF_HIDDEN;
+		gammaIntensity.iFlags |= QMF_HIDDEN;
+		Brightness.iFlags |= QMF_HIDDEN;
+		gl_sunshafts.iFlags |= QMF_HIDDEN;
+		gl_ssao.iFlags |= QMF_HIDDEN;
+		cl_muzzlelight.iFlags |= QMF_HIDDEN;
+		r_bloom.iFlags |= QMF_HIDDEN;
+		r_blur.iFlags |= QMF_HIDDEN;
+		maxFPS.iFlags |= QMF_HIDDEN;
+		FPSunlimited.iFlags |= QMF_HIDDEN;
+		gl_vsync.iFlags |= QMF_HIDDEN;
+		shadowQ.iFlags |= QMF_HIDDEN;
+		mirrorQ.iFlags |= QMF_HIDDEN;
+		gl_anisotropy.iFlags |= QMF_HIDDEN;
+		gl_msaa.iFlags |= QMF_HIDDEN;
+		gl_lensflare.iFlags |= QMF_HIDDEN;
+		gl_emboss.iFlags |= QMF_HIDDEN;
+		gl_water_refraction.iFlags |= QMF_HIDDEN;
+		gl_exposure.iFlags |= QMF_HIDDEN;
+		gl_cubemaps.iFlags |= QMF_HIDDEN;
+		gl_water_planar.iFlags |= QMF_HIDDEN;
+		gl_bump.iFlags |= QMF_HIDDEN;
+		gl_specular.iFlags |= QMF_HIDDEN;
+
+		EngFuncs::CvarSetValue( "ui_videooptions_active", 1 );
+	}
+	else
+	{
+		SetToLow.iFlags &= ~QMF_HIDDEN;
+		SetToMedium.iFlags &= ~QMF_HIDDEN;
+		SetToHigh.iFlags &= ~QMF_HIDDEN;
+		SetToMaximum.iFlags &= ~QMF_HIDDEN;
+		gammaIntensity.iFlags &= ~QMF_HIDDEN;
+		Brightness.iFlags &= ~QMF_HIDDEN;
+		gl_sunshafts.iFlags &= ~QMF_HIDDEN;
+		gl_ssao.iFlags &= ~QMF_HIDDEN;
+		cl_muzzlelight.iFlags &= ~QMF_HIDDEN;
+		r_bloom.iFlags &= ~QMF_HIDDEN;
+		r_blur.iFlags &= ~QMF_HIDDEN;
+		maxFPS.iFlags &= ~QMF_HIDDEN;
+		FPSunlimited.iFlags &= ~QMF_HIDDEN;
+		gl_vsync.iFlags &= ~QMF_HIDDEN;
+		shadowQ.iFlags &= ~QMF_HIDDEN;
+		mirrorQ.iFlags &= ~QMF_HIDDEN;
+		gl_anisotropy.iFlags &= ~QMF_HIDDEN;
+		gl_msaa.iFlags &= ~QMF_HIDDEN;
+		gl_lensflare.iFlags &= ~QMF_HIDDEN;
+		gl_emboss.iFlags &= ~QMF_HIDDEN;
+		gl_water_refraction.iFlags &= ~QMF_HIDDEN;
+		gl_exposure.iFlags &= ~QMF_HIDDEN;
+		gl_cubemaps.iFlags &= ~QMF_HIDDEN;
+		gl_water_planar.iFlags &= ~QMF_HIDDEN;
+		gl_bump.iFlags &= ~QMF_HIDDEN;
+		gl_specular.iFlags &= ~QMF_HIDDEN;
+
+		EngFuncs::CvarSetValue( "ui_videooptions_active", 0 );
+	}
+}
+
 /*
 =================
 CMenuVidOptions::Init
@@ -298,6 +441,8 @@ CMenuVidOptions::Init
 */
 void CMenuVidOptions::_Init( void )
 {
+	fps_remember = 0;
+
 	static const char *ShadowqualityStr[] =
 	{
 	//	L( "Low (256p)" ), L( "Medium (512p)" ), L( "High (1024p)" ), L( "Maximum (2048p)" ), L( "Extreme (4096p)" )
@@ -349,9 +494,23 @@ void CMenuVidOptions::_Init( void )
 	maxFPS.szName = L( "GameUI_FPSlimit" );
 	maxFPS.szStatusText = L( "Cap your game frame rate" );
 	maxFPS.Setup( 25, 200, 5 );
-	maxFPS.LinkCvar( "fps_max", CMenuEditable::CVAR_VALUE );
 	maxFPS.SetRect( 72, MenuYOffset + 200, 220, 32 );
-	maxFPS.onChanged = CMenuEditable::WriteCvarCb;
+	maxFPS.onChanged = VoidCb( &CMenuVidOptions::SetCurFps );
+
+	FPSunlimited.SetNameAndStatus( L( "GameUI_FPSunlimited" ), L( "-" ) );
+	FPSunlimited.iFlags |= QMF_NOTIFY;
+	FPSunlimited.SetCoord( 72, MenuYOffset + 250 );
+	FPSunlimited.onChanged = VoidCb( &CMenuVidOptions::SetMaxFps );
+
+	gl_vsync.SetNameAndStatus( L( "GameUI_VSync" ), L( "-" ) );
+	gl_vsync.iFlags |= QMF_NOTIFY;
+	gl_vsync.SetCoord( 72, MenuYOffset + 300 );
+	gl_vsync.onChanged = VoidCb( &CMenuVidOptions::SetVSync );
+
+	hideMenus.SetNameAndStatus( L( "GameUI_HideMenus" ), L( "-" ) );
+	hideMenus.iFlags |= QMF_NOTIFY;
+	hideMenus.SetCoord( 300, MenuYOffset + 600 );
+	hideMenus.onChanged = VoidCb( &CMenuVidOptions::HideMenus );
 	
 	gl_msaa.SetNameAndStatus( L( "GameUI_MSAA" ), L( "-" ) );
 	gl_msaa.iFlags |= QMF_NOTIFY;
@@ -394,7 +553,7 @@ void CMenuVidOptions::_Init( void )
 	gl_water_refraction.onChanged = CMenuEditable::WriteCvarCb;
 	
 	done.SetNameAndStatus( L( "GameUI_OK" ), L( "Go back to the Video Menu" ) );
-	done.SetCoord( 72, MenuYOffset + 500 );
+	done.SetCoord( 72, MenuYOffset + 600 );
 	done.SetPicture( PC_DONE );
 	done.onReleased = VoidCb( &CMenuVidOptions::SaveAndPopMenu );
 
@@ -433,13 +592,11 @@ void CMenuVidOptions::_Init( void )
 	gammaIntensity.SetCoord( 72, MenuYOffset + 400 );
 	gammaIntensity.Setup( 0.0, 1.0, 0.025 );
 	gammaIntensity.onChanged = VoidCb( &CMenuVidOptions::UpdateConfig );
-	gammaIntensity.onCvarGet = VoidCb( &CMenuVidOptions::GetConfig );
 
 	Brightness.SetCoord( 72, MenuYOffset + 460 );
 	Brightness.SetNameAndStatus( L( "GameUI_Brightness" ), L( "Set brightness level" ) );
 	Brightness.Setup( 0, 1.0, 0.025 );
 	Brightness.onChanged = VoidCb( &CMenuVidOptions::UpdateConfig );
-	Brightness.onCvarGet = VoidCb( &CMenuVidOptions::GetConfig );
 
 	static CStringArrayModel mi( MirrorqualityStr, V_ARRAYSIZE( MirrorqualityStr ) );
 	mirrorQ.SetNameAndStatus( L( "GameUI_MirrorQuality" ), L( "Mirror reflection quality" ) );
@@ -487,6 +644,9 @@ void CMenuVidOptions::_Init( void )
 	AddItem( r_bloom );
 	AddItem( r_blur );
 	AddItem( maxFPS );
+	AddItem( FPSunlimited );
+	AddItem( gl_vsync );
+	AddItem( hideMenus );
 	AddItem( shadowQ );
 	AddItem( mirrorQ );
 	AddItem( gl_anisotropy );
@@ -515,20 +675,18 @@ void CMenuVidOptions::_VidInit()
 
 void CMenuVidOptions::Show( void )
 {
-	CMenuFramework::Show();
 	EngFuncs::ClientCmd( FALSE, "menuactivate vidoptions\n" );
-
-	if( (int)EngFuncs::GetCvarFloat( "ui_videooptions_active" ) == 0 )
-		EngFuncs::CvarSetValue( "ui_videooptions_active", 1 );
+	hideMenus.bChecked = false;
+	HideMenus(); // unhide them
+	CMenuFramework::Show();
 }
 
 void CMenuVidOptions::Hide( void )
 {
-	CMenuFramework::Hide();
+	hideMenus.bChecked = false;
 	EngFuncs::ClientCmd( FALSE, "menuactivate options\n" );
-
-	if( (int)EngFuncs::GetCvarFloat( "ui_videooptions_active" ) > 0 )
-		EngFuncs::CvarSetValue( "ui_videooptions_active", 0 );
+	EngFuncs::CvarSetValue( "ui_videooptions_active", 0 );
+	CMenuFramework::Hide();
 }
 
 ADD_MENU( menu_vidoptions, CMenuVidOptions, UI_VidOptions_Menu );
