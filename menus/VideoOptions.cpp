@@ -398,8 +398,6 @@ void CMenuVidOptions::HideMenus( void )
 		gl_water_planar.iFlags |= QMF_HIDDEN;
 		gl_bump.iFlags |= QMF_HIDDEN;
 		gl_specular.iFlags |= QMF_HIDDEN;
-
-		EngFuncs::CvarSetValue( "ui_videooptions_active", 1 );
 	}
 	else
 	{
@@ -429,8 +427,6 @@ void CMenuVidOptions::HideMenus( void )
 		gl_water_planar.iFlags &= ~QMF_HIDDEN;
 		gl_bump.iFlags &= ~QMF_HIDDEN;
 		gl_specular.iFlags &= ~QMF_HIDDEN;
-
-		EngFuncs::CvarSetValue( "ui_videooptions_active", 0 );
 	}
 }
 
@@ -678,6 +674,7 @@ void CMenuVidOptions::Show( void )
 	EngFuncs::ClientCmd( FALSE, "menuactivate vidoptions\n" );
 	hideMenus.bChecked = false;
 	HideMenus(); // unhide them
+	EngFuncs::CvarSetValue( "ui_videooptions_active", 1 );
 	CMenuFramework::Show();
 }
 
