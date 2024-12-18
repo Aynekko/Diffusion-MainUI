@@ -53,6 +53,8 @@ public:
 	CMenuCheckBox cl_hitsound;
 	CMenuCheckBox cl_useicon;
 	CMenuSpinControl cl_crosshair;
+	CMenuSpinControl cl_largehud;
+	CMenuCheckBox cl_centerhud;
 	CMenuCheckBox allowConsole;
 	CMenuSlider	cl_viewmodel_extras;
 
@@ -137,6 +139,21 @@ void CMenuOptions::_Init( void )
 	cl_crosshair.font = QM_SMALLFONT;
 	cl_crosshair.SetRect( 300, MenuYOffset + 470, 200, 32 );
 
+	static const char *cl_largehud_str[] =
+	{
+		L( "GameUI_No" ), L( "GameUI_Yes" ), L( "GameUI_Auto" )
+	};
+	static CStringArrayModel largehud( cl_largehud_str, V_ARRAYSIZE( cl_largehud_str ) );
+	cl_largehud.SetNameAndStatus( L( "GameUI_LargeHUD" ), L( "Set crosshair style" ) );
+	cl_largehud.Setup( &largehud );
+	cl_largehud.onChanged = CMenuEditable::WriteCvarCb;
+	cl_largehud.font = QM_SMALLFONT;
+	cl_largehud.SetRect( 520, MenuYOffset + 470, 200, 32 );
+
+	cl_centerhud.SetNameAndStatus( L( "GameUI_CenterHUD" ), L( "-" ) );
+	cl_centerhud.iFlags |= QMF_NOTIFY;
+	cl_centerhud.SetCoord( 730, MenuYOffset + 470 );
+
 	cl_viewmodel_extras.SetCoord( 300, MenuYOffset + 560 );
 	cl_viewmodel_extras.SetNameAndStatus( L( "GameUI_WeaponAnimInfluence" ), L( "-" ) );
 	cl_viewmodel_extras.Setup( 0.0f, 1.0f, 0.1f );
@@ -153,6 +170,8 @@ void CMenuOptions::_Init( void )
 	AddItem( cl_hitsound );
 	AddItem( cl_useicon );
 	AddItem( cl_crosshair );
+	AddItem( cl_largehud );
+	AddItem( cl_centerhud );
 	AddItem( allowConsole );
 	AddItem( cl_viewmodel_extras );
 }
@@ -169,6 +188,7 @@ void CMenuOptions::Hide(void)
 	cl_achievement_notify.WriteCvar();
 	cl_tutor.WriteCvar();
 	cl_showhealthbars.WriteCvar();
+	cl_centerhud.WriteCvar();
 	cl_hitsound.WriteCvar();
 	cl_useicon.WriteCvar();
 	EngFuncs::CvarSetValue( "cl_viewmodel_extras", cl_viewmodel_extras.GetCurrentValue() );
@@ -183,9 +203,11 @@ void CMenuOptions::GetConfig()
 	cl_achievement_notify.LinkCvar( "cl_achievement_notify" );
 	cl_tutor.LinkCvar( "cl_tutor" );
 	cl_showhealthbars.LinkCvar( "cl_showhealthbars" );
+	cl_centerhud.LinkCvar( "cl_centerhud" );
 	cl_hitsound.LinkCvar( "cl_hitsound" );
 	cl_useicon.LinkCvar( "cl_useicon" );
 	cl_crosshair.LinkCvar( "cl_crosshair", CMenuEditable::CVAR_VALUE );
+	cl_largehud.LinkCvar( "cl_largehud", CMenuEditable::CVAR_VALUE );
 	cl_viewmodel_extras.SetCurrentValue( EngFuncs::GetCvarFloat( "cl_viewmodel_extras" ) );
 }
 
