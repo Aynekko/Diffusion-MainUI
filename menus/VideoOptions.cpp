@@ -78,9 +78,6 @@ public:
 	CMenuPicButton	SetToHigh;
 	CMenuPicButton	SetToMaximum;
 
-#if LEGACY_VIEWSIZE
-	CMenuSlider	screenSize;
-#endif
 	CMenuSlider	gammaIntensity;
 	CMenuSlider	Brightness;
 	CMenuCheckBox	fastSky;
@@ -104,6 +101,7 @@ public:
 	CMenuCheckBox gl_exposure;
 	CMenuCheckBox gl_cubemaps;
 	CMenuCheckBox gl_water_planar;
+	CMenuSpinControl gl_renderscale;
 };
 
 void SetSettingsTo( int Quality )
@@ -398,6 +396,7 @@ void CMenuVidOptions::HideMenus( void )
 		gl_water_planar.iFlags |= QMF_HIDDEN;
 		gl_bump.iFlags |= QMF_HIDDEN;
 		gl_specular.iFlags |= QMF_HIDDEN;
+		gl_renderscale.iFlags |= QMF_HIDDEN;
 	}
 	else
 	{
@@ -427,6 +426,7 @@ void CMenuVidOptions::HideMenus( void )
 		gl_water_planar.iFlags &= ~QMF_HIDDEN;
 		gl_bump.iFlags &= ~QMF_HIDDEN;
 		gl_specular.iFlags &= ~QMF_HIDDEN;
+		gl_renderscale.iFlags &= ~QMF_HIDDEN;
 	}
 }
 
@@ -573,26 +573,23 @@ void CMenuVidOptions::_Init( void )
 	SET_EVENT( SetToMaximum.onPressed, SetSettingsTo( 3 ) );
 	SetToMaximum.onReleased = VoidCb( &CMenuVidOptions::GetConfig );
 
-	int height = 280;
-
-#if LEGACY_VIEWSIZE
-	screenSize.SetNameAndStatus( L( "Screen size" ), L( "Set the screen size" ) );
-	screenSize.SetCoord( 72, height );
-	screenSize.Setup( 30, 120, 10 );
-	screenSize.onChanged = CMenuEditable::WriteCvarCb;
-
-	height += 60;
-#endif
-
 	gammaIntensity.SetNameAndStatus( L( "GameUI_Gamma" ), L( "Set gamma value" ) );
 	gammaIntensity.SetCoord( 72, MenuYOffset + 400 );
-	gammaIntensity.Setup( 0.0, 1.0, 0.025 );
+	gammaIntensity.Setup( 0.0f, 1.0f, 0.1f );
 	gammaIntensity.onChanged = VoidCb( &CMenuVidOptions::UpdateConfig );
 
 	Brightness.SetCoord( 72, MenuYOffset + 460 );
 	Brightness.SetNameAndStatus( L( "GameUI_Brightness" ), L( "Set brightness level" ) );
-	Brightness.Setup( 0, 1.0, 0.025 );
+	Brightness.Setup( 0.0f, 1.0f, 0.1f );
 	Brightness.onChanged = VoidCb( &CMenuVidOptions::UpdateConfig );
+
+	gl_renderscale.szName = L( "GameUI_RenderScale" );
+	gl_renderscale.szStatusText = L( "-" );
+	gl_renderscale.SetDisplayPrecision( 2 );
+	gl_renderscale.Setup( 0.25f, 1.00f, 0.05f );
+	gl_renderscale.SetRect( 72, MenuYOffset + 530, 260, 32 );
+	gl_renderscale.LinkCvar( "gl_renderscale", CMenuEditable::CVAR_VALUE );
+	gl_renderscale.onChanged = CMenuEditable::WriteCvarCb;
 
 	static CStringArrayModel mi( MirrorqualityStr, V_ARRAYSIZE( MirrorqualityStr ) );
 	mirrorQ.SetNameAndStatus( L( "GameUI_MirrorQuality" ), L( "Mirror reflection quality" ) );
@@ -655,11 +652,9 @@ void CMenuVidOptions::_Init( void )
 	AddItem( gl_water_planar );
 	AddItem( gl_bump );
 	AddItem( gl_specular );
-#if LEGACY_VIEWSIZE
-	screenSize.LinkCvar( "viewsize" );
-#endif
 	gammaIntensity.LinkCvar( "gamma" );
 	Brightness.LinkCvar( "brightness" );
+	AddItem( gl_renderscale );
 }
 
 void CMenuVidOptions::_VidInit()
