@@ -244,8 +244,13 @@ void CMenuVidOptions::GetConfig( void )
 	if( fps == 0.0f )
 	{
 		maxFPS.iFlags |= QMF_GRAYED;
-		fps_remember = 100;
-		maxFPS.SetCurrentValue( 100 );
+		if( fps_remember > 0 )
+			maxFPS.SetCurrentValue( fps_remember );
+		else
+		{
+			fps_remember = 100;
+			maxFPS.SetCurrentValue( 100 );
+		}
 		FPSunlimited.bChecked = true;
 		EngFuncs::CvarSetValue( "fps_max", 0 ); // SetCurrentValue sets the cvar...duh
 		if( vsync )
@@ -437,7 +442,7 @@ CMenuVidOptions::Init
 */
 void CMenuVidOptions::_Init( void )
 {
-	fps_remember = 0;
+	fps_remember = EngFuncs::GetCvarFloat( "fps_max" );
 
 	static const char *ShadowqualityStr[] =
 	{
