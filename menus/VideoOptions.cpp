@@ -84,7 +84,7 @@ public:
 	CMenuCheckBox   vbo;
 	CMenuCheckBox   bump;
 	CMenuCheckBox	cl_muzzlelight;
-	CMenuCheckBox	gl_ssao;
+	CMenuCheckBox	gl_hbao;
 	CMenuCheckBox	gl_sunshafts;
 //	CMenuCheckBox	r_shadows;
 	CMenuCheckBox	r_bloom;
@@ -124,7 +124,7 @@ void SetSettingsTo( int Quality )
 		EngFuncs::CvarSetValue( "gl_water_planar", 0 );
 		EngFuncs::CvarSetValue( "r_mirrorquality", 0 );
 		EngFuncs::CvarSetValue( "r_shadowquality", 0 );
-		EngFuncs::CvarSetValue( "gl_ssao", 0 );
+		EngFuncs::CvarSetValue( "gl_hbao", 0 );
 	}
 	else if( Quality == PRESET_MEDIUM )
 	{
@@ -144,7 +144,7 @@ void SetSettingsTo( int Quality )
 		EngFuncs::CvarSetValue( "gl_water_planar", 0 );
 		EngFuncs::CvarSetValue( "r_mirrorquality", 2 );
 		EngFuncs::CvarSetValue( "r_shadowquality", 1 );
-		EngFuncs::CvarSetValue( "gl_ssao", 0 );
+		EngFuncs::CvarSetValue( "gl_hbao", 0 );
 	}
 	else if( Quality == PRESET_HIGH )
 	{
@@ -164,7 +164,7 @@ void SetSettingsTo( int Quality )
 		EngFuncs::CvarSetValue( "gl_water_planar", 0 );
 		EngFuncs::CvarSetValue( "r_mirrorquality", 3 );
 		EngFuncs::CvarSetValue( "r_shadowquality", 2 );
-		EngFuncs::CvarSetValue( "gl_ssao", 0 );
+		EngFuncs::CvarSetValue( "gl_hbao", 0 );
 	}
 	else if( Quality == PRESET_MAXIMUM )
 	{
@@ -184,7 +184,7 @@ void SetSettingsTo( int Quality )
 		EngFuncs::CvarSetValue( "gl_water_planar", 0 );
 		EngFuncs::CvarSetValue( "r_mirrorquality", 4 );
 		EngFuncs::CvarSetValue( "r_shadowquality", 3 );
-		EngFuncs::CvarSetValue( "gl_ssao", 1 );
+		EngFuncs::CvarSetValue( "gl_hbao", 1 );
 	}
 }
 
@@ -208,7 +208,7 @@ void CMenuVidOptions::GetConfig( void )
 	Brightness.SetOriginalValue( val2 );
 
 	cl_muzzlelight.LinkCvar( "cl_muzzlelight" );
-	gl_ssao.LinkCvar( "gl_ssao" );
+	gl_hbao.LinkCvar( "gl_hbao" );
 	gl_sunshafts.LinkCvar( "gl_sunshafts" );
 	//	r_shadows.LinkCvar( "r_shadows" );
 	r_bloom.LinkCvar( "r_bloom" );
@@ -296,7 +296,7 @@ void CMenuVidOptions::SaveAndPopMenu( void )
 	// gamma and brightness are already written
 	
 	cl_muzzlelight.WriteCvar();
-	gl_ssao.WriteCvar();
+	gl_hbao.WriteCvar();
 	gl_sunshafts.WriteCvar();
 	//	r_shadows.WriteCvar();
 	r_bloom.WriteCvar();
@@ -325,10 +325,17 @@ void CMenuVidOptions::SaveAndPopMenu( void )
 void CMenuVidOptions::Draw( void )
 {
 	char fps[32];
-	sprintf_s( fps, "Current FPS: %i", UI_GetFPS() );
+	int fpsvalue = UI_GetFPS();
+	sprintf_s( fps, "%i FPS", fpsvalue );
+
+	unsigned int txtcolor = g_iColorTable[1]; // red
+	if( fpsvalue >= 30 && fpsvalue < 60 )
+		txtcolor = g_iColorTable[3]; // yellow
+	else if( fpsvalue >= 60 )
+		txtcolor = g_iColorTable[2]; // green
 	
 	// I can't figure out how point positioning works in this function, but this does nicely.
-	UI_DrawString( font, Point( 0, ScreenHeight / 2 ), m_scSize, fps, uiColorHelp, m_scChSize, QM_CENTER, ETF_SHADOW );
+	UI_DrawString( font, Point( 0, ScreenHeight / 2 ), m_scSize, fps, txtcolor, m_scChSize, QM_CENTER, ETF_SHADOW );
 
 	BaseClass::Draw();
 }
@@ -382,7 +389,7 @@ void CMenuVidOptions::HideMenus( void )
 		gammaIntensity.iFlags |= QMF_HIDDEN;
 		Brightness.iFlags |= QMF_HIDDEN;
 		gl_sunshafts.iFlags |= QMF_HIDDEN;
-		gl_ssao.iFlags |= QMF_HIDDEN;
+		gl_hbao.iFlags |= QMF_HIDDEN;
 		cl_muzzlelight.iFlags |= QMF_HIDDEN;
 		r_bloom.iFlags |= QMF_HIDDEN;
 		r_blur.iFlags |= QMF_HIDDEN;
@@ -412,7 +419,7 @@ void CMenuVidOptions::HideMenus( void )
 		gammaIntensity.iFlags &= ~QMF_HIDDEN;
 		Brightness.iFlags &= ~QMF_HIDDEN;
 		gl_sunshafts.iFlags &= ~QMF_HIDDEN;
-		gl_ssao.iFlags &= ~QMF_HIDDEN;
+		gl_hbao.iFlags &= ~QMF_HIDDEN;
 		cl_muzzlelight.iFlags &= ~QMF_HIDDEN;
 		r_bloom.iFlags &= ~QMF_HIDDEN;
 		r_blur.iFlags &= ~QMF_HIDDEN;
@@ -487,10 +494,10 @@ void CMenuVidOptions::_Init( void )
 	cl_muzzlelight.SetCoord( 372, MenuYOffset + 0 );
 	cl_muzzlelight.onChanged = CMenuEditable::WriteCvarCb;
 
-	gl_ssao.SetNameAndStatus( L( "GameUI_SSAO" ), L( "-" ) );
-	gl_ssao.iFlags |= QMF_NOTIFY;
-	gl_ssao.SetCoord( 372, MenuYOffset + 50 );
-	gl_ssao.onChanged = CMenuEditable::WriteCvarCb;
+	gl_hbao.SetNameAndStatus( L( "GameUI_AO" ), L( "-" ) );
+	gl_hbao.iFlags |= QMF_NOTIFY;
+	gl_hbao.SetCoord( 372, MenuYOffset + 50 );
+	gl_hbao.onChanged = CMenuEditable::WriteCvarCb;
 
 	maxFPS.szName = L( "GameUI_FPSlimit" );
 	maxFPS.szStatusText = L( "Cap your game frame rate" );
@@ -636,7 +643,7 @@ void CMenuVidOptions::_Init( void )
 	AddItem( gammaIntensity );
 	AddItem( Brightness );
 	AddItem( gl_sunshafts );
-	AddItem( gl_ssao );
+	AddItem( gl_hbao );
 	AddItem( cl_muzzlelight );
 	//	AddItem( r_shadows );
 	AddItem( r_bloom );
