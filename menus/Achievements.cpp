@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define ART_BANNER	     	"gfx/shell/head_achievements"
 
+// must be the same as in client
 enum Achievements_e
 {
 	ACH_BULLETSFIRED = 0,	// 0 fire # bullets
@@ -65,7 +66,89 @@ enum Achievements_e
 	ACH_CH3_3MINS,			// 31 destroy the computer within 3 minutes
 };
 
+const char *AchievementTitles[] = // color used: ^2
+{
+	"GameUI_ACHTITLE_BULLETSFIRED",		// 0 fire # bullets
+	"GameUI_ACHTITLE_JUMPS",			// 1 jump # times
+	"GameUI_ACHTITLE_AMMOCRATES",		// 2 find # ammo crates
+	"GameUI_ACHTITLE_DISARMEDMINES",	// 3 disarm # enemy mines (disarming your own doesn't count)
+	"GameUI_ACHTITLE_KILLENEMIES",		// 4 kill # enemies
+	"GameUI_ACHTITLE_INFLICTDAMAGE",	// 5 inflict a total of # damage
+	"GameUI_ACHTITLE_KILLENEMIESSNIPER",// 6 kill # enemies with a stationary sniper rifle (func_tank)
+	"GameUI_ACHTITLE_CH1",				// 7 complete chapter
+	"GameUI_ACHTITLE_CH2",				// 8
+	"GameUI_ACHTITLE_CH3",				// 9
+	"GameUI_ACHTITLE_CH4",				// 10
+	"GameUI_ACHTITLE_CH5",				// 11
+	"GameUI_ACHTITLE_GENERAL30SEC",		// 12 kill security general under 30 sec
+	"GameUI_ACHTITLE_HPREGENERATE",		// 13 regenerate a total of # health
+	"GameUI_ACHTITLE_RECEIVEDAMAGE",	// 14 receive a total of # damage
+	"GameUI_ACHTITLE_OVERCOOK",			// 15 overcook the grenade
+	"GameUI_ACHTITLE_DRONESEC",			// 16 kill # security drones
+	"GameUI_ACHTITLE_DRONEALIEN",		// 17 kill # alien drones
+	"GameUI_ACHTITLE_CROSSBOW",			// 18 kill # enemies on a certain distance with a crossbow
+	"GameUI_ACHTITLE_TANKBALL",			// 19 kill the alien military ship with balls
+	"GameUI_ACHTITLE_DASH",				// 20 dash # times
+	"GameUI_ACHTITLE_NOTES",			// 21 find # notes
+	"GameUI_ACHTITLE_SECRETS",			// 22 find # secrets
+	"GameUI_ACHTITLE_KILLENEMIESBALLS",	// 23 kill # enemies with balls (weapon_ar2 or func_tankball)
+	"GameUI_ACHTITLE_REDDWELLER",		// 24 help the red dweller escape (chapter 1)
+	"GameUI_ACHTITLE_ASSEMBLEBLASTLEVEL",	// 25 get the first blast level by assembling the module on ch2map2
+	"GameUI_ACHTITLE_BROKENCAR",		// 26 break the car completely in chapter 1 intro
+	"GameUI_ACHTITLE_CARDISTANCE",		// 27 travelled distance by car
+	"GameUI_ACHTITLE_WATERJETDISTANCE",// 28 travelled distance by water jet
+	"GameUI_ACHTITLE_KILLBOTS",			// 29 kill # bots in multiplayer
+	"GameUI_ACHTITLE_CH3_NOKILLDW",		// 30 don't kill any dwellers in chapter 3
+	"GameUI_ACHTITLE_CH3_3MINS",		// 31 destroy the computer within 3 minutes
+	"GameUI_ACHTITLE_LOCKED",			// ALWAYS LAST LINE (= TOTAL_ACHIEVEMENTS)
+};
+
+const char *AchievementDescriptions[] = // color used: white
+{
+	"GameUI_ACH_BULLETSFIRED",		// 0 fire # bullets
+	"GameUI_ACH_JUMPS",				// 1 jump # times
+	"GameUI_ACH_AMMOCRATES",		// 2 find # ammo crates
+	"GameUI_ACH_DISARMEDMINES",		// 3 disarm # enemy mines (disarming your own doesn't count)
+	"GameUI_ACH_KILLENEMIES",		// 4 kill # enemies
+	"GameUI_ACH_INFLICTDAMAGE",		// 5 inflict a total of # damage
+	"GameUI_ACH_KILLENEMIESSNIPER",	// 6 kill # enemies with a stationary sniper rifle (func_tank)
+	"GameUI_ACH_CH1",				// 7 complete chapter
+	"GameUI_ACH_CH2",				// 8
+	"GameUI_ACH_CH3",				// 9
+	"GameUI_ACH_CH4",				// 10
+	"GameUI_ACH_CH5",				// 11
+	"GameUI_ACH_GENERAL30SEC",		// 12 kill security general under 30 sec
+	"GameUI_ACH_HPREGENERATE",		// 13 regenerate a total of # health
+	"GameUI_ACH_RECEIVEDAMAGE",		// 14 receive a total of # damage
+	"GameUI_ACH_OVERCOOK",			// 15 overcook the grenade
+	"GameUI_ACH_DRONESEC",			// 16 kill # security drones
+	"GameUI_ACH_DRONEALIEN",		// 17 kill # alien drones
+	"GameUI_ACH_CROSSBOW",			// 18 kill # enemies on a certain distance with a crossbow
+	"GameUI_ACH_TANKBALL",			// 19 kill the alien military ship with balls
+	"GameUI_ACH_DASH",				// 20 dash # times
+	"GameUI_ACH_NOTES",				// 21 find # notes
+	"GameUI_ACH_SECRETS",			// 22 find # secrets
+	"GameUI_ACH_KILLENEMIESBALLS",	// 23 kill # enemies with balls (weapon_ar2 or func_tankball)
+	"GameUI_ACH_REDDWELLER",		// 24 help the red dweller escape (chapter 1)
+	"GameUI_ACH_ASSEMBLEBLASTLEVEL",// 25 get the first blast level by assembling the module on ch2map2
+	"GameUI_ACH_BROKENCAR",			// 26 break the car completely in chapter 1 intro
+	"GameUI_ACH_CARDISTANCE",		// 27 travelled distance by car
+	"GameUI_ACH_WATERJETDISTANCE",	// 28 travelled distance by water jet
+	"GameUI_ACH_KILLBOTS",			// 29 kill # bots in multiplayer
+	"GameUI_ACH_CH3_NOKILLDW",		// 30 don't kill any dwellers in chapter 3
+	"GameUI_ACH_CH3_3MINS",			// 31 destroy the computer within 3 minutes
+};
+
 #define TOTAL_ACHIEVEMENTS 32
+
+typedef struct
+{
+	int goal[TOTAL_ACHIEVEMENTS];
+	int value[TOTAL_ACHIEVEMENTS];
+	bool completion[TOTAL_ACHIEVEMENTS];
+	char name[TOTAL_ACHIEVEMENTS][100];
+
+} achievement_data_t;
 
 class CMenuAchievements;
 
@@ -165,7 +248,7 @@ void CMenuAchievements::_Init( void )
 
 	banner.SetPicture( ART_BANNER );
 
-	msgBox.SetMessage( L( "Are you sure? This action can't be undone." ) );
+	msgBox.SetMessage( L( "GameUI_AchResetPrompt" ) );
 	msgBox.onPositive = VoidCb( &CMenuAchievements::ResetAchievements );
 
 	msgBox.Link( this );
@@ -175,26 +258,26 @@ void CMenuAchievements::_Init( void )
 //	AddButton( L( "Update" ), L( "Check for updates" ),
 //		PC_UPDATE, msgBox.MakeOpenEvent(), QMF_NOTIFY );
 
-	CMenuPicButton *refresh = AddButton( L( "Refresh" ), L( "Reload stats" ),
+	CMenuPicButton *refresh = AddButton( L( "GameUI_AchRefresh" ), L( "Reload stats" ),
 		PC_REFRESH, VoidCb( &CMenuAchievements::GetConfig ), QMF_NOTIFY );
 	refresh->pos.y = 650;
 
-	CMenuPicButton *reset = AddButton( L( "Reset" ), L( "Reset stats" ),
+	CMenuPicButton *reset = AddButton( L( "GameUI_AchReset" ), L( "Reset stats" ),
 		PC_RESET, VoidCb( &CMenuAchievements::ShowDialog ), QMF_NOTIFY );
 	reset->pos.y = 700;
 
 
-	CMenuPicButton *done = AddButton( L( "Done" ), L( "Go back to the Main menu" ),
+	CMenuPicButton *done = AddButton( L( "GameUI_GameMenu_BackToMenu" ), L( "Go back to the Main menu" ),
 		PC_DONE, VoidCb( &CMenuAchievements::Hide ), QMF_NOTIFY );
 	done->pos.y = 750;
 
 	achList.SetRect( 300, 200, 1500, 820 );
 	achList.SetModel( &achListModel );
-	achList.SetupColumn( 0, L( "Achievement" ), 0.3f );
-	achList.SetupColumn( 1, L( "Description" ), 0.5f );
-	achList.SetupColumn( 2, L( "Current" ), 0.0666f );
-	achList.SetupColumn( 3, L( "Goal" ), 0.0666f );
-	achList.SetupColumn( 4, L( "Completed?" ), 0.0666f );
+	achList.SetupColumn( 0, L( "GameUI_AchColAchievement" ), 0.3f );
+	achList.SetupColumn( 1, L( "GameUI_AchColDescription" ), 0.5f );
+	achList.SetupColumn( 2, L( "GameUI_AchColCurrent" ), 0.0666f );
+	achList.SetupColumn( 3, L( "GameUI_AchColGoal" ), 0.0666f );
+	achList.SetupColumn( 4, L( "GameUI_AchColCompleted" ), 0.0666f );
 	achList.charSize = 25;
 	AddItem( achList );
 }
@@ -254,165 +337,57 @@ ADD_MENU( menu_achievements, CMenuAchievements, UI_Achievements_Menu );
 
 void CMenuAchievementModel::Update( void )
 {
-	char *afile = (char *)EngFuncs::COM_LoadFile( "data/achievements.txt", NULL );
-	char *pfile = afile;
-	char token[1024];
-	int i = 0;
+	const char *szFilename = "data/achievements.bin";
+	int i;
 
-	if( !afile )
+	byte *aMemFile = EngFuncs::COM_LoadFile( szFilename, NULL );
+
+	if( !aMemFile )
 	{
 		m_iNumItems = 0;
 
-		Con_Printf( "UI: achievements.txt not found\n" );
+		Con_Printf( "^2GameUI:^7 data/achievements.bin not found\n" );
 		return;
 	}
+
+	achievement_data_t *pData = (achievement_data_t *)aMemFile;
 
 	memset( current, 0, sizeof( current ) );
 	memset( goal, 0, sizeof( goal ) );
 	memset( completed, 0, sizeof( completed ) );
+	memset( title, 0, sizeof( title ) );
+	memset( description, 0, sizeof( description ) );
 
-	pfile = afile;
 	for( i = 0; i < TOTAL_ACHIEVEMENTS; i++ )
 	{
-		pfile = EngFuncs::COM_ParseFile( pfile, token, sizeof( token ) );
-		if( !pfile )
-		{
-			// line is incomplete
-			Con_Printf( "^3Error:^7 achievement file has an incomplete line 1. Achievements are disabled.\n" );
-			return;
-		}
+		// current values
 		if( i == ACH_CARDISTANCE || i == ACH_WATERJETDISTANCE )
-			sprintf( current[i], "%s m", token );
+			sprintf_s( current[i], "%i m", pData->value[i] );
 		else
-			sprintf( current[i], token );
-		//	gEngfuncs.Con_Printf( "s %i %i\n", i, AchievementStats[i] );
-	}
-
-	// second line is the goals
-	pfile = EngFuncs::COM_ParseFile( pfile, token, sizeof( token ) );
-
-	for( i = 0; i < TOTAL_ACHIEVEMENTS; i++ )
-	{
-		if( i > 0 ) pfile = EngFuncs::COM_ParseFile( pfile, token, sizeof( token ) );
-		if( !pfile )
+			sprintf_s( current[i], "%i", pData->value[i] );
+		
+		// completed or not
+		if( pData->completion[i] == true )
 		{
-			// line is incomplete
-			Con_Printf( "^3Error:^7 achievement file has an incomplete line 2. Achievements are disabled.\n" );
-			return;
+			sprintf_s( completed[i], "^2YES^7" );
+			sprintf_s( title[i], "^2%s^7", L( AchievementTitles[i] ) );
 		}
+		else
+		{
+			sprintf_s( completed[i], "^1NO^7" );
+			sprintf_s( title[i], "^1%s^7", L( AchievementTitles[TOTAL_ACHIEVEMENTS] ) ); // locked
+		}
+
+		// goals
 		if( i == ACH_CARDISTANCE || i == ACH_WATERJETDISTANCE )
-			sprintf( goal[i], "%s m", token );
+			sprintf_s( goal[i], "%i m", pData->goal[i] );
 		else
-			sprintf( goal[i], token );
-		//	gEngfuncs.Con_Printf( "g %i %i\n", i, AchievementGoal[i] );
-	}
+			sprintf_s( goal[i], "%i", pData->goal[i] );
 
-	// third line is the numbers, 0 or 1, checking if the achievement is completed
-	pfile = EngFuncs::COM_ParseFile( pfile, token, sizeof( token ) );
-
-	for( i = 0; i < TOTAL_ACHIEVEMENTS; i++ )
-	{
-		if( i > 0 ) pfile = EngFuncs::COM_ParseFile( pfile, token, sizeof( token ) );
-		if( !pfile )
-		{
-			// line is incomplete
-			Con_Printf( "^3Error:^7 achievement file has an incomplete line 3. Achievements are disabled.\n" );
-			return;
-		}
-		if( atoi( token ) )
-			sprintf( completed[i], "^2YES^7" );
-		else
-			sprintf( completed[i], "^1NO^7" );
-		//	gEngfuncs.Con_Printf( "c %i %i\n", i, AchievementComplete[i] );
+		sprintf_s( description[i], L( AchievementDescriptions[i] ) );
 	}
 
 	m_iNumItems = TOTAL_ACHIEVEMENTS;
 
-	EngFuncs::COM_FreeFile( afile );
-
-	memset( title, 0, sizeof( title ) );
-	char yes[64];
-	sprintf( yes, "^2YES^7" );
-
-	for( int i=0; i<TOTAL_ACHIEVEMENTS; i++)
-	{
-		switch( i )
-		{
-		case ACH_BULLETSFIRED: if( !strcmp(completed[i], yes) ) sprintf( title[ACH_BULLETSFIRED], "^2A MILLION DOLLAR WASTE^7" ); else sprintf( title[ACH_BULLETSFIRED], "^1< LOCKED >^7" ); break;
-		case ACH_JUMPS: if( !strcmp( completed[i], yes ) ) sprintf( title[ACH_JUMPS], "^2BUNNY-HOPPER^7" ); else sprintf( title[ACH_JUMPS], "^1< LOCKED >^7" ); break;
-		case ACH_AMMOCRATES: if( !strcmp( completed[i], yes ) ) sprintf( title[ACH_AMMOCRATES], "^2A MYSTERY BOX^7" ); else sprintf( title[ACH_AMMOCRATES], "^1< LOCKED >^7" ); break;
-		case ACH_DISARMEDMINES: if( !strcmp( completed[i], yes ) ) sprintf( title[ACH_DISARMEDMINES], "^2SAPPER^7" ); else sprintf( title[ACH_DISARMEDMINES], "^1< LOCKED >^7" ); break;
-		case ACH_KILLENEMIES: if( !strcmp( completed[i], yes ) ) sprintf( title[ACH_KILLENEMIES], "^2ONE MAN ARMY^7" ); else sprintf( title[ACH_KILLENEMIES], "^1< LOCKED >^7" ); break;
-		case ACH_INFLICTDAMAGE: if( !strcmp( completed[i], yes ) ) sprintf( title[ACH_INFLICTDAMAGE], "^2THAT'S A LOTTA DAMAGE^7" ); else sprintf( title[ACH_INFLICTDAMAGE], "^1< LOCKED >^7" ); break;
-		case ACH_KILLENEMIESSNIPER: if( !strcmp( completed[i], yes ) ) sprintf( title[ACH_KILLENEMIESSNIPER], "^2PRECISION MATTERS^7" ); else sprintf( title[ACH_KILLENEMIESSNIPER], "^1< LOCKED >^7" ); break;
-		case ACH_CH1: if( !strcmp(completed[i], yes) ) sprintf( title[ACH_CH1], "^2BACK INTO ACTION^7" ); else sprintf( title[ACH_CH1], "^1< LOCKED >^7" ); break;
-		case ACH_CH2: if( !strcmp(completed[i], yes) ) sprintf( title[ACH_CH2], "^2INTERDIMENSIONAL TRAVELLER^7" ); else sprintf( title[ACH_CH2], "^1< LOCKED >^7" ); break;
-		case ACH_CH3: if( !strcmp(completed[i], yes) ) sprintf( title[ACH_CH3], "^2I'M FEELING BLUE^7" ); else sprintf( title[ACH_CH3], "^1< LOCKED >^7" ); break;
-		case ACH_CH4: if( !strcmp(completed[i], yes) ) sprintf( title[ACH_CH4], "missing" ); else sprintf( title[ACH_CH4], "^1< LOCKED >^7" ); break;
-		case ACH_CH5: if( !strcmp(completed[i], yes) ) sprintf( title[ACH_CH5], "missing" ); else sprintf( title[ACH_CH5], "^1< LOCKED >^7" ); break;
-		case ACH_GENERAL30SEC: if( !strcmp(completed[i], yes) ) sprintf( title[ACH_GENERAL30SEC], "missing" ); else sprintf( title[ACH_GENERAL30SEC], "^1< LOCKED >^7" ); break;
-		case ACH_HPREGENERATE: if( !strcmp(completed[i], yes) ) sprintf( title[ACH_HPREGENERATE], "^2NINE LIVES^7" ); else sprintf( title[ACH_HPREGENERATE], "^1< LOCKED >^7" ); break;
-		case ACH_RECEIVEDAMAGE: if( !strcmp(completed[i], yes) ) sprintf( title[ACH_RECEIVEDAMAGE], "^2STILL STANDING^7" ); else sprintf( title[ACH_RECEIVEDAMAGE], "^1< LOCKED >^7" ); break;
-		case ACH_OVERCOOK: if( !strcmp(completed[i], yes) ) sprintf( title[ACH_OVERCOOK], "^2DING! DINNER'S READY^7" ); else sprintf( title[ACH_OVERCOOK], "^1< LOCKED >^7" ); break;
-		case ACH_DRONESEC: if( !strcmp(completed[i], yes) ) sprintf( title[ACH_DRONESEC], "missing" ); else sprintf( title[ACH_DRONESEC], "^1< LOCKED >^7" ); break;
-		case ACH_DRONEALIEN: if( !strcmp(completed[i], yes) ) sprintf( title[ACH_DRONEALIEN], "missing" ); else sprintf( title[ACH_DRONEALIEN], "^1< LOCKED >^7" ); break;
-		case ACH_CROSSBOW: if( !strcmp(completed[i], yes) ) sprintf( title[ACH_CROSSBOW], "^2CALCULATED TRAJECTORY^7" ); else sprintf( title[ACH_CROSSBOW], "^1< LOCKED >^7" ); break;
-		case ACH_TANKBALL: if( !strcmp(completed[i], yes) ) sprintf( title[ACH_TANKBALL], "missing" ); else sprintf( title[ACH_TANKBALL], "^1< LOCKED >^7" ); break;
-		case ACH_DASH: if( !strcmp(completed[i], yes) ) sprintf( title[ACH_DASH], "^2GOTTA GO FAST^7" ); else sprintf( title[ACH_DASH], "^1< LOCKED >^7" ); break;
-		case ACH_NOTES: if( !strcmp(completed[i], yes) ) sprintf( title[ACH_NOTES], "^2ARCHIVIST^7" ); else sprintf( title[ACH_NOTES], "^1< LOCKED >^7" ); break;
-		case ACH_SECRETS: if( !strcmp(completed[i], yes) ) sprintf( title[ACH_SECRETS], "missing" ); else sprintf( title[ACH_SECRETS], "^1< LOCKED >^7" ); break;
-		case ACH_KILLENEMIESBALLS: if( !strcmp(completed[i], yes) ) sprintf( title[ACH_KILLENEMIESBALLS], "missing" ); else sprintf( title[ACH_KILLENEMIESBALLS], "^1< LOCKED >^7" ); break;
-		case ACH_REDDWELLER:if( !strcmp(completed[i], yes) ) sprintf( title[ACH_REDDWELLER], "^2BON VOYAGE!^7" ); else sprintf( title[ACH_REDDWELLER], "^1< LOCKED >^7" ); break;
-		case ACH_ASSEMBLEBLASTLEVEL: if( !strcmp(completed[i], yes) ) sprintf( title[ACH_ASSEMBLEBLASTLEVEL], "^2YOU KNOW, I'M SOMETHING OF A SCIENTIST MYSELF^7" ); else sprintf( title[ACH_ASSEMBLEBLASTLEVEL], "^1< LOCKED >^7" ); break;
-		case ACH_BROKENCAR: if( !strcmp(completed[i], yes) ) sprintf( title[ACH_BROKENCAR], "^2END OF THE ROAD^7" ); else sprintf( title[ACH_BROKENCAR], "^1< LOCKED >^7" ); break;
-		case ACH_CARDISTANCE: if( !strcmp(completed[i], yes) ) sprintf( title[ACH_CARDISTANCE], "^2LICENSE AND REGISTRATION PLEASE^7" ); else sprintf( title[ACH_CARDISTANCE], "^1< LOCKED >^7" ); break;
-		case ACH_WATERJETDISTANCE: if( !strcmp(completed[i], yes) ) sprintf( title[ACH_WATERJETDISTANCE], "^2SAILOR^7" ); else sprintf( title[ACH_WATERJETDISTANCE], "^1< LOCKED >^7" ); break;
-		case ACH_KILLBOTS: if( !strcmp( completed[i], yes ) ) sprintf( title[ACH_KILLBOTS], "^2RAGE AGAINST THE MACHINE^7" ); else sprintf( title[ACH_KILLBOTS], "^1< LOCKED >^7" ); break;
-		case ACH_CH3_NOKILLDW: if( !strcmp( completed[i], yes ) ) sprintf( title[ACH_CH3_NOKILLDW], "^2A TRUE SAVIOUR^7" ); else sprintf( title[ACH_CH3_NOKILLDW], "^1< LOCKED >^7" ); break;
-		case ACH_CH3_3MINS: if( !strcmp( completed[i], yes ) ) sprintf( title[ACH_CH3_3MINS], "^2RAPID DISASSEMBLY^7" ); else sprintf( title[ACH_CH3_3MINS], "^1< LOCKED >^7" ); break;
-		default: break;
-		}
-	}
-
-	memset( description, 0, sizeof( description ) );
-
-	for( int i = 0; i < TOTAL_ACHIEVEMENTS; i++ )
-	{
-		switch( i )
-		{
-		case ACH_BULLETSFIRED: sprintf( description[ACH_BULLETSFIRED], "Fire 100000 bullets" ); break;
-		case ACH_JUMPS: sprintf( description[ACH_JUMPS], "Jump 1000 times" ); break;
-		case ACH_AMMOCRATES: sprintf( description[ACH_AMMOCRATES], "Loot 100 ammo crates" ); break;
-		case ACH_DISARMEDMINES: sprintf( description[ACH_DISARMEDMINES], "Disarm 30 mines (SP)" ); break;
-		case ACH_KILLENEMIES: sprintf( description[ACH_KILLENEMIES], "Kill 500 enemies (SP)" ); break;
-		case ACH_INFLICTDAMAGE: sprintf( description[ACH_INFLICTDAMAGE], "Inflict 10000 damage" ); break;
-		case ACH_KILLENEMIESSNIPER: sprintf( description[ACH_KILLENEMIESSNIPER], "Kill 100 enemies with a Barret sniper rifle" ); break;
-		case ACH_CH1: sprintf( description[ACH_CH1], "Complete Chapter 1" ); break;
-		case ACH_CH2: sprintf( description[ACH_CH2], "Complete Chapter 2" ); break;
-		case ACH_CH3: sprintf( description[ACH_CH3], "Complete Chapter 3" ); break;
-		case ACH_CH4: sprintf( description[ACH_CH4], "Complete Chapter 4" ); break;
-		case ACH_CH5: sprintf( description[ACH_CH5], "Complete Chapter 5" ); break;
-		case ACH_GENERAL30SEC: sprintf( description[ACH_GENERAL30SEC], "Kill the security general within 30 seconds (SP)" ); break;
-		case ACH_HPREGENERATE: sprintf( description[ACH_HPREGENERATE], "Regenerate 10000 hp" ); break;
-		case ACH_RECEIVEDAMAGE: sprintf( description[ACH_RECEIVEDAMAGE], "Receive 10000 damage" ); break;
-		case ACH_OVERCOOK: sprintf( description[ACH_OVERCOOK], "Overcook a grenade" ); break;
-		case ACH_DRONESEC: sprintf( description[ACH_DRONESEC], "< # >" ); break;
-		case ACH_DRONEALIEN: sprintf( description[ACH_DRONEALIEN], "< # >" ); break;
-		case ACH_CROSSBOW: sprintf( description[ACH_CROSSBOW], "Kill 10 enemies with a crossbow over a distance of 50 meters" ); break;
-		case ACH_TANKBALL: sprintf( description[ACH_TANKBALL], "< # >" ); break;
-		case ACH_DASH: sprintf( description[ACH_DASH], "Dash 100 times" ); break;
-		case ACH_NOTES: sprintf( description[ACH_NOTES], "Collect 50 notes (SP)" ); break;
-		case ACH_SECRETS: sprintf( description[ACH_SECRETS], "< # >" ); break;
-		case ACH_KILLENEMIESBALLS: sprintf( description[ACH_KILLENEMIESBALLS], "< # >" ); break;
-		case ACH_REDDWELLER: sprintf( description[ACH_REDDWELLER], "Help the Red Dweller to go back home (SP)" ); break;
-		case ACH_ASSEMBLEBLASTLEVEL: sprintf( description[ACH_ASSEMBLEBLASTLEVEL], "Acquire first electroblast update using the recipe (SP)" ); break;
-		case ACH_BROKENCAR: sprintf( description[ACH_BROKENCAR], "Break the car completely in the beginning of Chapter 1 (SP)" ); break;
-		case ACH_CARDISTANCE: sprintf( description[ACH_CARDISTANCE], "Travel 10 km by land vehicle" ); break;
-		case ACH_WATERJETDISTANCE: sprintf( description[ACH_WATERJETDISTANCE], "Travel 5 km by water vehicle" ); break;
-		case ACH_KILLBOTS: sprintf( description[ACH_KILLBOTS], "Kill 1000 bots (MP)" ); break;
-		case ACH_CH3_NOKILLDW: sprintf( description[ACH_CH3_NOKILLDW], "Don't kill any dwellers in Chapter 3" ); break;
-		case ACH_CH3_3MINS: sprintf( description[ACH_CH3_3MINS], "Destroy the computer within 3 minutes in Chapter 3" ); break;
-		default: break;
-		}
-	}
+	EngFuncs::COM_FreeFile( aMemFile );
 }
