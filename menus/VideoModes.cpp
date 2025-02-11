@@ -68,6 +68,7 @@ public:
 	void SetConfig();
 	void RevertChanges();
 	void ApplyChanges();
+	void FinalizeChanges();
 
 	void GetConfig();
 
@@ -184,15 +185,20 @@ void CMenuVidModes::SetConfig()
 		Hide();
 }
 
+void CMenuVidModes::FinalizeChanges()
+{
+	prevMode = EngFuncs::GetCvarFloat( "vid_mode" );
+	prevFullscreen = EngFuncs::GetCvarFloat( "fullscreen" );
+	prevModeX = EngFuncs::GetCvarFloat( "width" );
+	prevModeY = EngFuncs::GetCvarFloat( "height" );
+}
+
 void CMenuVidModes::ApplyChanges()
 {
 	if( testModeMsgBox.IsVisible() )
 		return;
 
-	prevMode = EngFuncs::GetCvarFloat( "vid_mode" );
-	prevFullscreen = EngFuncs::GetCvarFloat( "fullscreen" );
-	prevModeX = EngFuncs::GetCvarFloat( "width" );
-	prevModeY = EngFuncs::GetCvarFloat( "height" );
+	FinalizeChanges();
 }
 
 void CMenuVidModes::RevertChanges()
@@ -257,7 +263,7 @@ void CMenuVidModes::_Init( void )
 	vsync.LinkCvar( "gl_vsync" );
 
 	testModeMsgBox.SetMessage( testModeMsg );
-	testModeMsgBox.onPositive = VoidCb( &CMenuVidModes::ApplyChanges );
+	testModeMsgBox.onPositive = VoidCb( &CMenuVidModes::FinalizeChanges );
 	testModeMsgBox.onNegative = VoidCb( &CMenuVidModes::RevertChanges );
 	testModeMsgBox.Link( this );
 

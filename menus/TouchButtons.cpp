@@ -34,7 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class CMenuTouchButtons : public CMenuFramework
 {
 public:
-	CMenuTouchButtons() : CMenuFramework( "CMenuTouchButtons" ), model( this ) { }
+	CMenuTouchButtons() : CMenuFramework( "CMenuTouchButtons" ), model( this ) {}
 
 private:
 	void _Init() override;
@@ -97,7 +97,7 @@ public:
 	class CButtonListModel : public CMenuBaseArrayModel
 	{
 	public:
-		CButtonListModel( CMenuTouchButtons *parent ) : parent( parent ) { }
+		CButtonListModel( CMenuTouchButtons *parent ) : parent( parent ) {}
 
 		void Update() override;
 		void AddButtonToList( const char *name, const char *texture, const char *command, unsigned char *color, int flags );
@@ -376,12 +376,12 @@ void CMenuTouchButtons::_Init( void )
 
 	banner.SetPicture( ART_BANNER );
 
-	done.SetNameAndStatus( L( "Done" ), L( "Save changes and go back to the Touch Menu" ) );
+	done.szName = L( "Done" );
 	done.SetPicture( PC_DONE );
 	done.onReleased = ExitMenuCb;
 	done.onReleased.pExtra = (void *)"touch_writeconfig\n";
 
-	cancel.SetNameAndStatus( L( "GameUI_Cancel" ), L( "Discard changes and go back to the Touch Menu" ) );
+	cancel.szName = L( "GameUI_Cancel" );
 	cancel.SetPicture( PC_CANCEL );
 	cancel.onReleased = ExitMenuCb;
 	cancel.onReleased.pExtra = (void *)"touch_reloadconfig\n";

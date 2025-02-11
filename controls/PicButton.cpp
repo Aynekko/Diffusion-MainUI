@@ -342,6 +342,8 @@ void CMenuPicButton::Draw()
 	else if( 0 )//!uiStatic.lowmemory ) // diffusion - don't render text with blurry messy letters!
 	{
 		uint textflags = ETF_NOSIZELIMIT | ETF_FORCECOL;
+		const uint heavy_blur_flags = ETF_NOSIZELIMIT | ETF_FORCECOL;
+		CColor light_blur_color, heavy_blur_color = colorBase;
 
 		SetBits( textflags, ETF_ADDITIVE );
 
@@ -359,7 +361,7 @@ void CMenuPicButton::Draw()
 			if( a > 0 )
 			{
 				UI_DrawString( uiStatic.hHeavyBlur, m_scPos, m_scSize, szName,
-					InterpColor( uiColorBlack, colorBase, a / 255.0f ), m_scChSize, eTextAlignment, textflags );
+					PackAlpha( heavy_blur_color, a ), m_scChSize, eTextAlignment, heavy_blur_flags );
 			}
 			UI_DrawString( uiStatic.hLightBlur, m_scPos, m_scSize, szName, colorBase, m_scChSize, eTextAlignment, textflags );
 		}
