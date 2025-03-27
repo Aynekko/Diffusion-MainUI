@@ -293,20 +293,31 @@ void CMenuPlayerSetup::UpdateModel()
 
 void CMenuPlayerSetup::UpdateLogo()
 {
-	char filename[1024];
-	int pos = logo.GetCurrentValue();
+	const int pos = logo.GetCurrentValue();
+
+	logoImage.r = g_LogoColors[0].r;
+	logoImage.g = g_LogoColors[0].g;
+	logoImage.b = g_LogoColors[0].b;
+	logoColor.SetCurrentValue( L( g_LogoColors[0].name ) );
+	logoColor.SetGrayed( true );
 
 	if( pos < 0 )
-		return;
-
-	logosModel.GetFullPath( filename, sizeof( filename ), pos );
-	logoImage.hImage = EngFuncs::PIC_Load( filename, 0 );
-	if( logosModel.IsPng( pos ) )
 	{
-		logoImage.r = logoImage.g = logoImage.b = -1;
-		logoColor.SetGrayed( true );
+		logoImage.hImage = 0;
+		return;
 	}
-	else
+
+	char filename[1024];
+	const int temp = logosModel.GetFullPath( filename, sizeof( filename ), pos );
+	if( (temp < 0) || (temp > sizeof( filename )) )
+	{
+		logoImage.hImage = 0;
+		return;
+	}
+
+	logoImage.hImage = EngFuncs::PIC_Load( filename, 0 );
+
+	if( !logosModel.IsPng( pos ) )
 	{
 		CBMP *bmpFile = CBMP::LoadFile( filename );
 		if( bmpFile->GetBitmapHdr()->bitsPerPixel == 8 )
@@ -314,11 +325,7 @@ void CMenuPlayerSetup::UpdateLogo()
 			ApplyColorToLogoPreview();
 			logoColor.SetGrayed( false );
 		}
-		else
-		{
-			logoImage.r = logoImage.g = logoImage.b = -1;
-			logoColor.SetGrayed( true );
-		}
+
 		delete bmpFile;
 	}
 

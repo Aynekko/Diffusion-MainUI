@@ -118,7 +118,7 @@ void CMenuVidModes::GetConfig()
 	windowMode.SetCurrentValue( fullscreen );
 	vidList.SetCurrentIndex( vid_mode );
 
-	vsync.UpdateCvar();
+	vsync.UpdateCvar( true );
 
 	ApplyChanges();
 }
@@ -144,7 +144,7 @@ UI_VidModes_SetConfig
 */
 void CMenuVidModes::SetConfig()
 {
-	bool testMode = true;
+	bool testMode = false;
 	int  currentWindowModeIndex = windowMode.GetCurrentValue();
 	int  currentModeIndex = vidList.GetCurrentIndex();
 	bool isVidModeChanged = (prevMode != currentModeIndex);
