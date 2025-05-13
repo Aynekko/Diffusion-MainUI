@@ -118,7 +118,7 @@ void CMenuVidModes::GetConfig()
 	windowMode.SetCurrentValue( fullscreen );
 	vidList.SetCurrentIndex( vid_mode );
 
-	vsync.UpdateCvar( true );
+	vsync.UpdateCvar();
 
 	ApplyChanges();
 }
