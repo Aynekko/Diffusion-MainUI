@@ -584,6 +584,9 @@ void UI_DrawMouseCursor( void )
 
 bool UI_LoadBackgroundMap( void ) // force load background map
 {
+	if( uiStatic.bgmaps.IsEmpty() )
+		return false;
+	
 	int bgmapid = EngFuncs::RandomLong( 0, uiStatic.bgmaps.Count() - 1 );
 	char cmd[128];
 	snprintf( cmd, sizeof( cmd ), "maps/%s.bsp", uiStatic.bgmaps[bgmapid].Get() );
@@ -615,10 +618,7 @@ bool UI_StartBackGroundMap( void )
 	if( uiStatic.bgmaps.IsEmpty() || CL_IsActive() || gpGlobals->demoplayback )
 		return false;
 
-	if( UI_LoadBackgroundMap() )
-		return true;
-
-	return false;
+	return UI_LoadBackgroundMap();
 }
 
 // =====================================================================
