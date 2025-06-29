@@ -668,6 +668,9 @@ void UI_UpdateMenu( float flTime )
 		// load scr
 		UI_LoadScriptConfig();
 
+		if( !CL_IsActive() )
+			EngFuncs::PlayBackgroundTrack( "media/gamestartup", "media/gamestartup" );
+
 		loadStuff = false;
 	}
 
@@ -763,6 +766,7 @@ void UI_CharEvent( int key )
 
 	if( menuActive )
 		uiStatic.menu.CharEvent( key );
+
 }
 
 bool g_bCursorDown;
@@ -857,6 +861,7 @@ int UI_IsVisible( void )
 {
 	if( !uiStatic.initialized )
 		return false;
+
 	return uiStatic.menu.IsActive();
 }
 
