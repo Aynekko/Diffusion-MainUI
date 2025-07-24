@@ -125,6 +125,7 @@ void SetSettingsTo( int Quality )
 		EngFuncs::CvarSetValue( "r_mirrorquality", 0 );
 		EngFuncs::CvarSetValue( "r_shadowquality", 0 );
 		EngFuncs::CvarSetValue( "gl_hbao", 0 );
+		EngFuncs::CvarSetValue( "cl_lod_enable", 1 );
 	}
 	else if( Quality == PRESET_MEDIUM )
 	{
@@ -145,6 +146,7 @@ void SetSettingsTo( int Quality )
 		EngFuncs::CvarSetValue( "r_mirrorquality", 2 );
 		EngFuncs::CvarSetValue( "r_shadowquality", 1 );
 		EngFuncs::CvarSetValue( "gl_hbao", 0 );
+		EngFuncs::CvarSetValue( "cl_lod_enable", 1 );
 	}
 	else if( Quality == PRESET_HIGH )
 	{
@@ -165,6 +167,7 @@ void SetSettingsTo( int Quality )
 		EngFuncs::CvarSetValue( "r_mirrorquality", 3 );
 		EngFuncs::CvarSetValue( "r_shadowquality", 2 );
 		EngFuncs::CvarSetValue( "gl_hbao", 0 );
+		EngFuncs::CvarSetValue( "cl_lod_enable", 0 );
 	}
 	else if( Quality == PRESET_MAXIMUM )
 	{
@@ -185,6 +188,7 @@ void SetSettingsTo( int Quality )
 		EngFuncs::CvarSetValue( "r_mirrorquality", 4 );
 		EngFuncs::CvarSetValue( "r_shadowquality", 3 );
 		EngFuncs::CvarSetValue( "gl_hbao", 1 );
+		EngFuncs::CvarSetValue( "cl_lod_enable", 0 );
 	}
 }
 
