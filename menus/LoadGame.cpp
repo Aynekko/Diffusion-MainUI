@@ -116,7 +116,7 @@ private:
 
 	CMenuSavePreview	levelShot;
 	bool m_fSaveMode;
-	char		hintText[MAX_HINT_TEXT];
+	char hintText[MAX_HINT_TEXT];
 
 	// prompt dialog
 	CMenuYesNoMessageBox msgBoxDelete;
@@ -350,6 +350,8 @@ void CMenuLoadGame::SaveGame()
 
 	if( saveName[0] )
 	{
+		EngFuncs::CvarSetValue( "ui_forcenoblur", 1 ); // this will reset itself to 0 next frame
+
 		char cmd[128];
 
 		snprintf( cmd, sizeof( cmd ), "save/%s.bmp", saveName );
