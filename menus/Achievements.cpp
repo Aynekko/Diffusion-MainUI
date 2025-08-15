@@ -29,6 +29,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define ART_BANNER	     	"gfx/shell/head_achievements"
 
+#define TOTAL_ACHIEVEMENTS 31
+
 // must be the same as in client
 enum Achievements_e
 {
@@ -51,22 +53,21 @@ enum Achievements_e
 	ACH_DRONESEC,			// 16 kill # security drones
 	ACH_DRONEALIEN,			// 17 kill # alien drones
 	ACH_CROSSBOW,			// 18 kill # enemies on a certain distance with a crossbow
-	ACH_TANKBALL,			// 19 kill the alien military ship with balls
-	ACH_DASH,				// 20 dash # times
-	ACH_NOTES,				// 21 find # notes
-	ACH_SECRETS,			// 22 find # secrets
-	ACH_KILLENEMIESBALLS,	// 23 kill # enemies with balls (weapon_ar2 or func_tankball)
-	ACH_REDDWELLER,			// 24 help the red dweller escape (chapter 1)
-	ACH_ASSEMBLEBLASTLEVEL,	// 25 get the first blast level by assembling the module on ch2map2
-	ACH_BROKENCAR,			// 26 break the car completely in chapter 1 intro
-	ACH_CARDISTANCE,		// 27 travelled distance by car
-	ACH_WATERJETDISTANCE,	// 28 travelled distance by water jet
-	ACH_KILLBOTS,			// 29 kill # bots in multiplayer
-	ACH_CH3_NOKILLDW,		// 30 don't kill any dwellers in chapter 3
-	ACH_CH3_3MINS,			// 31 destroy the computer within 3 minutes
+	ACH_DASH,				// 19 dash # times
+	ACH_NOTES,				// 20 find # notes
+	ACH_KILLENEMIESBALLS,	// 21 kill # enemies with balls (weapon_ar2 or func_tankball)
+	ACH_REDDWELLER,			// 22 help the red dweller escape (chapter 1)
+	ACH_ASSEMBLEBLASTLEVEL,	// 23 get the first blast level by assembling the module on ch2map2
+	ACH_BROKENCAR,			// 24 break the car completely in chapter 1 intro
+	ACH_CARDISTANCE,		// 25 travelled distance by car
+	ACH_WATERJETDISTANCE,	// 26 travelled distance by water jet
+	ACH_KILLBOTS,			// 27 kill # bots in multiplayer
+	ACH_CH3_NOKILLDW,		// 28 don't kill any dwellers in chapter 3
+	ACH_CH3_3MINS,			// 29 destroy the computer within 3 minutes
+	ACH_5DRONES,			// 30 kill 5 enemy drones while piloting a drone from 1st person
 };
 
-const char *AchievementTitles[] = // color used: ^2
+const char *AchievementTitles[TOTAL_ACHIEVEMENTS + 1] = // color used: ^2
 {
 	"GameUI_ACHTITLE_BULLETSFIRED",		// 0 fire # bullets
 	"GameUI_ACHTITLE_JUMPS",			// 1 jump # times
@@ -87,23 +88,22 @@ const char *AchievementTitles[] = // color used: ^2
 	"GameUI_ACHTITLE_DRONESEC",			// 16 kill # security drones
 	"GameUI_ACHTITLE_DRONEALIEN",		// 17 kill # alien drones
 	"GameUI_ACHTITLE_CROSSBOW",			// 18 kill # enemies on a certain distance with a crossbow
-	"GameUI_ACHTITLE_TANKBALL",			// 19 kill the alien military ship with balls
-	"GameUI_ACHTITLE_DASH",				// 20 dash # times
-	"GameUI_ACHTITLE_NOTES",			// 21 find # notes
-	"GameUI_ACHTITLE_SECRETS",			// 22 find # secrets
-	"GameUI_ACHTITLE_KILLENEMIESBALLS",	// 23 kill # enemies with balls (weapon_ar2 or func_tankball)
-	"GameUI_ACHTITLE_REDDWELLER",		// 24 help the red dweller escape (chapter 1)
-	"GameUI_ACHTITLE_ASSEMBLEBLASTLEVEL",	// 25 get the first blast level by assembling the module on ch2map2
-	"GameUI_ACHTITLE_BROKENCAR",		// 26 break the car completely in chapter 1 intro
-	"GameUI_ACHTITLE_CARDISTANCE",		// 27 travelled distance by car
-	"GameUI_ACHTITLE_WATERJETDISTANCE",// 28 travelled distance by water jet
-	"GameUI_ACHTITLE_KILLBOTS",			// 29 kill # bots in multiplayer
-	"GameUI_ACHTITLE_CH3_NOKILLDW",		// 30 don't kill any dwellers in chapter 3
-	"GameUI_ACHTITLE_CH3_3MINS",		// 31 destroy the computer within 3 minutes
+	"GameUI_ACHTITLE_DASH",				// 19 dash # times
+	"GameUI_ACHTITLE_NOTES",			// 20 find # notes
+	"GameUI_ACHTITLE_KILLENEMIESBALLS",	// 21 kill # enemies with balls (weapon_ar2 or func_tankball)
+	"GameUI_ACHTITLE_REDDWELLER",		// 22 help the red dweller escape (chapter 1)
+	"GameUI_ACHTITLE_ASSEMBLEBLASTLEVEL",	// 23 get the first blast level by assembling the module on ch2map2
+	"GameUI_ACHTITLE_BROKENCAR",		// 24 break the car completely in chapter 1 intro
+	"GameUI_ACHTITLE_CARDISTANCE",		// 25 travelled distance by car
+	"GameUI_ACHTITLE_WATERJETDISTANCE",	// 26 travelled distance by water jet
+	"GameUI_ACHTITLE_KILLBOTS",			// 27 kill # bots in multiplayer
+	"GameUI_ACHTITLE_CH3_NOKILLDW",		// 28 don't kill any dwellers in chapter 3
+	"GameUI_ACHTITLE_CH3_3MINS",		// 29 destroy the computer within 3 minutes
+	"GameUI_ACHTITLE_5DRONES",			// 30 kill 5 enemy drones while piloting a drone from 1st person
 	"GameUI_ACHTITLE_LOCKED",			// ALWAYS LAST LINE (= TOTAL_ACHIEVEMENTS)
 };
 
-const char *AchievementDescriptions[] = // color used: white
+const char *AchievementDescriptions[TOTAL_ACHIEVEMENTS] = // color used: white
 {
 	"GameUI_ACH_BULLETSFIRED",		// 0 fire # bullets
 	"GameUI_ACH_JUMPS",				// 1 jump # times
@@ -124,22 +124,19 @@ const char *AchievementDescriptions[] = // color used: white
 	"GameUI_ACH_DRONESEC",			// 16 kill # security drones
 	"GameUI_ACH_DRONEALIEN",		// 17 kill # alien drones
 	"GameUI_ACH_CROSSBOW",			// 18 kill # enemies on a certain distance with a crossbow
-	"GameUI_ACH_TANKBALL",			// 19 kill the alien military ship with balls
-	"GameUI_ACH_DASH",				// 20 dash # times
-	"GameUI_ACH_NOTES",				// 21 find # notes
-	"GameUI_ACH_SECRETS",			// 22 find # secrets
-	"GameUI_ACH_KILLENEMIESBALLS",	// 23 kill # enemies with balls (weapon_ar2 or func_tankball)
-	"GameUI_ACH_REDDWELLER",		// 24 help the red dweller escape (chapter 1)
-	"GameUI_ACH_ASSEMBLEBLASTLEVEL",// 25 get the first blast level by assembling the module on ch2map2
-	"GameUI_ACH_BROKENCAR",			// 26 break the car completely in chapter 1 intro
-	"GameUI_ACH_CARDISTANCE",		// 27 travelled distance by car
-	"GameUI_ACH_WATERJETDISTANCE",	// 28 travelled distance by water jet
-	"GameUI_ACH_KILLBOTS",			// 29 kill # bots in multiplayer
-	"GameUI_ACH_CH3_NOKILLDW",		// 30 don't kill any dwellers in chapter 3
-	"GameUI_ACH_CH3_3MINS",			// 31 destroy the computer within 3 minutes
+	"GameUI_ACH_DASH",				// 19 dash # times
+	"GameUI_ACH_NOTES",				// 20 find # notes
+	"GameUI_ACH_KILLENEMIESBALLS",	// 21 kill # enemies with balls (weapon_ar2 or func_tankball)
+	"GameUI_ACH_REDDWELLER",		// 22 help the red dweller escape (chapter 1)
+	"GameUI_ACH_ASSEMBLEBLASTLEVEL",// 23 get the first blast level by assembling the module on ch2map2
+	"GameUI_ACH_BROKENCAR",			// 24 break the car completely in chapter 1 intro
+	"GameUI_ACH_CARDISTANCE",		// 25 travelled distance by car
+	"GameUI_ACH_WATERJETDISTANCE",	// 26 travelled distance by water jet
+	"GameUI_ACH_KILLBOTS",			// 27 kill # bots in multiplayer
+	"GameUI_ACH_CH3_NOKILLDW",		// 28 don't kill any dwellers in chapter 3
+	"GameUI_ACH_CH3_3MINS",			// 29 destroy the computer within 3 minutes
+	"GameUI_ACH_5DRONES",			// 30 kill 5 enemy drones while piloting a drone from 1st person
 };
-
-#define TOTAL_ACHIEVEMENTS 32
 
 typedef struct
 {
