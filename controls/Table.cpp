@@ -346,11 +346,11 @@ bool CMenuTable::KeyUp( int key )
 		else
 			sound = uiStatic.sounds[SND_BUZZ]; // list is empty, can't activate anything
 	}
-	else if( key == K_MWHEELUP )
+	else if( key == K_MWHEELUP && FBitSet( iFlags, QMF_HASMOUSEFOCUS ) )
 	{
 		noscroll = true;
 	}
-	else if( key == K_MWHEELDOWN )
+	else if( key == K_MWHEELDOWN && FBitSet( iFlags, QMF_HASMOUSEFOCUS ) )
 	{
 		noscroll = true;
 	}
@@ -387,12 +387,12 @@ bool CMenuTable::KeyDown( int key )
 		sound = MoveCursor( -1 ) ? uiStatic.sounds[SND_MOVE] : 0;
 	else if( UI::Key::IsDownArrow( key ) )
 		sound = MoveCursor( 1 ) ? uiStatic.sounds[SND_MOVE] : 0;
-	else if( key == K_MWHEELUP )
+	else if( key == K_MWHEELUP && FBitSet( iFlags, QMF_HASMOUSEFOCUS ) )
 	{
 		sound = MoveView( -1 ) ? uiStatic.sounds[SND_MOVE] : uiStatic.sounds[SND_BUZZ];
 		noscroll = true;
 	}
-	else if( key == K_MWHEELDOWN )
+	else if( key == K_MWHEELDOWN && FBitSet( iFlags, QMF_HASMOUSEFOCUS ) )
 	{
 		sound = MoveView( 1 ) ? uiStatic.sounds[SND_MOVE] : uiStatic.sounds[SND_BUZZ];
 		noscroll = true;
