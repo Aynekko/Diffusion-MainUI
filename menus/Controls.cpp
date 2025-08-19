@@ -408,11 +408,12 @@ void CMenuControls::_Init( void )
 {
 	banner.SetPicture( ART_BANNER );
 
-	keysList.SetRect( 460, 190, 1000, 850 ); // 460 = (1920(ui width) - 1000(table width)) / 2
+	keysList.SetRect( 460, 190, 1000, 720 ); // 460 = (1920(ui width) - 1000(table width)) / 2
 	keysList.SetModel( &keysListModel );
 	keysList.SetupColumn( 0, L( "Action" ), 0.50f );
 	keysList.SetupColumn( 1, L( "Binding" ), 0.25f );
 	keysList.SetupColumn( 2, L( "Alternate" ), 0.25f );
+	keysList.charSize += 5; // increase distance between lines
 
 	msgBox1.SetMessage( L( "Press a key or button" ) );
 	msgBox1.Link( this );

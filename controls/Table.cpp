@@ -346,6 +346,14 @@ bool CMenuTable::KeyUp( int key )
 		else
 			sound = uiStatic.sounds[SND_BUZZ]; // list is empty, can't activate anything
 	}
+	else if( key == K_MWHEELUP )
+	{
+		noscroll = true;
+	}
+	else if( key == K_MWHEELDOWN )
+	{
+		noscroll = true;
+	}
 
 	if( !noscroll )
 	{
@@ -380,9 +388,15 @@ bool CMenuTable::KeyDown( int key )
 	else if( UI::Key::IsDownArrow( key ) )
 		sound = MoveCursor( 1 ) ? uiStatic.sounds[SND_MOVE] : 0;
 	else if( key == K_MWHEELUP )
-		sound = MoveCursor( -1 ) ? uiStatic.sounds[SND_MOVE] : uiStatic.sounds[SND_BUZZ];
+	{
+		sound = MoveView( -1 ) ? uiStatic.sounds[SND_MOVE] : uiStatic.sounds[SND_BUZZ];
+		noscroll = true;
+	}
 	else if( key == K_MWHEELDOWN )
-		sound = MoveCursor( 1 ) ? uiStatic.sounds[SND_MOVE] : uiStatic.sounds[SND_BUZZ];
+	{
+		sound = MoveView( 1 ) ? uiStatic.sounds[SND_MOVE] : uiStatic.sounds[SND_BUZZ];
+		noscroll = true;
+	}
 	else if( UI::Key::IsPageUp( key ) )
 		sound = MoveCursor( -2 ) ? uiStatic.sounds[SND_MOVE] : uiStatic.sounds[SND_BUZZ];
 	else if( UI::Key::IsPageDown( key ) )
@@ -394,7 +408,7 @@ bool CMenuTable::KeyDown( int key )
 	}
 	else if( UI::Key::IsEnd( key ) )
 	{
-		int lastItem = Q_min( m_pModel->GetRows() - 1, 0 );
+		int lastItem = Q_max( m_pModel->GetRows() - 1, 0 );
 		sound = iCurItem < lastItem ? uiStatic.sounds[SND_MOVE] : uiStatic.sounds[SND_BUZZ];
 		iCurItem = lastItem;
 	}
@@ -746,7 +760,6 @@ void CMenuTable::Draw()
 			}
 		}
 	}
-
 
 	// prevent the columns out of rectangle bounds
 	UI::Scissor::PushScissor( boxPos, boxSize );

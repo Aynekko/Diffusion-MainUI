@@ -43,22 +43,22 @@ const char *uiSoundOldPrefix = "media/";
 const char *uiSoundNewPrefix = "sound/common/";
 const char *uiSounds[] = {
 #ifdef CS16CLIENT
-	"",
-	"",
-	"sound/UI/buttonclickrelease.wav",
-	"sound/UI/buttonrollover.wav",
+	"",										// SND_IN
+	"",										// SND_OUT
+	"sound/UI/buttonclickrelease.wav",		// SND_LAUNCH
+	"sound/UI/buttonrollover.wav",			// SND_ROLLOVER
 #else
-	"media/launch_upmenu1.wav",
-	"media/launch_dnmenu1.wav",
-	"media/launch_select2.wav",
-	"",
+	"media/launch_upmenu1.wav",				// SND_IN
+	"media/launch_dnmenu1.wav",				// SND_OUT
+	"media/launch_select2.wav",				// SND_LAUNCH
+	"",										// SND_ROLLOVER
 #endif
-	"media/launch_glow1.wav",
-	"media/launch_deny2.wav",
-	"media/launch_select1.wav",
-	"media/launch_deny1.wav",
-	"",
-	""
+	"media/launch_glow1.wav",				// SND_GLOW
+	"media/launch_deny2.wav",				// SND_BUZZ
+	"media/launch_select1.wav",				// SND_KEY
+	"media/launch_deny1.wav",				// SND_REMOVEKEY
+	"media/launch_move.wav",				// SND_MOVE
+	""										// SND_NULL
 };
 
 // they match default WON colors.lst now, except alpha

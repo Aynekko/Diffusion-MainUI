@@ -278,7 +278,7 @@ void CMenuAchievements::_Init( void )
 	achList.SetupColumn( 2, L( "GameUI_AchColCurrent" ), 0.0666f );
 	achList.SetupColumn( 3, L( "GameUI_AchColGoal" ), 0.0666f );
 	achList.SetupColumn( 4, L( "GameUI_AchColCompleted" ), 0.0666f );
-	achList.charSize = 25;
+	achList.charSize += 5; // increase distance between lines
 	AddItem( achList );
 }
 
