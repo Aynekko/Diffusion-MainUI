@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define ART_BANNER	     	"gfx/shell/head_achievements"
 
-#define TOTAL_ACHIEVEMENTS 31
+#define TOTAL_ACHIEVEMENTS 32
 
 // must be the same as in client
 enum Achievements_e
@@ -65,6 +65,7 @@ enum Achievements_e
 	ACH_CH3_NOKILLDW,		// 28 don't kill any dwellers in chapter 3
 	ACH_CH3_3MINS,			// 29 destroy the computer within 3 minutes
 	ACH_5DRONES,			// 30 kill 5 enemy drones while piloting a drone from 1st person
+	ACH_DRUNK,				// 31 kill 5 enemies while drunk
 };
 
 const char *AchievementTitles[TOTAL_ACHIEVEMENTS + 1] = // color used: ^2
@@ -100,6 +101,7 @@ const char *AchievementTitles[TOTAL_ACHIEVEMENTS + 1] = // color used: ^2
 	"GameUI_ACHTITLE_CH3_NOKILLDW",		// 28 don't kill any dwellers in chapter 3
 	"GameUI_ACHTITLE_CH3_3MINS",		// 29 destroy the computer within 3 minutes
 	"GameUI_ACHTITLE_5DRONES",			// 30 kill 5 enemy drones while piloting a drone from 1st person
+	"GameUI_ACHTITLE_DRUNK",			// 31 kill 5 enemies while drunk
 	"GameUI_ACHTITLE_LOCKED",			// ALWAYS LAST LINE (= TOTAL_ACHIEVEMENTS)
 };
 
@@ -136,6 +138,7 @@ const char *AchievementDescriptions[TOTAL_ACHIEVEMENTS] = // color used: white
 	"GameUI_ACH_CH3_NOKILLDW",		// 28 don't kill any dwellers in chapter 3
 	"GameUI_ACH_CH3_3MINS",			// 29 destroy the computer within 3 minutes
 	"GameUI_ACH_5DRONES",			// 30 kill 5 enemy drones while piloting a drone from 1st person
+	"GameUI_ACH_DRUNK",				// 31 kill 5 enemies while drunk
 };
 
 typedef struct
