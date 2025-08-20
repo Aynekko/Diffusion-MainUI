@@ -389,12 +389,20 @@ bool CMenuTable::KeyDown( int key )
 		sound = MoveCursor( 1 ) ? uiStatic.sounds[SND_MOVE] : 0;
 	else if( key == K_MWHEELUP && FBitSet( iFlags, QMF_HASMOUSEFOCUS ) )
 	{
-		sound = MoveView( -1 ) ? uiStatic.sounds[SND_MOVE] : uiStatic.sounds[SND_BUZZ];
+		bool action_made = false;
+		action_made = MoveView( -1 );
+		if( !action_made )
+			action_made = MoveCursor( -1 );
+		sound = action_made ? uiStatic.sounds[SND_MOVE] : uiStatic.sounds[SND_BUZZ];
 		noscroll = true;
 	}
 	else if( key == K_MWHEELDOWN && FBitSet( iFlags, QMF_HASMOUSEFOCUS ) )
 	{
-		sound = MoveView( 1 ) ? uiStatic.sounds[SND_MOVE] : uiStatic.sounds[SND_BUZZ];
+		bool action_made = false;
+		action_made = MoveView( 1 );
+		if( !action_made )
+			action_made = MoveCursor( 1 );
+		sound = action_made ? uiStatic.sounds[SND_MOVE] : uiStatic.sounds[SND_BUZZ];
 		noscroll = true;
 	}
 	else if( UI::Key::IsPageUp( key ) )
