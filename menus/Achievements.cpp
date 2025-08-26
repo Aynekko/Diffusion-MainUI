@@ -363,9 +363,13 @@ void CMenuAchievementModel::Update( void )
 
 	for( i = 0; i < TOTAL_ACHIEVEMENTS; i++ )
 	{
+		bool novalue = (pData->goal[i] == 1); // it's a simple yes/no achievement, no need to show values
+
 		// current values
 		if( i == ACH_CARDISTANCE || i == ACH_WATERJETDISTANCE )
 			sprintf_s( current[i], "%i m", pData->value[i] );
+		else if( novalue )
+			current[i][0] = '\0';
 		else
 			sprintf_s( current[i], "%i", pData->value[i] );
 		
@@ -384,6 +388,8 @@ void CMenuAchievementModel::Update( void )
 		// goals
 		if( i == ACH_CARDISTANCE || i == ACH_WATERJETDISTANCE )
 			sprintf_s( goal[i], "%i m", pData->goal[i] );
+		else if( novalue )
+			goal[i][0] = '\0';
 		else
 			sprintf_s( goal[i], "%i", pData->goal[i] );
 
