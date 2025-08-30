@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define ART_BANNER	     	"gfx/shell/head_achievements"
 
-#define TOTAL_ACHIEVEMENTS 33
+#define TOTAL_ACHIEVEMENTS 35
 
 // must be the same as in client
 enum Achievements_e
@@ -67,6 +67,8 @@ enum Achievements_e
 	ACH_5DRONES,			// 30 kill 5 enemy drones while piloting a drone from 1st person
 	ACH_DRUNK,				// 31 kill 5 enemies while drunk
 	ACH_DIDNTLISTEN,		// 32 you didn't listen to Alice in ch5map2
+	ACH_CARMAGEDDON,		// 33 run over 5 enemies with a car
+	ACH_ELECTROBLAST,		// 34 kill 30 enemies with electroblast
 };
 
 const char *AchievementTitles[TOTAL_ACHIEVEMENTS + 1] = // color used: ^2
@@ -104,6 +106,8 @@ const char *AchievementTitles[TOTAL_ACHIEVEMENTS + 1] = // color used: ^2
 	"GameUI_ACHTITLE_5DRONES",			// 30 kill 5 enemy drones while piloting a drone from 1st person
 	"GameUI_ACHTITLE_DRUNK",			// 31 kill 5 enemies while drunk
 	"GameUI_ACHTITLE_DIDNTLISTEN",		// 32 you didn't listen to Alice in ch5map2
+	"GameUI_ACHTITLE_CARMAGEDDON",		// 33 run over 5 enemies with a car
+	"GameUI_ACHTITLE_ELECTROBLAST",		// 34 kill 30 enemies with electroblast
 	"GameUI_ACHTITLE_LOCKED",			// ALWAYS LAST LINE (= TOTAL_ACHIEVEMENTS)
 };
 
@@ -142,6 +146,8 @@ const char *AchievementDescriptions[TOTAL_ACHIEVEMENTS] = // color used: white
 	"GameUI_ACH_5DRONES",			// 30 kill 5 enemy drones while piloting a drone from 1st person
 	"GameUI_ACH_DRUNK",				// 31 kill 5 enemies while drunk
 	"GameUI_ACH_DIDNTLISTEN",		// 32 you didn't listen to Alice in ch5map2
+	"GameUI_ACH_CARMAGEDDON",		// 33 run over 5 enemies with a car
+	"GameUI_ACH_ELECTROBLAST",		// 34 kill 30 enemies with electroblast
 };
 
 typedef struct
