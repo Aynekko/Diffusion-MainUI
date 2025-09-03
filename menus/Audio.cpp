@@ -181,11 +181,11 @@ void CMenuAudio::_Init( void )
 		VoidCb( &CMenuAudio::SaveAndPopMenu ) );
 	AddItem( soundVolume );
 	AddItem( musicVolume );
-	AddItem( suitVolume );
+//	AddItem( suitVolume );
 	AddItem( lerping );
 //	AddItem( noDSP );
 	AddItem( muteFocusLost );
-	AddItem( reverseChannels );
+//	AddItem( reverseChannels );
 //	AddItem( vibrationEnable );
 //	AddItem( vibration );
 }

@@ -79,8 +79,8 @@ public:
 		return keysBind[line][0] != 0;
 	}
 
-	char name[MAX_KEYS][64];
-	char keysBind[MAX_KEYS][64];
+	char name[MAX_KEYS][128];
+	char keysBind[MAX_KEYS][128];
 	char firstKey[MAX_KEYS][20];
 	char secondKey[MAX_KEYS][20];
 	int m_iNumItems;
@@ -410,32 +410,32 @@ void CMenuControls::_Init( void )
 
 	keysList.SetRect( 460, 190, 1000, 720 ); // 460 = (1920(ui width) - 1000(table width)) / 2
 	keysList.SetModel( &keysListModel );
-	keysList.SetupColumn( 0, L( "Action" ), 0.50f );
-	keysList.SetupColumn( 1, L( "Binding" ), 0.25f );
-	keysList.SetupColumn( 2, L( "Alternate" ), 0.25f );
+	keysList.SetupColumn( 0, L( "GameUI_Action" ), 0.50f );
+	keysList.SetupColumn( 1, L( "GameUI_KeyButton" ), 0.25f );
+	keysList.SetupColumn( 2, L( "GameUI_Alternate" ), 0.25f );
 	keysList.charSize += 5; // increase distance between lines
 
 	msgBox1.SetMessage( L( "Press a key or button" ) );
 	msgBox1.Link( this );
 
-	msgBox2.SetMessage( L( "Are you sure to load default key values?" ) );
+	msgBox2.SetMessage( L( "GameUI_KeyboardSettingsText" ) );
 	msgBox2.onPositive = VoidCb( &CMenuControls::ResetKeysList );
 	msgBox2.Link( this );
 
-	invertMouse.SetNameAndStatus( L( "Reverse mouse" ), L( "GameUI_ReverseMouseLabel" ) );
+	invertMouse.SetNameAndStatus( L( "GameUI_ReverseMouse" ), L( "GameUI_ReverseMouseLabel" ) );
 	invertMouse.iFlags |= QMF_NOTIFY;
 	invertMouse.onChanged = VoidCb( &CMenuControls::PitchInvert );
 	invertMouse.SetCoord( 72, 300 );
 
-	mouseLook.SetNameAndStatus( L( "Mouse look" ), L( "GameUI_MouseLookLabel" ) );
+	mouseLook.SetNameAndStatus( L( "GameUI_MouseLook" ), L( "GameUI_MouseLookLabel" ) );
 	mouseLook.iFlags |= QMF_NOTIFY;
 	mouseLook.SetCoord( 72, 350 );
 
-	lookFilter.SetNameAndStatus( L( "Mouse filter" ), L( "GameUI_MouseFilterLabel" ) );
+	lookFilter.SetNameAndStatus( L( "GameUI_MouseFilter" ), L( "GameUI_MouseFilterLabel" ) );
 	lookFilter.iFlags |= QMF_NOTIFY;
 	lookFilter.SetCoord( 72, 400 );
 
-	sensitivity.SetNameAndStatus( L( "Mouse sensitivity" ), L( "Set in-game mouse sensitivity" ) );
+	sensitivity.SetNameAndStatus( L( "GameUI_MouseSensitivity" ), L( "Set in-game mouse sensitivity" ) );
 	sensitivity.Setup( 0.0, 20.0f, 0.1 );
 	sensitivity.SetCoord( 72, 500 );
 
