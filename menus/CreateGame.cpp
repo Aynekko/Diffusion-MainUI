@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Table.h"
 #include "Action.h"
 #include "YesNoMessageBox.h"
-#include "Table.h"
+#include "SpinControl.h"
 
 #define ART_BANNER		"gfx/shell/head_creategame"
 
@@ -72,6 +72,8 @@ public:
 	CMenuField	hostName;
 	CMenuField	password;
 	CMenuCheckBox   nat;
+	CMenuCheckBox   teamplay;
+	CMenuSpinControl   bots;
 
 	// newgame prompt dialog
 	CMenuYesNoMessageBox msgBox;
@@ -114,7 +116,6 @@ void CMenuCreateGame::Begin( CMenuBaseItem *pSelf, void *pExtra )
 	}
 
 	EngFuncs::CvarSetValue( "deathmatch", 1.0f );	// start deathmatch as default
-	menu->SaveCvars();
 
 	EngFuncs::PlayBackgroundTrack( NULL, NULL );
 
@@ -128,6 +129,12 @@ void CMenuCreateGame::Begin( CMenuBaseItem *pSelf, void *pExtra )
 
 	// dirty listenserver config form old xash may rewrite maxplayers
 	menu->maxClients.WriteCvar();
+
+	// diffusion - UI cvars must have priority over listenserver
+	menu->SaveCvars();
+
+	// notify server to not execute listenserver config again
+	EngFuncs::CvarSetValue( "sv_startfromui", 1.0f );
 
 	// hack: wait three frames allowing server to completely shutdown, reapply maxplayers and start new map
 	char cmd2[256];
@@ -205,8 +212,8 @@ void CMenuCreateGame::_Init( void )
 
 	// add them here, so "done" button can be used by mapsListModel::Update
 	AddItem( banner );
-	CMenuPicButton *advOpt = AddButton( L( "Adv. Options" ), L( "Open the game advanced options menu" ), PC_ADV_OPT, UI_AdvServerOptions_Menu );
-	advOpt->SetGrayed( !UI_AdvServerOptions_IsAvailable() );
+//	CMenuPicButton *advOpt = AddButton( L( "Adv. Options" ), L( "Open the game advanced options menu" ), PC_ADV_OPT, UI_AdvServerOptions_Menu );
+//	advOpt->SetGrayed( !UI_AdvServerOptions_IsAvailable() );
 
 	done = AddButton( L( "Start game" ), L( "Start the multiplayer game" ), PC_START_GAME, Begin );
 	done->onReleasedClActive = msgBox.MakeOpenEvent();
@@ -258,10 +265,24 @@ void CMenuCreateGame::_Init( void )
 	msgBox.SetMessage( L( "Starting a new game will exit any current game, OK to exit?" ) );
 	msgBox.Link( this );
 
+	bots.szName = L( "GameUI_Bots" );
+	bots.szStatusText = L( "Cap your game frame rate" );
+	bots.Setup( 0, 16, 1 );
+	bots.SetRect( 72, MenuYOffset, 220, 32 );
+	bots.LinkCvar( "bot_max", CMenuEditable::CVAR_VALUE );
+	bots.onChanged = CMenuEditable::WriteCvarCb;
+
+	teamplay.szName = L( "GameUI_Teamplay" );
+	teamplay.bChecked = false;
+	teamplay.LinkCvar( "mp_teamplay" );
+	teamplay.SetCoord( 72, MenuYOffset + 50 );
+
 	AddButton( L( "GameUI_Cancel" ), L( "Return to the previous menu" ), PC_CANCEL, VoidCb( &CMenuCreateGame::Hide ) );
 	AddItem( hostName );
 	AddItem( maxClients );
 	AddItem( password );
+	AddItem( bots );
+	AddItem( teamplay );
 
 	AddItem( nat );
 	AddItem( mapsList );
@@ -286,6 +307,8 @@ void CMenuCreateGame::SaveCvars()
 	hostName.WriteCvar();
 	maxClients.WriteCvar();
 	password.WriteCvar();
+	bots.WriteCvar();
+	teamplay.WriteCvar();
 	EngFuncs::CvarSetValue( "sv_nat", EngFuncs::GetCvarFloat( "public" ) ? nat.bChecked : 0 );
 }
 
