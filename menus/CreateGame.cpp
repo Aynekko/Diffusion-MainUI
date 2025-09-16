@@ -73,6 +73,7 @@ public:
 	CMenuField	password;
 	CMenuCheckBox   nat;
 	CMenuCheckBox   teamplay;
+	CMenuCheckBox   bhop;
 	CMenuSpinControl   bots;
 
 	// newgame prompt dialog
@@ -277,12 +278,18 @@ void CMenuCreateGame::_Init( void )
 	teamplay.LinkCvar( "mp_teamplay" );
 	teamplay.SetCoord( 72, MenuYOffset + 50 );
 
+	bhop.szName = L( "GameUI_Bhop" );
+	bhop.bChecked = false;
+	bhop.LinkCvar( "sv_enablebunnyhopping" );
+	bhop.SetCoord( 72, MenuYOffset + 90 );
+
 	AddButton( L( "GameUI_Cancel" ), L( "Return to the previous menu" ), PC_CANCEL, VoidCb( &CMenuCreateGame::Hide ) );
 	AddItem( hostName );
 	AddItem( maxClients );
 	AddItem( password );
 	AddItem( bots );
 	AddItem( teamplay );
+	AddItem( bhop );
 
 	AddItem( nat );
 	AddItem( mapsList );
@@ -309,6 +316,7 @@ void CMenuCreateGame::SaveCvars()
 	password.WriteCvar();
 	bots.WriteCvar();
 	teamplay.WriteCvar();
+	bhop.WriteCvar();
 	EngFuncs::CvarSetValue( "sv_nat", EngFuncs::GetCvarFloat( "public" ) ? nat.bChecked : 0 );
 }
 
