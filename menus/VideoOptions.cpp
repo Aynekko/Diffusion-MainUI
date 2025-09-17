@@ -195,7 +195,7 @@ void SetSettingsTo( int Quality )
 void CMenuVidOptions::UpdateConfig( void )
 {
 	float val1 = RemapVal( gammaIntensity.GetCurrentValue(), 0.0, 1.0, 1.8, GAMMA_MAX );
-	float val2 = RemapVal( Brightness.GetCurrentValue(), 0.0, 1.0, 0.0, BRIGHTNESS_MAX );
+	float val2 = RemapVal( Brightness.GetCurrentValue(), 0.0, 1.0, 0.01, BRIGHTNESS_MAX );
 	EngFuncs::CvarSetValue( "gamma", val1 );
 	EngFuncs::CvarSetValue( "brightness", val2 );
 }
