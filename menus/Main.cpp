@@ -133,7 +133,6 @@ void CMenuMain::DisconnectCb()
 void CMenuMain::DisconnectDialogCb()
 {
 	dialog.onPositive = VoidCb( &CMenuMain::DisconnectCb );
-	dialog.SetMessage( L( "GameUI_GameMenu_DisconnectD" ) );
 	dialog.Show();
 }
 
