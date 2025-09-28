@@ -83,12 +83,14 @@ void CMenuOptions::_Init( void )
 	msgBox.Link( this );
 
 	AddItem( banner );
-	CMenuPicButton *controls = AddButton( L( "Controls" ), L( "Change keyboard and mouse settings" ),
-		PC_CONTROLS, UI_Controls_Menu, QMF_NOTIFY );
-	CMenuPicButton *audio =  AddButton( L( "Audio" ), L( "Change sound volume and quality" ),
-		PC_AUDIO, UI_Audio_Menu, QMF_NOTIFY );
-	CMenuPicButton *video = AddButton( L( "Video" ), L( "Change screen size, video mode and gamma" ),
-		PC_VIDEO, UI_Video_Menu, QMF_NOTIFY );
+	CMenuPicButton *controls = AddButton( L( "Controls" ), L( "Change keyboard and mouse settings" ), PC_CONTROLS, UI_Controls_Menu, QMF_NOTIFY );
+	controls->pos.y -= 100;
+	CMenuPicButton *audio =  AddButton( L( "Audio" ), L( "Change sound volume and quality" ), PC_AUDIO, UI_Audio_Menu, QMF_NOTIFY );
+	audio->pos.y -= 100;
+	CMenuPicButton *video = AddButton( L( "Video" ), L( "Change screen size, video mode and gamma" ), PC_VIDEO, UI_VidOptions_Menu, QMF_NOTIFY );
+	video->pos.y -= 100;
+	CMenuPicButton *resolution = AddButton( L( "Video modes" ), L( "Set video modes and configure 3D accelerators." ), PC_VID_MODES, UI_VidModes_Menu, QMF_NOTIFY );
+	resolution->pos.y -= 100;
 /*	if( UI_IsXashFWGS() )
 	{
 		AddButton( L( "Touch" ), L( "Change touch settings and buttons" ),
@@ -102,7 +104,7 @@ void CMenuOptions::_Init( void )
 
 	CMenuPicButton *done = AddButton( L( "Done" ), L( "Go back to the Main menu" ),
 		PC_DONE, VoidCb( &CMenuOptions::Hide ), QMF_NOTIFY );
-	done->pos.y += 50;
+	done->pos.y -= 50;
 
 	cl_showdamage.SetNameAndStatus( L( "GameUI_ShowDamage" ), L( "-" ) );
 	cl_showdamage.iFlags |= QMF_NOTIFY;

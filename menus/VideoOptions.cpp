@@ -32,6 +32,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define GAMMA_MAX 3.0f
 #define BRIGHTNESS_MAX 3.0f
 
+#define GAMMA_SLIDER 0
+
 #define LEGACY_VIEWSIZE 0
 
 enum
@@ -78,7 +80,9 @@ public:
 	CMenuPicButton	SetToHigh;
 	CMenuPicButton	SetToMaximum;
 
+#if GAMMA_SLIDER
 	CMenuSlider	gammaIntensity;
+#endif
 	CMenuSlider	Brightness;
 	CMenuCheckBox	fastSky;
 	CMenuCheckBox   vbo;
@@ -189,26 +193,30 @@ void SetSettingsTo( int Quality )
 		EngFuncs::CvarSetValue( "r_shadowquality", 3 );
 		EngFuncs::CvarSetValue( "gl_hbao", 1 );
 		EngFuncs::CvarSetValue( "cl_lod_enable", 0 );
+
+		EngFuncs::ClientCmd( FALSE, "menuactivate video_maximum\n" );
 	}
 }
 
 void CMenuVidOptions::UpdateConfig( void )
 {
+#if GAMMA_SLIDER
 	float val1 = RemapVal( gammaIntensity.GetCurrentValue(), 0.0, 1.0, 1.8, GAMMA_MAX );
-	float val2 = RemapVal( Brightness.GetCurrentValue(), 0.0, 1.0, 0.01, BRIGHTNESS_MAX );
 	EngFuncs::CvarSetValue( "gamma", val1 );
+#endif
+	float val2 = RemapVal( Brightness.GetCurrentValue(), 0.0, 1.0, 0.01, BRIGHTNESS_MAX );
 	EngFuncs::CvarSetValue( "brightness", val2 );
 }
 
 void CMenuVidOptions::GetConfig( void )
 {
+#if GAMMA_SLIDER
 	float val1 = EngFuncs::GetCvarFloat( "gamma" );
-	float val2 = EngFuncs::GetCvarFloat( "brightness" );
-
 	gammaIntensity.SetCurrentValue( RemapVal( val1, 1.8f, GAMMA_MAX, 0.0f, 1.0f ) );
-	Brightness.SetCurrentValue( RemapVal( val2, 0.0f, BRIGHTNESS_MAX, 0.0f, 1.0f ) );
-
 	gammaIntensity.SetOriginalValue( val1 );
+#endif
+	float val2 = EngFuncs::GetCvarFloat( "brightness" );
+	Brightness.SetCurrentValue( RemapVal( val2, 0.0f, BRIGHTNESS_MAX, 0.0f, 1.0f ) );
 	Brightness.SetOriginalValue( val2 );
 
 	cl_muzzlelight.LinkCvar( "cl_muzzlelight" );
@@ -390,7 +398,9 @@ void CMenuVidOptions::HideMenus( void )
 		SetToMedium.iFlags |= QMF_HIDDEN;
 		SetToHigh.iFlags |= QMF_HIDDEN;
 		SetToMaximum.iFlags |= QMF_HIDDEN;
+#if GAMMA_SLIDER
 		gammaIntensity.iFlags |= QMF_HIDDEN;
+#endif
 		Brightness.iFlags |= QMF_HIDDEN;
 		gl_sunshafts.iFlags |= QMF_HIDDEN;
 		gl_hbao.iFlags |= QMF_HIDDEN;
@@ -420,7 +430,9 @@ void CMenuVidOptions::HideMenus( void )
 		SetToMedium.iFlags &= ~QMF_HIDDEN;
 		SetToHigh.iFlags &= ~QMF_HIDDEN;
 		SetToMaximum.iFlags &= ~QMF_HIDDEN;
+#if GAMMA_SLIDER
 		gammaIntensity.iFlags &= ~QMF_HIDDEN;
+#endif
 		Brightness.iFlags &= ~QMF_HIDDEN;
 		gl_sunshafts.iFlags &= ~QMF_HIDDEN;
 		gl_hbao.iFlags &= ~QMF_HIDDEN;
@@ -588,13 +600,15 @@ void CMenuVidOptions::_Init( void )
 	SetToMaximum.SetCoord( 72, MenuYOffset + 100 );
 	SET_EVENT( SetToMaximum.onPressed, SetSettingsTo( 3 ) );
 	SetToMaximum.onReleased = VoidCb( &CMenuVidOptions::GetConfig );
-
+	int gamma_slider_offset = 0;
+#if GAMMA_SLIDER
 	gammaIntensity.SetNameAndStatus( L( "GameUI_Gamma" ), L( "Set gamma value" ) );
 	gammaIntensity.SetCoord( 72, MenuYOffset + 400 );
 	gammaIntensity.Setup( 0.0f, 1.0f, 0.1f );
 	gammaIntensity.onChanged = VoidCb( &CMenuVidOptions::UpdateConfig );
-
-	Brightness.SetCoord( 72, MenuYOffset + 460 );
+	gamma_slider_offset += 60;
+#endif
+	Brightness.SetCoord( 72, MenuYOffset + 400 + gamma_slider_offset );
 	Brightness.SetNameAndStatus( L( "GameUI_Brightness" ), L( "Set brightness level" ) );
 	Brightness.Setup( 0.0f, 1.0f, 0.1f );
 	Brightness.onChanged = VoidCb( &CMenuVidOptions::UpdateConfig );
@@ -603,7 +617,7 @@ void CMenuVidOptions::_Init( void )
 	gl_renderscale.szStatusText = L( "-" );
 	gl_renderscale.SetDisplayPrecision( 2 );
 	gl_renderscale.Setup( 0.25f, 1.00f, 0.05f );
-	gl_renderscale.SetRect( 72, MenuYOffset + 530, 260, 32 );
+	gl_renderscale.SetRect( 72, MenuYOffset + 480 + gamma_slider_offset, 260, 32 );
 	gl_renderscale.LinkCvar( "gl_renderscale", CMenuEditable::CVAR_VALUE );
 	gl_renderscale.onChanged = CMenuEditable::WriteCvarCb;
 
@@ -644,7 +658,9 @@ void CMenuVidOptions::_Init( void )
 #if LEGACY_VIEWSIZE
 	AddItem( screenSize );
 #endif
+#if GAMMA_SLIDER
 	AddItem( gammaIntensity );
+#endif
 	AddItem( Brightness );
 	AddItem( gl_sunshafts );
 	AddItem( gl_hbao );
@@ -668,7 +684,9 @@ void CMenuVidOptions::_Init( void )
 	AddItem( gl_water_planar );
 	AddItem( gl_bump );
 	AddItem( gl_specular );
+#if GAMMA_SLIDER
 	gammaIntensity.LinkCvar( "gamma" );
+#endif
 	Brightness.LinkCvar( "brightness" );
 	AddItem( gl_renderscale );
 }
