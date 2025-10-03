@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "BackgroundBitmap.h"
 #include "FontManager.h"
 #include "cursor_type.h"
-
+#include "utflib.h"
 
 cvar_t		*ui_showmodels;
 cvar_t		*ui_show_window_stack;
@@ -354,8 +354,8 @@ int UI_DrawString( HFont font, int x, int y, int w, int h,
 		int pixelWide = 0;
 		int save_pixelWide = 0;
 		int save_j = 0;
+		utfstate_t state;
 
-		EngFuncs::UtfProcessChar( 0 );
 		while( string[j] )
 		{
 			if( string[j] == '\n' )
@@ -369,7 +369,7 @@ int UI_DrawString( HFont font, int x, int y, int w, int h,
 
 			line[len] = string[j];
 
-			int uch = EngFuncs::UtfProcessChar( ( unsigned char )string[j] );
+			uint32_t uch = state.Decode( (uint8_t)string[j] );
 
 			if( IsColorString( string + j )) // don't calc wides for colorstrings
 			{
@@ -473,7 +473,7 @@ int UI_DrawString( HFont font, int x, int y, int w, int h,
 
 		// draw it
 		l = line;
-		EngFuncs::UtfProcessChar( 0 );
+		state.Reset();
 		while( *l )
 		{
 			if( IsColorString( l ))
@@ -497,7 +497,7 @@ int UI_DrawString( HFont font, int x, int y, int w, int h,
 			ch &= 255;
 
 // when using custom font render, we use utf-8
-			ch = EngFuncs::UtfProcessChar( (unsigned char) ch );
+			ch = state.Decode( (uint8_t)ch );
 			if( !ch )
 				continue;
 
@@ -522,8 +522,6 @@ int UI_DrawString( HFont font, int x, int y, int w, int h,
 		i = j;
 	}
 
-	EngFuncs::UtfProcessChar( 0 );
-
 	return maxX;
 }
 
@@ -536,16 +534,6 @@ void UI_DrawMouseCursor( void )
 {
 	CMenuBaseItem *item;
 	void *hCursor = (void *)dc_arrow;
-
-#if 0
-	if( !UI_IsXashFWGS() )
-	{
-#ifdef _WIN32
-		EngFuncs::SetCursor( (HICON)LoadCursor( NULL, (LPCTSTR)OCR_NORMAL ) );
-#endif // _WIN32
-		return;
-	}
-#endif // 0
 
 	int cursor = uiStatic.menu.Current()->GetCursor();
 	item = uiStatic.menu.Current()->GetItemByIndex( cursor );
