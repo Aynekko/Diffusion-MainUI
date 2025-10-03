@@ -451,7 +451,7 @@ void UI_ServerBrowser_Menu( void )
 	if( gpGlobals->demoplayback && EngFuncs::GetCvarFloat( "cl_background" ) )
 	{
 		uiStatic.m_iOldMenuDepth = uiStatic.menu.Count();
-		EngFuncs::ClientCmd( FALSE, "stop\n" );
+		EngFuncs::ClientCmd( false, "stop\n" );
 		uiStatic.m_fDemosPlayed = true;
 	}
 
@@ -844,7 +844,7 @@ void CMenuServerBrowser::QueryServerList( const CUtlVector<favlist_entry_t> &lis
 
 			server_t serv( adr, fakeInfoString, list[i].favorited, true );
 			serv.UpdateData();
-			serv.SetPing( 9.999f );
+			serv.SetPing( MAX_PING );
 
 			gameListModel.servers.AddToTail( serv );
 		}
@@ -861,7 +861,7 @@ void CMenuServerBrowser::RefreshList()
 
 	if( m_bLanOnly )
 	{
-		EngFuncs::ClientCmd( FALSE, "localservers\n" );
+		EngFuncs::ClientCmd( false, "localservers\n" );
 	}
 	else if( uiStatic.realTime > refreshTime2 )
 	{
@@ -896,7 +896,7 @@ void CMenuServerBrowser::RefreshList()
 				buf += n;
 			}
 
-			EngFuncs::ClientCmdF( FALSE, "internetservers %s\n", filter );
+			EngFuncs::ClientCmdF( false, "internetservers %s\n", filter );
 		}
 
 		refreshTime2 = uiStatic.realTime + (EngFuncs::GetCvarFloat( "cl_nat" ) ? 4000 : 1000);
@@ -1351,7 +1351,7 @@ void CMenuServerBrowser::AddServerToList( netadr_t adr, const char *info )
 	{
 		if( !strcmp( favoritesList[i].sadr, s ) )
 		{
-			is_favorite = true;
+			is_favorite = favoritesList[i].favorited;
 			break;
 		}
 	}

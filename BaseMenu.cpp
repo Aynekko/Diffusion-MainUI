@@ -578,10 +578,10 @@ bool UI_LoadBackgroundMap( void ) // force load background map
 	char cmd[128];
 	snprintf( cmd, sizeof( cmd ), "maps/%s.bsp", uiStatic.bgmaps[bgmapid].Get() );
 
-	if( EngFuncs::FileExists( cmd, TRUE ) )
+	if( EngFuncs::FileExists( cmd, true ) )
 	{
 		snprintf( cmd, sizeof( cmd ), "map_background %s\n", uiStatic.bgmaps[bgmapid].Get() );
-		EngFuncs::ClientCmd( FALSE, cmd );
+		EngFuncs::ClientCmd( false, cmd );
 		return true;
 	}
 
@@ -976,7 +976,7 @@ void UI_ApplyCustomColors( void )
 
 static void UI_LoadBackgroundMapList( void )
 {
-	if( !EngFuncs::FileExists( "data/chapterbackgrounds.txt", TRUE ))
+	if( !EngFuncs::FileExists( "data/chapterbackgrounds.txt", true ))
 		return;
 
 	char *afile = (char *)EngFuncs::COM_LoadFile( "data/chapterbackgrounds.txt", NULL );
@@ -1112,7 +1112,7 @@ void UI_OpenUpdatePage( bool engine, bool preferstore )
 	}
 
 	if( updateUrl )
-		EngFuncs::ShellExecute( updateUrl, NULL, TRUE );
+		EngFuncs::ShellExecute( updateUrl, NULL, true );
 }
 
 void UI_UpdateDialog( int preferStore )

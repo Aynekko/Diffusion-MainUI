@@ -305,18 +305,18 @@ void CMenuAchievements::Draw(void)
 void CMenuAchievements::Show(void)
 {
 	CMenuFramework::Show();
-	EngFuncs::ClientCmd(FALSE, "menuactivate achievements\n");
+	EngFuncs::ClientCmd(false, "menuactivate achievements\n");
 }
 
 void CMenuAchievements::Hide(void)
 {
 	CMenuFramework::Hide();
-	EngFuncs::ClientCmd(FALSE, "menuactivate mainmenu\n");
+	EngFuncs::ClientCmd(false, "menuactivate mainmenu\n");
 }
 
 void CMenuAchievements::GetConfig()
 {
-	EngFuncs::ClientCmd( FALSE, "ach_refresh\n" );
+	EngFuncs::ClientCmd( false, "ach_refresh\n" );
 
 	UpdateTime = uiStatic.realTime + 0.5;
 	DoUpdate = true;
@@ -336,7 +336,7 @@ void CMenuAchievements::ShowDialog()
 
 void CMenuAchievements::ResetAchievements( )
 {
-	EngFuncs::ClientCmd( FALSE, "ach_reset\n" );
+	EngFuncs::ClientCmd( false, "ach_reset\n" );
 
 	UpdateTime = uiStatic.realTime + 0.5;
 	DoUpdate = true;

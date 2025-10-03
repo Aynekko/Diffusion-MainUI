@@ -62,12 +62,12 @@ GNU General Public License for more details.
 #undef bound
 #endif
 
-#ifndef FALSE
-#define FALSE	0
+#ifndef false
+#define false	0
 #endif
 
-#ifndef TRUE
-#define TRUE	(!FALSE)
+#ifndef true
+#define true	(!false)
 #endif
 
 #if !defined(_WIN32) && !defined(__MINGW32__)
@@ -79,7 +79,6 @@ GNU General Public License for more details.
 #define snprintf	_snprintf
 #endif
 
-typedef int (*cmpfunc)(const void *a, const void *b);
 typedef unsigned char byte;
 typedef unsigned int uint;
 

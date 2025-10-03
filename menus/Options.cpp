@@ -163,7 +163,7 @@ void CMenuOptions::_Init( void )
 
 	allowConsole.SetNameAndStatus( L( "GameUI_EnableConsole" ), L( "-" ) );
 	allowConsole.SetCoord( 300, MenuYOffset + 590 );
-	allowConsole.onChanged.SetCommand( FALSE, "ui_allowconsole\n" );
+	allowConsole.onChanged.SetCommand( false, "ui_allowconsole\n" );
 
 	AddItem( cl_showdamage );
 	AddItem( cl_achievement_notify );
@@ -181,7 +181,7 @@ void CMenuOptions::_Init( void )
 void CMenuOptions::Show(void)
 {
 	CMenuFramework::Show();
-	EngFuncs::ClientCmd(FALSE, "menuactivate options\n");
+	EngFuncs::ClientCmd(false, "menuactivate options\n");
 }
 
 void CMenuOptions::Hide(void)
@@ -196,7 +196,7 @@ void CMenuOptions::Hide(void)
 	EngFuncs::CvarSetValue( "cl_viewmodel_extras", cl_viewmodel_extras.GetCurrentValue() );
 
 	CMenuFramework::Hide();
-	EngFuncs::ClientCmd(FALSE, "menuactivate mainmenu\n");
+	EngFuncs::ClientCmd(false, "menuactivate mainmenu\n");
 }
 
 void CMenuOptions::GetConfig()

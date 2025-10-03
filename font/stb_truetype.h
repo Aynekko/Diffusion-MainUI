@@ -93,7 +93,7 @@
 //
 //   Include this file in whatever places need to refer to it. In ONE C/C++
 //   file, write:
-//      #define STB_TRUETYPE_IMPLEMENTATION
+//      #define STB_trueTYPE_IMPLEMENTATION
 //   before the #include of this file. This expands out the actual
 //   implementation into that C/C++ file.
 //
@@ -275,7 +275,7 @@
 //  Incomplete text-in-3d-api example, which draws quads properly aligned to be lossless.
 //  See "tests/truetype_demo_win32.c" for a complete version.
 #if 0
-#define STB_TRUETYPE_IMPLEMENTATION  // force following include to generate implementation
+#define STB_trueTYPE_IMPLEMENTATION  // force following include to generate implementation
 #include "stb_truetype.h"
 
 unsigned char ttf_buffer[1 << 20];
@@ -326,7 +326,7 @@ void my_stbtt_print( float x, float y, char *text )
 //
 #if 0
 #include <stdio.h>
-#define STB_TRUETYPE_IMPLEMENTATION  // force following include to generate implementation
+#define STB_trueTYPE_IMPLEMENTATION  // force following include to generate implementation
 #include "stb_truetype.h"
 
 char ttf_buffer[1 << 25];
@@ -422,7 +422,7 @@ int main( int arg, char **argv )
 ////   of C library functions used by stb_truetype, e.g. if you don't
 ////   link with the C runtime library.
 
-#ifdef STB_TRUETYPE_IMPLEMENTATION
+#ifdef STB_trueTYPE_IMPLEMENTATION
    // #define your own (u)stbtt_int8/16/32 before including to override this
 #ifndef stbtt_uint8
 typedef unsigned char   stbtt_uint8;
@@ -496,8 +496,8 @@ typedef char stbtt__check_size16[sizeof( stbtt_int16 ) == 2 ? 1 : -1];
 ////
 ////
 
-#ifndef __STB_INCLUDE_STB_TRUETYPE_H__
-#define __STB_INCLUDE_STB_TRUETYPE_H__
+#ifndef __STB_INCLUDE_STB_trueTYPE_H__
+#define __STB_INCLUDE_STB_trueTYPE_H__
 
 #ifdef STBTT_STATIC
 #define STBTT_DEF static
@@ -1094,7 +1094,7 @@ extern "C" {
 }
 #endif
 
-#endif // __STB_INCLUDE_STB_TRUETYPE_H__
+#endif // __STB_INCLUDE_STB_trueTYPE_H__
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -1103,7 +1103,7 @@ extern "C" {
 ////
 ////
 
-#ifdef STB_TRUETYPE_IMPLEMENTATION
+#ifdef STB_trueTYPE_IMPLEMENTATION
 
 #ifndef STBTT_MAX_OVERSAMPLE
 #define STBTT_MAX_OVERSAMPLE   8
@@ -1278,7 +1278,7 @@ static stbtt__buf stbtt__cff_index_get( stbtt__buf b, int i )
 //
 
 // on platforms that don't allow misaligned reads, if we want to allow
-// truetype fonts that aren't padded to alignment, define ALLOW_UNALIGNED_TRUETYPE
+// truetype fonts that aren't padded to alignment, define ALLOW_UNALIGNED_trueTYPE
 
 #define ttBYTE(p)     (* (stbtt_uint8 *) (p))
 #define ttCHAR(p)     (* (stbtt_int8 *) (p))
@@ -5049,7 +5049,7 @@ STBTT_DEF int stbtt_CompareUTF8toUTF16_bigendian( const char *s1, int len1, cons
 #pragma GCC diagnostic pop
 #endif
 
-#endif // STB_TRUETYPE_IMPLEMENTATION
+#endif // STB_trueTYPE_IMPLEMENTATION
 
 
 // FULL VERSION HISTORY

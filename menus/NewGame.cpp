@@ -40,7 +40,7 @@ public:
 			StartGameCb( 1.0f );
 			return;
 		}
-		EngFuncs::ClientCmd(FALSE, "menuactivate newgame");
+		EngFuncs::ClientCmd(false, "menuactivate newgame");
 
 		CMenuFramework::Show();
 	}
@@ -88,7 +88,7 @@ void CMenuNewGame::StartGameCb( float skill )
 
 	EngFuncs::PlayBackgroundTrack( NULL, NULL );
 
-	EngFuncs::ClientCmd( FALSE, "newgame\n" );
+	EngFuncs::ClientCmd( false, "newgame\n" );
 }
 
 void CMenuNewGame::ShowDialogCb( CMenuBaseItem *pSelf, void *pExtra )
@@ -135,7 +135,7 @@ void CMenuNewGame::_Init( void )
 void CMenuNewGame::Hide(void)
 {
 	CMenuFramework::Hide();
-	EngFuncs::ClientCmd(FALSE, "menuactivate mainmenu\n");
+	EngFuncs::ClientCmd(false, "menuactivate mainmenu\n");
 }
 
 ADD_MENU( menu_newgame, CMenuNewGame, UI_NewGame_Menu );

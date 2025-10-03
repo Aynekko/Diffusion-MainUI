@@ -21,7 +21,7 @@ GNU General Public License for more details.
 #endif
 
 #include "FontManager.h"
-#define STB_TRUETYPE_IMPLEMENTATION
+#define STB_trueTYPE_IMPLEMENTATION
 #define STBTT_STATIC
 
 #ifdef __GNUC__

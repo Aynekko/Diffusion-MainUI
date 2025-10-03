@@ -68,13 +68,13 @@ void CMenuSaveLoad::_Init( void )
 void CMenuSaveLoad::Show(void)
 {
 	CMenuFramework::Show();
-	EngFuncs::ClientCmd(FALSE, "menuactivate loadgame\n");
+	EngFuncs::ClientCmd(false, "menuactivate loadgame\n");
 }
 
 void CMenuSaveLoad::Hide(void)
 {
 	CMenuFramework::Hide();
-	EngFuncs::ClientCmd(FALSE, "menuactivate mainmenu\n");
+	EngFuncs::ClientCmd(false, "menuactivate mainmenu\n");
 }
 
 ADD_MENU( menu_saveload, CMenuSaveLoad, UI_SaveLoad_Menu );

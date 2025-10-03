@@ -194,7 +194,7 @@ void SetSettingsTo( int Quality )
 		EngFuncs::CvarSetValue( "gl_hbao", 1 );
 		EngFuncs::CvarSetValue( "cl_lod_enable", 0 );
 
-		EngFuncs::ClientCmd( FALSE, "menuactivate video_maximum\n" );
+		EngFuncs::ClientCmd( false, "menuactivate video_maximum\n" );
 	}
 }
 
@@ -700,7 +700,7 @@ void CMenuVidOptions::_VidInit()
 
 void CMenuVidOptions::Show( void )
 {
-	EngFuncs::ClientCmd( FALSE, "menuactivate vidoptions\n" );
+	EngFuncs::ClientCmd( false, "menuactivate vidoptions\n" );
 	hideMenus.bChecked = false;
 	HideMenus(); // unhide them
 	EngFuncs::CvarSetValue( "ui_videooptions_active", 1 );
@@ -710,7 +710,7 @@ void CMenuVidOptions::Show( void )
 void CMenuVidOptions::Hide( void )
 {
 	hideMenus.bChecked = false;
-	EngFuncs::ClientCmd( FALSE, "menuactivate options\n" );
+	EngFuncs::ClientCmd( false, "menuactivate options\n" );
 	EngFuncs::CvarSetValue( "ui_videooptions_active", 0 );
 	CMenuFramework::Hide();
 }

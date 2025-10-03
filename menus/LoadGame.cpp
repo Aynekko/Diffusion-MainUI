@@ -38,6 +38,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define MAX_CELLSTRING CS_SIZE
 
+/*
+============
+COM_CompareSaves
+============
+*/
+static int COM_CompareSaves( const void *a, const void *b )
+{
+	const char *file1 = *((const char **)a);
+	const char *file2 = *((const char **)b);
+	int bResult = 0;
+
+	EngFuncs::CompareFileTime( file2, file1, &bResult );
+
+	return bResult;
+}
+
 class CMenuLoadGame;
 
 class CMenuSavePreview : public CMenuBaseItem
@@ -159,10 +175,10 @@ void CMenuSavesListModel::Update( void )
 	char	**filenames;
 	int	i = 0, j, numFiles;
 
-	filenames = EngFuncs::GetFilesList( "save/*.sav", &numFiles, TRUE );
+	filenames = EngFuncs::GetFilesList( "save/*.sav", &numFiles, true );
 
 	// sort the saves in reverse order (oldest past at the end)
-	qsort( filenames, numFiles, sizeof( char* ), (cmpfunc)COM_CompareSaves );
+	qsort( filenames, numFiles, sizeof( *filenames ), COM_CompareSaves );
 
 	if ( parent->IsSaveMode() && CL_IsActive() )
 	{
@@ -338,7 +354,7 @@ void CMenuLoadGame::LoadGame()
 
 		EngFuncs::StopBackgroundTrack( );
 
-		EngFuncs::ClientCmd( FALSE, cmd );
+		EngFuncs::ClientCmd( false, cmd );
 
 		UI_CloseMenu();
 	}
@@ -358,7 +374,7 @@ void CMenuLoadGame::SaveGame()
 		EngFuncs::PIC_Free( cmd );
 
 		snprintf( cmd, sizeof( cmd ), "save \"%s\"\n", saveName );
-		EngFuncs::ClientCmd( FALSE, cmd );
+		EngFuncs::ClientCmd( false, cmd );
 
 		UI_CloseMenu();
 	}
@@ -391,7 +407,7 @@ void CMenuLoadGame::DeleteGame()
 		char cmd[128];
 		snprintf( cmd, sizeof( cmd ), "killsave \"%s\"\n", delName );
 
-		EngFuncs::ClientCmd( TRUE, cmd );
+		EngFuncs::ClientCmd( true, cmd );
 
 		snprintf( cmd, sizeof( cmd ), "save/%s.bmp", delName );
 		EngFuncs::PIC_Free( cmd );

@@ -98,7 +98,7 @@ typedef struct hud_player_info_s
 {
 	char		*name;
 	short		ping;
-	byte		thisplayer;	// TRUE if this is the calling player
+	byte		thisplayer;	// true if this is the calling player
 
 	// stuff that's unused at the moment,  but should be done
 	byte		spectator;
