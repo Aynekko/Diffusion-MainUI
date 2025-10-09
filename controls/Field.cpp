@@ -60,6 +60,9 @@ void CMenuField::VidInit( void )
 	iScroll = g_FontMgr->CutText( font, szBuffer, m_scChSize, iRealWidth, true );
 
 	iRealWidth = m_scSize.w - UI_OUTLINE_WIDTH * 2;
+
+	if( bDisplayOnly )
+		iFlags |= QMF_GRAYED;
 }
 
 /*
@@ -472,7 +475,7 @@ void CMenuField::Draw( void )
 
 	if( iFlags & QMF_GRAYED )
 	{
-		UI_DrawString( font, newPos, m_scSize, text, uiColorDkGrey, m_scChSize, eTextAlignment, textflags | ETF_FORCECOL );
+		UI_DrawString( font, newPos, m_scSize, text, bDisplayOnly ? colorBase : uiColorDkGrey, m_scChSize, eTextAlignment, textflags | ETF_FORCECOL );
 		return; // grayed
 	}
 

@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "CheckBox.h"
 #include "Slider.h"
 #include "kbutton.h"
+#include "Field.h"
 
 #define ART_BANNER		"gfx/shell/head_controls"
 #define MAX_KEYS 256
@@ -101,6 +102,7 @@ public:
 	void GetConfig( void );
 	void PitchInvert( void );
 	void SaveAndPopMenu( void );
+	void SetSensitivity( void );
 
 	// state toggle by
 	CMenuTable keysList;
@@ -130,6 +132,7 @@ private:
 	CMenuCheckBox	invertMouse;
 	CMenuCheckBox	mouseLook;
 	CMenuSlider	sensitivity;
+	CMenuField sens2;
 };
 
 /*
@@ -436,8 +439,14 @@ void CMenuControls::_Init( void )
 	lookFilter.SetCoord( 72, 400 );
 
 	sensitivity.SetNameAndStatus( L( "GameUI_MouseSensitivity" ), L( "Set in-game mouse sensitivity" ) );
-	sensitivity.Setup( 0.0, 20.0f, 0.1 );
+	sensitivity.Setup( 0.1f, 20.0f, 0.1f );
 	sensitivity.SetCoord( 72, 500 );
+	sensitivity.SetSize( 250, 0 );
+	sensitivity.onChanged = VoidCb( &CMenuControls::SetSensitivity );
+
+	sens2.bNumbersOnly = true;
+	sens2.SetRect( 72, sensitivity.pos.y + 30, 80, 32 );
+	sens2.bDisplayOnly = true;
 
 	AddItem( banner );
 
@@ -458,9 +467,22 @@ void CMenuControls::_Init( void )
 	AddItem( mouseLook );
 	AddItem( lookFilter );
 	AddItem( sensitivity );
+	AddItem( sens2 );
 
 	CMenuPicButton *Joystick = AddButton( L( "GameUI_Joystick" ), L( "Change gamepad axis and button settings" ), PC_GAMEPAD, UI_GamePad_Menu, QMF_NOTIFY );
 	Joystick->pos.y = 650;
+}
+
+void CMenuControls::SetSensitivity( void )
+{
+	sensitivity.WriteCvar();
+
+	float flSens = EngFuncs::GetCvarFloat( "sensitivity" );
+	sensitivity.SetCurrentValue( flSens );
+
+	char m_szValue[32];
+	snprintf( m_szValue, sizeof( m_szValue ), "%.*f", 1, flSens );
+	sens2.SetBuffer( m_szValue );
 }
 
 void CMenuControls::_VidInit()
@@ -498,6 +520,8 @@ void CMenuControls::GetConfig()
 	lookFilter.LinkCvar( "look_filter" );
 
 	sensitivity.LinkCvar( "sensitivity" );
+
+	SetSensitivity();
 }
 
 void CMenuControls::PitchInvert()

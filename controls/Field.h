@@ -66,6 +66,7 @@ public:
 	bool bNumbersOnly;
 	CImage szBackground;
 	int    iMaxLength;		// can't be more than UI_MAX_FIELD_LINE
+	bool bDisplayOnly; // display only
 
 protected:
 	void _Event( int ev ) override;
