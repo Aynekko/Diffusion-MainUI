@@ -393,6 +393,11 @@ bool CMenuTable::KeyDown( int key )
 		action_made = MoveView( -1 );
 		if( !action_made )
 			action_made = MoveCursor( -1 );
+		else
+		{
+			if( iCurItem > iTopItem + iNumRows - 1 )
+				iCurItem = iTopItem + iNumRows - 1;
+		}
 		sound = action_made ? uiStatic.sounds[SND_MOVE] : uiStatic.sounds[SND_BUZZ];
 		noscroll = true;
 	}
@@ -402,6 +407,11 @@ bool CMenuTable::KeyDown( int key )
 		action_made = MoveView( 1 );
 		if( !action_made )
 			action_made = MoveCursor( 1 );
+		else
+		{
+			if( iCurItem < iTopItem )
+				iCurItem = iTopItem;
+		}
 		sound = action_made ? uiStatic.sounds[SND_MOVE] : uiStatic.sounds[SND_BUZZ];
 		noscroll = true;
 	}
