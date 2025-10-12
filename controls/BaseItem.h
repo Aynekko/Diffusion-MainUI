@@ -151,7 +151,7 @@ public:
 	CEventCallback onReleasedClActive;
 
 	inline void SetCoord( int x, int y )                { pos.x = x; pos.y = y; }
-	inline void SetSize( int w, int h )                 { if( w > 0 ) size.w = w; if( h > 0 ) size.h = h; }
+	inline void SetSize( int w, int h )                 { if( w != 0 ) size.w = w; if( h != 0 ) size.h = h; }
 	inline void SetRect( int x, int y, int w, int h )   { SetCoord( x, y ); SetSize( w, h ); }
 	inline Point GetRenderPosition() const { return m_scPos; }
 	inline Size  GetRenderSize()     const { return m_scSize; }

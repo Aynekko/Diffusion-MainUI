@@ -684,12 +684,26 @@ void CMenuServerBrowser::Connect( server_t &server )
 
 	if( menu_internetgames->m_bLanOnly == false )
 	{
-		if( menu_internetgames->historyList.Count() > 20 ) // FIXME: make configurable
-			menu_internetgames->historyList.FastRemove( 0 );
-		menu_internetgames->historyList.AddToTail( favlist_entry_t( sadr, prot, true ) );
+		bool serverExists = false;
+
+		for( int i = 0; i < menu_internetgames->historyList.Count(); ++i )
+		{
+			if( strcmp( menu_internetgames->historyList[i].sadr, sadr ) == 0 && strcmp( menu_internetgames->historyList[i].prot, prot ) == 0 )
+			{
+				serverExists = true;
+				break;
+			}
+		}
+
+		if( !serverExists )
+		{
+			if( menu_internetgames->historyList.Count() > 20 ) // FIXME: make configurable
+				menu_internetgames->historyList.FastRemove( 0 );
+			menu_internetgames->historyList.AddToTail( favlist_entry_t( sadr, prot, true ) );
 
 
-		menu_internetgames->SaveLists();
+			menu_internetgames->SaveLists();
+		}
 	}
 
 	EngFuncs::ClientCmdF( false, "connect \"%s\" \"%s\"\n", sadr, prot );
@@ -992,7 +1006,7 @@ void CMenuServerBrowser::AddServer( void )
 
 	server_t serv( adr, fakeInfoString, false, true );
 	serv.UpdateData();
-	serv.SetPing( 9.999f );
+	serv.SetPing( MAX_PING );
 	gameListModel.servers.AddToTail( serv );
 
 	entry.QueryServer();
@@ -1164,7 +1178,6 @@ void CMenuServerBrowser::_Init( void )
 	filterPing.SelectLast();
 	filterPing.bDropUp = true;
 	filterPing.eTextAlignment = QM_LEFT;
-	filterPing.iSelectColor = uiInputFgColor;
 	filterPing.iFgTextColor = uiInputFgColor - 0x00151515;
 	filterPing.SetCharSize( QM_SMALLFONT );
 	filterPing.SetSize( 70, 30 );
@@ -1183,7 +1196,6 @@ void CMenuServerBrowser::_Init( void )
 	filterEmpty.SelectLast( false );
 	filterEmpty.bDropUp = true;
 	filterEmpty.eTextAlignment = QM_LEFT;
-	filterEmpty.iSelectColor = uiInputFgColor;
 	filterEmpty.iFgTextColor = uiInputFgColor - 0x00151515;
 	filterEmpty.SetCharSize( QM_SMALLFONT );
 	filterEmpty.SetSize( 120, 30 );
@@ -1202,7 +1214,6 @@ void CMenuServerBrowser::_Init( void )
 	filterFull.SelectLast( false );
 	filterFull.bDropUp = true;
 	filterFull.eTextAlignment = QM_LEFT;
-	filterFull.iSelectColor = uiInputFgColor;
 	filterFull.iFgTextColor = uiInputFgColor - 0x00151515;
 	filterFull.SetCharSize( QM_SMALLFONT );
 	filterFull.SetSize( 120, 30 );
@@ -1218,7 +1229,6 @@ void CMenuServerBrowser::_Init( void )
 	filterMap.AddItem( L( "any map" ), "" );
 	filterMap.bDropUp = true;
 	filterMap.eTextAlignment = QM_LEFT;
-	filterMap.iSelectColor = uiInputFgColor;
 	filterMap.iFgTextColor = uiInputFgColor - 0x00151515;
 	filterMap.SetCharSize( QM_SMALLFONT );
 	filterMap.SetSize( 200, 30 );
