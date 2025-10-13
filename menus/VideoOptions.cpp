@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "CheckBox.h"
 #include "SpinControl.h"
 #include "StringArrayModel.h"
+#include "Field.h"
 
 #define ART_BANNER	  	"gfx/shell/head_vidoptions"
 #define ART_GAMMA		"gfx/shell/gamma"
@@ -35,6 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define GAMMA_SLIDER 0
 
 #define LEGACY_VIEWSIZE 0
+#define FPS_LIMITER_CHECKBOX 0
 
 enum
 {
@@ -70,7 +72,12 @@ public:
 	int fps_remember;
 
 	CMenuPicButton done;
+#if FPS_LIMITER_CHECKBOX
 	CMenuSpinControl maxFPS;
+#else
+	CMenuSlider	maxFPS;
+	CMenuField maxFPSdisplay;
+#endif
 	CMenuCheckBox FPSunlimited;
 	CMenuCheckBox gl_vsync;
 	CMenuCheckBox hideMenus;
@@ -284,6 +291,12 @@ void CMenuVidOptions::GetConfig( void )
 			maxFPS.iFlags |= QMF_GRAYED;
 		}
 	}
+
+#if !FPS_LIMITER_CHECKBOX
+	char m_szValue[8];
+	snprintf( m_szValue, sizeof( m_szValue ), "%i", (int)maxFPS.GetCurrentValue() );
+	maxFPSdisplay.SetBuffer( m_szValue );
+#endif
 }
 
 void CMenuVidOptions::WriteAnisotropy(void)
@@ -372,6 +385,12 @@ void CMenuVidOptions::SetCurFps( void )
 {
 	EngFuncs::CvarSetValue( "fps_max", (int)maxFPS.GetCurrentValue() );
 	fps_remember = (int)maxFPS.GetCurrentValue();
+
+#if !FPS_LIMITER_CHECKBOX
+	char m_szValue[8];
+	snprintf( m_szValue, sizeof( m_szValue ), "%i", fps_remember );
+	maxFPSdisplay.SetBuffer( m_szValue );
+#endif
 }
 
 void CMenuVidOptions::SetVSync( void )
@@ -408,6 +427,9 @@ void CMenuVidOptions::HideMenus( void )
 		r_bloom.iFlags |= QMF_HIDDEN;
 		r_blur.iFlags |= QMF_HIDDEN;
 		maxFPS.iFlags |= QMF_HIDDEN;
+#if !FPS_LIMITER_CHECKBOX
+		maxFPSdisplay.iFlags |= QMF_HIDDEN;
+#endif
 		FPSunlimited.iFlags |= QMF_HIDDEN;
 		gl_vsync.iFlags |= QMF_HIDDEN;
 		shadowQ.iFlags |= QMF_HIDDEN;
@@ -440,6 +462,9 @@ void CMenuVidOptions::HideMenus( void )
 		r_bloom.iFlags &= ~QMF_HIDDEN;
 		r_blur.iFlags &= ~QMF_HIDDEN;
 		maxFPS.iFlags &= ~QMF_HIDDEN;
+#if !FPS_LIMITER_CHECKBOX
+		maxFPSdisplay.iFlags &= ~QMF_HIDDEN;
+#endif
 		FPSunlimited.iFlags &= ~QMF_HIDDEN;
 		gl_vsync.iFlags &= ~QMF_HIDDEN;
 		shadowQ.iFlags &= ~QMF_HIDDEN;
@@ -517,8 +542,18 @@ void CMenuVidOptions::_Init( void )
 
 	maxFPS.szName = L( "GameUI_FPSlimit" );
 	maxFPS.szStatusText = L( "Cap your game frame rate" );
+#if FPS_LIMITER_CHECKBOX
 	maxFPS.Setup( 25, 200, 5 );
 	maxFPS.SetRect( 72, MenuYOffset + 200, 220, 32 );
+#else
+	const int fps_w = 275;
+	maxFPS.Setup( 20, 200, 1 );
+	maxFPS.SetCoord( 72, MenuYOffset + 220 );
+	maxFPS.SetSize( fps_w, 0 );
+	maxFPSdisplay.bNumbersOnly = true;
+	maxFPSdisplay.SetRect( maxFPS.pos.x + fps_w - 80, maxFPS.pos.y - 38, 80, 32 );
+	maxFPSdisplay.bDisplayOnly = true;
+#endif
 	maxFPS.onChanged = VoidCb( &CMenuVidOptions::SetCurFps );
 
 	FPSunlimited.SetNameAndStatus( L( "GameUI_FPSunlimited" ), L( "-" ) );
@@ -669,6 +704,9 @@ void CMenuVidOptions::_Init( void )
 	AddItem( r_bloom );
 	AddItem( r_blur );
 	AddItem( maxFPS );
+#if !FPS_LIMITER_CHECKBOX
+	AddItem( maxFPSdisplay );
+#endif
 	AddItem( FPSunlimited );
 	AddItem( gl_vsync );
 	AddItem( hideMenus );
