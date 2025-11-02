@@ -413,9 +413,9 @@ void CMenuControls::_Init( void )
 
 	keysList.SetRect( 460, 190, 1000, 720 ); // 460 = (1920(ui width) - 1000(table width)) / 2
 	keysList.SetModel( &keysListModel );
-	keysList.SetupColumn( 0, L( "GameUI_Action" ), 0.50f );
-	keysList.SetupColumn( 1, L( "GameUI_KeyButton" ), 0.25f );
-	keysList.SetupColumn( 2, L( "GameUI_Alternate" ), 0.25f );
+	keysList.SetupColumn( 0, L( "GameUI_Action" ), 0.70f );
+	keysList.SetupColumn( 1, L( "GameUI_KeyButton" ), 0.15f );
+	keysList.SetupColumn( 2, L( "GameUI_Alternate" ), 0.15f );
 	keysList.charSize += 5; // increase distance between lines
 
 	msgBox1.SetMessage( L( "Press a key or button" ) );
