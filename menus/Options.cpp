@@ -57,6 +57,7 @@ public:
 	CMenuCheckBox cl_centerhud;
 	CMenuCheckBox allowConsole;
 	CMenuSlider	cl_viewmodel_extras;
+	CMenuSpinControl default_fov;
 
 	// update dialog
 	CMenuYesNoMessageBox msgBox;
@@ -105,6 +106,11 @@ void CMenuOptions::_Init( void )
 	CMenuPicButton *done = AddButton( L( "Done" ), L( "Go back to the Main menu" ),
 		PC_DONE, VoidCb( &CMenuOptions::Hide ), QMF_NOTIFY );
 	done->pos.y -= 50;
+
+	default_fov.szName = L( "GameUI_FieldOfView" );
+	default_fov.Setup( 60, 120, 5 );
+	default_fov.SetRect( 300, MenuYOffset + 80, 220, 32 );
+	default_fov.onChanged = CMenuEditable::WriteCvarCb;
 
 	cl_showdamage.SetNameAndStatus( L( "GameUI_ShowDamage" ), L( "-" ) );
 	cl_showdamage.iFlags |= QMF_NOTIFY;
@@ -165,6 +171,7 @@ void CMenuOptions::_Init( void )
 	allowConsole.SetCoord( 300, MenuYOffset + 590 );
 	allowConsole.onChanged.SetCommand( false, "ui_allowconsole\n" );
 
+	AddItem( default_fov );
 	AddItem( cl_showdamage );
 	AddItem( cl_achievement_notify );
 	AddItem( cl_tutor );
@@ -186,6 +193,7 @@ void CMenuOptions::Show(void)
 
 void CMenuOptions::Hide(void)
 {
+	default_fov.WriteCvar();
 	cl_showdamage.WriteCvar();
 	cl_achievement_notify.WriteCvar();
 	cl_tutor.WriteCvar();
@@ -201,6 +209,7 @@ void CMenuOptions::Hide(void)
 
 void CMenuOptions::GetConfig()
 {
+	default_fov.LinkCvar( "default_fov", CMenuEditable::CVAR_VALUE );
 	cl_showdamage.LinkCvar( "cl_showdamage" );
 	cl_achievement_notify.LinkCvar( "cl_achievement_notify" );
 	cl_tutor.LinkCvar( "cl_tutor" );
