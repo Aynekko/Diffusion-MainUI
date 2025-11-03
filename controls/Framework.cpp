@@ -15,6 +15,8 @@ GNU General Public License for more details.
 #include "Framework.h"
 #include "PicButton.h"
 
+#define DISABLE_BANNERS 1
+
 // menu banners used fiexed rectangle (virtual screenspace at 640x480)
 #define UI_BANNER_POSX		72
 #define UI_BANNER_POSY		72
@@ -181,6 +183,7 @@ bool CMenuFramework::KeyDown( int key )
 
 void CMenuFramework::PrepareBannerAnimation( EAnimation direction, CMenuPicButton *initiator )
 {
+#if !DISABLE_BANNERS
 	// banner is not present, ignore
 	if( banner.Parent() != this )
 		return;
@@ -196,6 +199,7 @@ void CMenuFramework::PrepareBannerAnimation( EAnimation direction, CMenuPicButto
 
 		banner.szName = initiator->szName;
 	}
+#endif
 }
 
 bool CMenuFramework::DrawAnimation()
@@ -228,7 +232,9 @@ CMenuFramework::CMenuBannerBitmap::CMenuBannerBitmap()
 
 void CMenuFramework::CMenuBannerBitmap::SetPicture( const char *pic )
 {
+#if !DISABLE_BANNERS
 	image.Load( pic );
+#endif
 }
 
 void CMenuFramework::CMenuBannerBitmap::Draw( Point pt, Size sz )
@@ -255,5 +261,7 @@ void CMenuFramework::CMenuBannerBitmap::Draw( Point pt, Size sz )
 
 void CMenuFramework::CMenuBannerBitmap::Draw()
 {
+#if !DISABLE_BANNERS
 	Draw( m_scPos, m_scSize );
+#endif
 }
