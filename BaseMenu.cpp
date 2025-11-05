@@ -541,7 +541,12 @@ void UI_DrawMouseCursor( void )
 	if( item && FBitSet( item->iFlags, QMF_HASMOUSEFOCUS ) ) 	// fast approach
 	{
 		if( FBitSet( item->iFlags, QMF_GRAYED ) )
-			hCursor = (void *)dc_no;
+		{
+			if( FBitSet( item->iFlags, QMF_SILENT ) )
+				hCursor = (void *)dc_arrow;
+			else
+				hCursor = (void *)dc_no;
+		}
 		else hCursor = (void *)item->CursorAction();
 	}
 	else
@@ -557,7 +562,12 @@ void UI_DrawMouseCursor( void )
 				continue;
 
 			if( FBitSet( item->iFlags, QMF_GRAYED ) )
-				hCursor = (void *)dc_no;
+			{
+				if( FBitSet( item->iFlags, QMF_SILENT ) )
+					hCursor = (void *)dc_arrow;
+				else
+					hCursor = (void *)dc_no;
+			}
 			else hCursor = (void *)item->CursorAction();
 
 			break;

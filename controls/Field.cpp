@@ -62,7 +62,10 @@ void CMenuField::VidInit( void )
 	iRealWidth = m_scSize.w - UI_OUTLINE_WIDTH * 2;
 
 	if( bDisplayOnly )
+	{
 		iFlags |= QMF_GRAYED;
+		iFlags |= QMF_SILENT; // hack to draw arrow cursor
+	}
 }
 
 /*

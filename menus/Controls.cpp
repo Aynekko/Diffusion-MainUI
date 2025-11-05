@@ -441,7 +441,7 @@ void CMenuControls::_Init( void )
 	sensitivity.SetNameAndStatus( L( "GameUI_MouseSensitivity" ), L( "Set in-game mouse sensitivity" ) );
 	sensitivity.Setup( 0.1f, 20.0f, 0.1f );
 	sensitivity.SetCoord( 72, 500 );
-	sensitivity.SetSize( 250, 0 );
+	sensitivity.SetSize( 350, 0 );
 	sensitivity.onChanged = VoidCb( &CMenuControls::SetSensitivity );
 
 	sens2.bNumbersOnly = true;
