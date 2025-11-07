@@ -16,7 +16,7 @@ GNU General Public License for more details.
 #ifndef EXTDLL_H
 #define EXTDLL_H
 
-#include "common/xash3d_types.h"
+#include "xash3d_types.h"
 
 #ifndef EXPORT
 #ifdef _WIN32
@@ -60,14 +60,6 @@ GNU General Public License for more details.
 
 #ifdef bound
 #undef bound
-#endif
-
-#ifndef false
-#define false	0
-#endif
-
-#ifndef true
-#define true	(!false)
 #endif
 
 #if !defined(_WIN32) && !defined(__MINGW32__)
