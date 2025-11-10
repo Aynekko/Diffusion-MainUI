@@ -414,12 +414,17 @@ void CMenuMain::VidInit( bool connected )
 void CMenuMain::_VidInit()
 {
 	VidInit( CL_IsActive() );
+	uiStatic.bgmap_hack_framecount = 0;
 }
 
 void CMenuMain::Draw(void)
 {
-	if( !EngFuncs::ClientInGame() )
-		UI_LoadBackgroundMap();
+	if( !EngFuncs::ClientInGame() && (int)EngFuncs::GetCvarFloat( "host_serverstate" ) == 0 )
+	{
+		uiStatic.bgmap_hack_framecount++;
+		if( uiStatic.bgmap_hack_framecount > 30 )
+			UI_LoadBackgroundMap();
+	}
 
 	BaseClass::Draw();
 }
