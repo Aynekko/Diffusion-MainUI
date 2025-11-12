@@ -75,6 +75,7 @@ public:
 	CMenuSavesListModel( CMenuLoadGame *parent ) : parent( parent ) { }
 
 	void Update() override;
+	void OnActivateEntry( int line ) override;
 	int GetColumns() const override
 	{
 		// time, name, gametime
@@ -273,6 +274,14 @@ void CMenuSavesListModel::Update( void )
 	if ( delName[0][0] == 0 )
 		parent->remove.SetGrayed( true );
 	else parent->remove.SetGrayed( false );
+}
+
+void CMenuSavesListModel::OnActivateEntry( int line )
+{
+	if( parent->IsSaveMode() )
+		parent->CheckEntry();
+	else
+		parent->LoadGame();
 }
 
 void CMenuLoadGame::CheckEntry( void )
