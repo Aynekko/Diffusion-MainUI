@@ -267,7 +267,6 @@ void CMenuCreateGame::_Init( void )
 	msgBox.Link( this );
 
 	bots.szName = L( "GameUI_Bots" );
-	bots.szStatusText = L( "Cap your game frame rate" );
 	bots.Setup( 0, 16, 1 );
 	bots.SetRect( 72, MenuYOffset, 220, 32 );
 	bots.LinkCvar( "bot_max", CMenuEditable::CVAR_VALUE );
