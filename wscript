@@ -4,6 +4,7 @@
 
 from waflib import Logs, Configure
 import os
+import xml.etree.ElementTree as ET
 
 top = '.'
 
@@ -15,28 +16,23 @@ FT2_CHECK='''extern "C" {
 int main() { return FT_Init_FreeType( NULL ); }
 '''
 
-FC_CHECK='''extern "C" {
-#include <fontconfig/fontconfig.h>
-}
-
-int main() { return (int)FcInit(); }
-'''
-
 def options(opt):
 	grp = opt.add_option_group('MainUI C++ options')
-	grp.add_option('--enable-stbtt', action = 'store_true', dest = 'USE_STBTT', default = False,
-		help = 'prefer stb_truetype.h over freetype [default: %default]')
+	grp.add_option('--enable-stbtt', action = 'store_true', dest = 'USE_STBTT', default = True,
+		help = 'prefer stb_truetype.h over freetype [default: %(default)s]')
 
 	return
 
 def configure(conf):
-	# conf.env.CXX11_MANDATORY = False
 	conf.load('fwgslib cxx11')
+	conf.env.append_unique('DEFINES', 'STDINT_H=<cstdint>')
 
-	if not conf.env.HAVE_CXX11:
+	if not conf.check_std('cxx11'):
 		conf.define('MY_COMPILER_SUCKS', 1)
 
-	conf.env.USE_STBTT = conf.options.USE_STBTT
+	if conf.env.DEST_OS in ['android', 'darwin', 'nswitch', 'psvita', 'emscripten'] or conf.env.MAGX:
+		conf.options.USE_STBTT = True
+
 	conf.define('MAINUI_USE_CUSTOM_FONT_RENDER', 1)
 
 	nortti = {
@@ -46,44 +42,28 @@ def configure(conf):
 
 	conf.env.append_unique('CXXFLAGS', conf.get_flags_by_compiler(nortti, conf.env.COMPILER_CC))
 
-	if conf.env.DEST_OS == 'darwin' or conf.env.DEST_OS == 'android' or conf.env.MAGX:
-		conf.env.USE_STBTT = True
-		conf.define('MAINUI_USE_STB', 1)
+	conf.define_cond('MAINUI_USE_STB', conf.options.USE_STBTT)
 
 	if conf.env.DEST_OS == 'android':
 		conf.define('NO_STL', 1)
 		conf.env.append_unique('CXXFLAGS', '-fno-exceptions')
 
 	if conf.env.DEST_OS != 'win32' and conf.env.DEST_OS != 'dos':
-		if not conf.env.USE_STBTT and not conf.options.LOW_MEMORY:
+		if not conf.options.USE_STBTT:
 			conf.check_pkg('freetype2', 'FT2', FT2_CHECK)
-			conf.check_pkg('fontconfig', 'FC', FC_CHECK)
 			conf.define('MAINUI_USE_FREETYPE', 1)
-		conf.check_cxx(lib='rt', mandatory=False)
 
 def build(bld):
-	libs = []
+	sources = []
+	ns = {'vs': 'http://schemas.microsoft.com/developer/msbuild/2003'}
+	root = ET.parse(bld.path.find_node('menu.vcxproj').abspath())
+	cl_compiles = []
+	for i in root.findall('vs:ItemGroup', ns):
+		cl_compiles += i.findall('vs:ClCompile', ns)
 
-	# basic build: dedicated only, no dependencies
-	if bld.env.DEST_OS != 'win32':
-		if not bld.env.USE_STBTT:
-			libs += ['FT2', 'FC']
-		libs += ['RT']
-	else:
-		libs += ['GDI32', 'USER32']
-
-	if bld.env.DEST_OS == 'linux':
-		libs += ['RT']
-
-	source = bld.path.ant_glob([
-		'*.cpp',
-		'miniutl/*.cpp',
-		'font/*.cpp',
-		'menus/*.cpp',
-		'menus/dynamic/*.cpp',
-		'model/*.cpp',
-		'controls/*.cpp'
-	])
+	for i in cl_compiles:
+		srcfile = i.attrib['Include']
+		sources += [srcfile.replace('\\', '/')]
 
 	includes = [
 		'.',
@@ -92,17 +72,18 @@ def build(bld):
 		'controls/',
 		'menus/',
 		'model/',
-		'../common',
-		'../engine',
-		'../pm_shared'
+		'common',
+		'engine',
+		'public',
+		'pm_shared'
 	]
 
 	bld.shlib(
-		source   = source,
-		target   = 'menu',
-		features = 'cxx',
+		source   = sources,
+		target   = 'menu' + bld.env.POSTFIX,
 		includes = includes,
-		use      = libs,
-		install_path = bld.env.LIBDIR,
-		subsystem = bld.env.MSVC_SUBSYSTEM
+		defines  = 'sprintf_s=sprintf',
+		use      = 'werror FT2 GDI32 USER32',
+		install_path = os.path.join(bld.env.GAMEDIR, bld.env.CLIENT_INSTALL_DIR),
+		cmake_skip = True
 	)

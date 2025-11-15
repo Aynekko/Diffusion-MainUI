@@ -478,7 +478,7 @@ void CMenuField::Draw( void )
 
 	if( iFlags & QMF_GRAYED )
 	{
-		UI_DrawString( font, newPos, m_scSize, text, bDisplayOnly ? colorBase : uiColorDkGrey, m_scChSize, eTextAlignment, textflags | ETF_FORCECOL );
+		UI_DrawString( font, newPos, m_scSize, text, bDisplayOnly ? (unsigned int)colorBase : uiColorDkGrey, m_scChSize, eTextAlignment, textflags | ETF_FORCECOL );
 		return; // grayed
 	}
 

@@ -25,6 +25,41 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "BtnsBMPTable.h"
 #include <string.h>
 
+#ifndef _WIN32
+// a1ba: too lazy to port this file on upstream code, fix later
+#include <stdint.h>
+#pragma pack( push, 1 )
+typedef struct tagBITMAPFILEHEADER {
+	uint16_t  bfType;
+	uint32_t bfSize;
+	uint16_t  bfReserved1;
+	uint16_t  bfReserved2;
+	uint32_t bfOffBits;
+} BITMAPFILEHEADER, *LPBITMAPFILEHEADER, *PBITMAPFILEHEADER;
+
+typedef struct tagBITMAPINFOHEADER {
+	uint32_t biSize;
+	int32_t  biWidth;
+	int32_t  biHeight;
+	uint16_t  biPlanes;
+	uint16_t  biBitCount;
+	uint32_t biCompression;
+	uint32_t biSizeImage;
+	int32_t  biXPelsPerMeter;
+	int32_t  biYPelsPerMeter;
+	uint32_t biClrUsed;
+	uint32_t biClrImportant;
+} BITMAPINFOHEADER, *LPBITMAPINFOHEADER, *PBITMAPINFOHEADER;
+
+typedef struct tagRGBQUAD {
+	uint8_t rgbBlue;
+	uint8_t rgbGreen;
+	uint8_t rgbRed;
+	uint8_t rgbReserved;
+} RGBQUAD;
+#pragma pack( pop )
+#endif // _WIN32
+
 #define ART_BUTTONS_MAIN		"gfx/shell/btns_main.bmp"	// we support bmp only
 
 /*
