@@ -52,6 +52,7 @@ public:
 	CMenuCheckBox cl_showhealthbars;
 	CMenuCheckBox cl_hitsound;
 	CMenuCheckBox cl_useicon;
+	CMenuCheckBox cl_subtitles;
 	CMenuSpinControl cl_crosshair;
 	CMenuSpinControl cl_largehud;
 	CMenuCheckBox cl_centerhud;
@@ -109,8 +110,12 @@ void CMenuOptions::_Init( void )
 
 	default_fov.szName = L( "GameUI_FieldOfView" );
 	default_fov.Setup( 60, 120, 5 );
-	default_fov.SetRect( 300, MenuYOffset + 80, 220, 32 );
+	default_fov.SetRect( 300, MenuYOffset + 30, 220, 32 );
 	default_fov.onChanged = CMenuEditable::WriteCvarCb;
+
+	cl_subtitles.SetNameAndStatus( L( "GameUI_Subtitles" ), L( "-" ) );
+	cl_subtitles.iFlags |= QMF_NOTIFY;
+	cl_subtitles.SetCoord( 300, MenuYOffset + 80 );
 
 	cl_showdamage.SetNameAndStatus( L( "GameUI_ShowDamage" ), L( "-" ) );
 	cl_showdamage.iFlags |= QMF_NOTIFY;
@@ -172,6 +177,7 @@ void CMenuOptions::_Init( void )
 	allowConsole.onChanged.SetCommand( false, "ui_allowconsole\n" );
 
 	AddItem( default_fov );
+	AddItem( cl_subtitles );
 	AddItem( cl_showdamage );
 	AddItem( cl_achievement_notify );
 	AddItem( cl_tutor );
@@ -194,6 +200,7 @@ void CMenuOptions::Show(void)
 void CMenuOptions::Hide(void)
 {
 	default_fov.WriteCvar();
+	cl_subtitles.WriteCvar();
 	cl_showdamage.WriteCvar();
 	cl_achievement_notify.WriteCvar();
 	cl_tutor.WriteCvar();
@@ -210,6 +217,7 @@ void CMenuOptions::Hide(void)
 void CMenuOptions::GetConfig()
 {
 	default_fov.LinkCvar( "default_fov", CMenuEditable::CVAR_VALUE );
+	cl_subtitles.LinkCvar( "cl_subtitles" );
 	cl_showdamage.LinkCvar( "cl_showdamage" );
 	cl_achievement_notify.LinkCvar( "cl_achievement_notify" );
 	cl_tutor.LinkCvar( "cl_tutor" );
