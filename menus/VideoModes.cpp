@@ -166,7 +166,7 @@ void CMenuVidModes::SetConfig()
 	if( testMode ) // show this dialog before changing any settings
 	{
 		testModeMsgBox.Show();
-		testModeTimer = gpGlobals->time + 5.0f; // five seconds should be enough
+		testModeTimer = gpGlobals->time + 10.0f; // five seconds should be enough
 	}
 
 	vsync.WriteCvar();

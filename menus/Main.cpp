@@ -422,7 +422,7 @@ void CMenuMain::Draw(void)
 	if( !EngFuncs::ClientInGame() && (int)EngFuncs::GetCvarFloat( "host_serverstate" ) == 0 )
 	{
 		uiStatic.bgmap_hack_framecount++;
-		if( uiStatic.bgmap_hack_framecount > 30 )
+		if( uiStatic.bgmap_hack_framecount > 60 )
 			UI_LoadBackgroundMap();
 	}
 
