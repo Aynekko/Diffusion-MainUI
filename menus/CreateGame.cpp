@@ -74,6 +74,11 @@ public:
 	CMenuCheckBox   nat;
 	CMenuCheckBox   teamplay;
 	CMenuCheckBox   bhop;
+	CMenuCheckBox mp_allow_bonuses;
+	CMenuCheckBox mp_weaponbonus;
+	CMenuSpinControl mp_spawnprotect;
+	CMenuSpinControl mp_maxturrets;
+
 	CMenuSpinControl   bots;
 
 	// newgame prompt dialog
@@ -83,6 +88,7 @@ public:
 	CMenuMapListModel mapsListModel;
 
 	CMenuPicButton *done;
+	CMenuPicButton *cancel;
 private:
 	void _Init() override;
 	void _VidInit() override;
@@ -216,9 +222,6 @@ void CMenuCreateGame::_Init( void )
 //	CMenuPicButton *advOpt = AddButton( L( "Adv. Options" ), L( "Open the game advanced options menu" ), PC_ADV_OPT, UI_AdvServerOptions_Menu );
 //	advOpt->SetGrayed( !UI_AdvServerOptions_IsAvailable() );
 
-	done = AddButton( L( "Start game" ), L( "Start the multiplayer game" ), PC_START_GAME, Begin );
-	done->onReleasedClActive = msgBox.MakeOpenEvent();
-
 	mapsList.SetCharSize( QM_SMALLFONT );
 	mapsList.SetupColumn( 0, L( "Map" ), 0.5f );
 	mapsList.SetupColumn( 1, L( "Title" ), 0.5f );
@@ -268,27 +271,59 @@ void CMenuCreateGame::_Init( void )
 
 	bots.szName = L( "GameUI_Bots" );
 	bots.Setup( 0, 16, 1 );
-	bots.SetRect( 72, MenuYOffset, 220, 32 );
+	bots.SetRect( 72, 260, 220, 32 );
 	bots.LinkCvar( "bot_max", CMenuEditable::CVAR_VALUE );
 	bots.onChanged = CMenuEditable::WriteCvarCb;
 
 	teamplay.szName = L( "GameUI_Teamplay" );
 	teamplay.bChecked = false;
 	teamplay.LinkCvar( "mp_teamplay" );
-	teamplay.SetCoord( 72, MenuYOffset + 50 );
+	teamplay.SetCoord( 72, 260 + 50 );
 
 	bhop.szName = L( "GameUI_Bhop" );
 	bhop.bChecked = false;
 	bhop.LinkCvar( "sv_enablebunnyhopping" );
-	bhop.SetCoord( 72, MenuYOffset + 90 );
+	bhop.SetCoord( 72, 260 + 90 );
 
-	AddButton( L( "GameUI_Cancel" ), L( "Return to the previous menu" ), PC_CANCEL, VoidCb( &CMenuCreateGame::Hide ) );
+	mp_allow_bonuses.szName = L( "GameUI_MPAllowBonuses" );
+	mp_allow_bonuses.bChecked = false;
+	mp_allow_bonuses.LinkCvar( "mp_allow_bonuses" );
+	mp_allow_bonuses.SetCoord( 72, 260 + 130 );
+
+	mp_weaponbonus.szName = L( "GameUI_MPWeaponBonus" );
+	mp_weaponbonus.bChecked = false;
+	mp_weaponbonus.LinkCvar( "mp_weaponbonus" );
+	mp_weaponbonus.SetCoord( 72, 260 + 170 );
+
+	mp_spawnprotect.szName = L( "GameUI_MPSpawnProtect" );
+	mp_spawnprotect.Setup( 0, 5, 1 );
+	mp_spawnprotect.SetRect( 72, 260 + 250, 220, 32 );
+	mp_spawnprotect.LinkCvar( "mp_spawnprotect", CMenuEditable::CVAR_VALUE );
+	mp_spawnprotect.onChanged = CMenuEditable::WriteCvarCb;
+
+	mp_maxturrets.szName = L( "GameUI_MPMaxTurrets" );
+	mp_maxturrets.Setup( 0, 5, 1 );
+	mp_maxturrets.SetRect( 72, 260 + 330, 220, 32 );
+	mp_maxturrets.LinkCvar( "mp_maxturrets", CMenuEditable::CVAR_VALUE );
+	mp_maxturrets.onChanged = CMenuEditable::WriteCvarCb;
+
 	AddItem( hostName );
 	AddItem( maxClients );
 	AddItem( password );
 	AddItem( bots );
 	AddItem( teamplay );
 	AddItem( bhop );
+	AddItem( mp_allow_bonuses );
+	AddItem( mp_weaponbonus );
+	AddItem( mp_spawnprotect );
+	AddItem( mp_maxturrets );
+
+	done = AddButton( L( "Start game" ), L( "Start the multiplayer game" ), PC_START_GAME, Begin );
+	done->onReleasedClActive = msgBox.MakeOpenEvent();
+	done->pos.y += 70;
+
+	cancel = AddButton( L( "GameUI_Cancel" ), L( "Return to the previous menu" ), PC_CANCEL, VoidCb( &CMenuCreateGame::Hide ) );
+	cancel->pos.y += 70;
 
 	AddItem( nat );
 	AddItem( mapsList );
@@ -316,6 +351,10 @@ void CMenuCreateGame::SaveCvars()
 	bots.WriteCvar();
 	teamplay.WriteCvar();
 	bhop.WriteCvar();
+	mp_allow_bonuses.WriteCvar();
+	mp_weaponbonus.WriteCvar();
+	mp_spawnprotect.WriteCvar();
+	mp_maxturrets.WriteCvar();
 	EngFuncs::CvarSetValue( "sv_nat", EngFuncs::GetCvarFloat( "public" ) ? nat.bChecked : 0 );
 }
 
