@@ -78,7 +78,7 @@ public:
 	CMenuSlider	maxFPS;
 	CMenuField maxFPSdisplay;
 #endif
-	CMenuCheckBox FPSunlimited;
+//	CMenuCheckBox FPSunlimited;
 	CMenuCheckBox gl_vsync;
 	CMenuCheckBox hideMenus;
 
@@ -262,7 +262,7 @@ void CMenuVidOptions::GetConfig( void )
 	float fps = EngFuncs::GetCvarFloat( "fps_max" );
 	if( fps == 0.0f )
 	{
-		maxFPS.iFlags |= QMF_GRAYED;
+	//	maxFPS.iFlags |= QMF_GRAYED;
 		if( fps_remember > 0 )
 			maxFPS.SetCurrentValue( fps_remember );
 		else
@@ -270,12 +270,12 @@ void CMenuVidOptions::GetConfig( void )
 			fps_remember = 100;
 			maxFPS.SetCurrentValue( 100 );
 		}
-		FPSunlimited.bChecked = true;
+	//	FPSunlimited.bChecked = true;
 		EngFuncs::CvarSetValue( "fps_max", 0 ); // SetCurrentValue sets the cvar...duh
 		if( vsync )
 		{
 			gl_vsync.bChecked = true;
-			FPSunlimited.iFlags |= QMF_GRAYED;
+		//	FPSunlimited.iFlags |= QMF_GRAYED;
 		}
 	}
 	else
@@ -283,11 +283,11 @@ void CMenuVidOptions::GetConfig( void )
 		maxFPS.iFlags &= ~QMF_GRAYED;
 		fps_remember = fps; // remember fps if user changes his mind
 		maxFPS.SetCurrentValue( fps );
-		FPSunlimited.bChecked = false;
+	//	FPSunlimited.bChecked = false;
 		if( vsync )
 		{
 			gl_vsync.bChecked = true;
-			FPSunlimited.iFlags |= QMF_GRAYED;
+		//	FPSunlimited.iFlags |= QMF_GRAYED;
 			maxFPS.iFlags |= QMF_GRAYED;
 		}
 	}
@@ -369,16 +369,16 @@ void CMenuVidOptions::SetMaxFps( void )
 {
 	maxFPS.SetCurrentValue( fps_remember );
 
-	if( FPSunlimited.bChecked )
-	{
-		maxFPS.iFlags |= QMF_GRAYED;
-		EngFuncs::CvarSetValue( "fps_max", 0 );
-	}
-	else
-	{
+//	if( FPSunlimited.bChecked )
+//	{
+//		maxFPS.iFlags |= QMF_GRAYED;
+//		EngFuncs::CvarSetValue( "fps_max", 0 );
+//	}
+//	else
+//	{
 		maxFPS.iFlags &= ~QMF_GRAYED;
 		EngFuncs::CvarSetValue( "fps_max", fps_remember );
-	}
+//	}
 }
 
 void CMenuVidOptions::SetCurFps( void )
@@ -399,13 +399,13 @@ void CMenuVidOptions::SetVSync( void )
 	{
 		EngFuncs::CvarSetValue( "gl_vsync", 1 );
 		maxFPS.iFlags |= QMF_GRAYED;
-		FPSunlimited.iFlags |= QMF_GRAYED;
+	//	FPSunlimited.iFlags |= QMF_GRAYED;
 	}
 	else
 	{
 		EngFuncs::CvarSetValue( "gl_vsync", 0 );
 		maxFPS.iFlags &= ~QMF_GRAYED;
-		FPSunlimited.iFlags &= ~QMF_GRAYED;
+	//	FPSunlimited.iFlags &= ~QMF_GRAYED;
 	}
 }
 
@@ -430,7 +430,7 @@ void CMenuVidOptions::HideMenus( void )
 #if !FPS_LIMITER_CHECKBOX
 		maxFPSdisplay.iFlags |= QMF_HIDDEN;
 #endif
-		FPSunlimited.iFlags |= QMF_HIDDEN;
+	//	FPSunlimited.iFlags |= QMF_HIDDEN;
 		gl_vsync.iFlags |= QMF_HIDDEN;
 		shadowQ.iFlags |= QMF_HIDDEN;
 		mirrorQ.iFlags |= QMF_HIDDEN;
@@ -465,7 +465,7 @@ void CMenuVidOptions::HideMenus( void )
 #if !FPS_LIMITER_CHECKBOX
 		maxFPSdisplay.iFlags &= ~QMF_HIDDEN;
 #endif
-		FPSunlimited.iFlags &= ~QMF_HIDDEN;
+	//	FPSunlimited.iFlags &= ~QMF_HIDDEN;
 		gl_vsync.iFlags &= ~QMF_HIDDEN;
 		shadowQ.iFlags &= ~QMF_HIDDEN;
 		mirrorQ.iFlags &= ~QMF_HIDDEN;
@@ -512,32 +512,32 @@ void CMenuVidOptions::_Init( void )
 
 	gl_sunshafts.SetNameAndStatus( L( "GameUI_Sunshafts" ), L( "-" ) );
 	gl_sunshafts.iFlags |= QMF_NOTIFY;
-	gl_sunshafts.SetCoord( 372, MenuYOffset - 50 );
+	gl_sunshafts.SetCoord( 400, MenuYOffset - 50 );
 	gl_sunshafts.onChanged = CMenuEditable::WriteCvarCb;
 
 	//	r_shadows.SetNameAndStatus( L( "Dynamic shadows" ), L( "-" ) );
 	//	r_shadows.iFlags |= QMF_NOTIFY;
-	//	r_shadows.SetCoord( 372, MenuYOffset + 0 );
+	//	r_shadows.SetCoord( 400, MenuYOffset + 0 );
 	//	r_shadows.onChanged = CMenuEditable::WriteCvarCb;
 
 	r_bloom.SetNameAndStatus( L( "GameUI_Bloom" ), L( "-" ) );
 	r_bloom.iFlags |= QMF_NOTIFY;
-	r_bloom.SetCoord( 672, MenuYOffset - 50 );
+	r_bloom.SetCoord( 700, MenuYOffset - 50 );
 	r_bloom.onChanged = CMenuEditable::WriteCvarCb;
 
 	r_blur.SetNameAndStatus( L( "GameUI_Blur" ), L( "-" ) );
 	r_blur.iFlags |= QMF_NOTIFY;
-	r_blur.SetCoord( 672, MenuYOffset + 0 );
+	r_blur.SetCoord( 700, MenuYOffset + 0 );
 	r_blur.onChanged = CMenuEditable::WriteCvarCb;
 
 	cl_muzzlelight.SetNameAndStatus( L( "GameUI_LightFromGunshots" ), L( "-" ) );
 	cl_muzzlelight.iFlags |= QMF_NOTIFY;
-	cl_muzzlelight.SetCoord( 372, MenuYOffset + 0 );
+	cl_muzzlelight.SetCoord( 400, MenuYOffset + 0 );
 	cl_muzzlelight.onChanged = CMenuEditable::WriteCvarCb;
 
 	gl_hbao.SetNameAndStatus( L( "GameUI_AO" ), L( "-" ) );
 	gl_hbao.iFlags |= QMF_NOTIFY;
-	gl_hbao.SetCoord( 372, MenuYOffset + 50 );
+	gl_hbao.SetCoord( 400, MenuYOffset + 50 );
 	gl_hbao.onChanged = CMenuEditable::WriteCvarCb;
 
 	maxFPS.szName = L( "GameUI_FPSlimit" );
@@ -546,8 +546,8 @@ void CMenuVidOptions::_Init( void )
 	maxFPS.Setup( 25, 200, 5 );
 	maxFPS.SetRect( 72, MenuYOffset + 200, 220, 32 );
 #else
-	const int fps_w = 275;
-	maxFPS.Setup( 20, 200, 1 );
+	const int fps_w = 300;
+	maxFPS.Setup( 20, 300, 1 );
 	maxFPS.SetCoord( 72, MenuYOffset + 220 );
 	maxFPS.SetSize( fps_w, 0 );
 	maxFPSdisplay.bNumbersOnly = true;
@@ -556,10 +556,10 @@ void CMenuVidOptions::_Init( void )
 #endif
 	maxFPS.onChanged = VoidCb( &CMenuVidOptions::SetCurFps );
 
-	FPSunlimited.SetNameAndStatus( L( "GameUI_FPSunlimited" ), L( "-" ) );
-	FPSunlimited.iFlags |= QMF_NOTIFY;
-	FPSunlimited.SetCoord( 72, MenuYOffset + 250 );
-	FPSunlimited.onChanged = VoidCb( &CMenuVidOptions::SetMaxFps );
+//	FPSunlimited.SetNameAndStatus( L( "GameUI_FPSunlimited" ), L( "-" ) );
+//	FPSunlimited.iFlags |= QMF_NOTIFY;
+//	FPSunlimited.SetCoord( 72, MenuYOffset + 250 );
+//	FPSunlimited.onChanged = VoidCb( &CMenuVidOptions::SetMaxFps );
 
 	gl_vsync.SetNameAndStatus( L( "GameUI_VSync" ), L( "-" ) );
 	gl_vsync.iFlags |= QMF_NOTIFY;
@@ -573,42 +573,42 @@ void CMenuVidOptions::_Init( void )
 	
 	gl_msaa.SetNameAndStatus( L( "GameUI_MSAA" ), L( "-" ) );
 	gl_msaa.iFlags |= QMF_NOTIFY;
-	gl_msaa.SetCoord( 372, MenuYOffset + 100 );
+	gl_msaa.SetCoord( 400, MenuYOffset + 100 );
 	gl_msaa.onChanged = CMenuEditable::WriteCvarCb;
 
 	gl_lensflare.SetNameAndStatus( L( "GameUI_LensFlare" ), L( "-" ) );
 	gl_lensflare.iFlags |= QMF_NOTIFY;
-	gl_lensflare.SetCoord( 672, MenuYOffset + 50 );
+	gl_lensflare.SetCoord( 700, MenuYOffset + 50 );
 	gl_lensflare.onChanged = CMenuEditable::WriteCvarCb;
 
 	gl_exposure.SetNameAndStatus( L( "GameUI_AutoExposure" ), L( "-" ) );
 	gl_exposure.iFlags |= QMF_NOTIFY;
-	gl_exposure.SetCoord( 972, MenuYOffset + 0 );
+	gl_exposure.SetCoord( 1000, MenuYOffset + 0 );
 	gl_exposure.onChanged = CMenuEditable::WriteCvarCb;
 
 	gl_cubemaps.SetNameAndStatus( L( "GameUI_Cubemaps" ), L( "-" ) );
 	gl_cubemaps.iFlags |= QMF_NOTIFY;
-	gl_cubemaps.SetCoord( 372, MenuYOffset + 300 );
+	gl_cubemaps.SetCoord( 400, MenuYOffset + 300 );
 	gl_cubemaps.onChanged = CMenuEditable::WriteCvarCb;
 
 	gl_emboss.SetNameAndStatus( L( "GameUI_Emboss" ), L( "-" ) );
 	gl_emboss.iFlags |= QMF_NOTIFY;
-	gl_emboss.SetCoord( 672, MenuYOffset + 100 );
+	gl_emboss.SetCoord( 700, MenuYOffset + 100 );
 	gl_emboss.onChanged = CMenuEditable::WriteCvarCb;
 
 	gl_bump.SetNameAndStatus( L( "GameUI_Bump" ), L( "-" ) );
 	gl_bump.iFlags |= QMF_NOTIFY;
-	gl_bump.SetCoord( 972, MenuYOffset + 50 );
+	gl_bump.SetCoord( 1000, MenuYOffset + 50 );
 	gl_bump.onChanged = CMenuEditable::WriteCvarCb;
 
 	gl_specular.SetNameAndStatus( L( "GameUI_Specular" ), L( "-" ) );
 	gl_specular.iFlags |= QMF_NOTIFY;
-	gl_specular.SetCoord( 972, MenuYOffset + 100 );
+	gl_specular.SetCoord( 1000, MenuYOffset + 100 );
 	gl_specular.onChanged = CMenuEditable::WriteCvarCb;
 
 	gl_water_refraction.SetNameAndStatus( L( "GameUI_WaterRefraction" ), L( "-" ) );
 	gl_water_refraction.iFlags |= QMF_NOTIFY;
-	gl_water_refraction.SetCoord( 972, MenuYOffset - 50 );
+	gl_water_refraction.SetCoord( 1000, MenuYOffset - 50 );
 	gl_water_refraction.onChanged = CMenuEditable::WriteCvarCb;
 	
 	done.SetNameAndStatus( L( "GameUI_OK" ), L( "Go back to the Video Menu" ) );
@@ -661,11 +661,11 @@ void CMenuVidOptions::_Init( void )
 	mirrorQ.Setup( &mi );
 	mirrorQ.onChanged = CMenuEditable::WriteCvarCb;
 	mirrorQ.font = QM_SMALLFONT;
-	mirrorQ.SetRect( 372, MenuYOffset + 200, 220, 32 );
+	mirrorQ.SetRect( 400, MenuYOffset + 200, 220, 32 );
 
 	gl_water_planar.SetNameAndStatus( L( "GameUI_WaterPlanar" ), L( "-" ) );
 	gl_water_planar.iFlags |= QMF_NOTIFY;
-	gl_water_planar.SetCoord( 372, MenuYOffset + 240 );
+	gl_water_planar.SetCoord( 400, MenuYOffset + 240 );
 	gl_water_planar.onChanged = CMenuEditable::WriteCvarCb;
 
 	static CStringArrayModel ani( AnisotropyStr, V_ARRAYSIZE( AnisotropyStr ) );
@@ -673,14 +673,14 @@ void CMenuVidOptions::_Init( void )
 	gl_anisotropy.Setup( &ani );
 	gl_anisotropy.onChanged = VoidCb(&CMenuVidOptions::WriteAnisotropy);
 	gl_anisotropy.font = QM_SMALLFONT;
-	gl_anisotropy.SetRect( 672, MenuYOffset + 200, 220, 32 );
+	gl_anisotropy.SetRect( 700, MenuYOffset + 200, 220, 32 );
 
 	static CStringArrayModel sh( ShadowqualityStr, V_ARRAYSIZE( ShadowqualityStr ) );
 	shadowQ.SetNameAndStatus( L( "GameUI_ShadowQuality" ), L( "Dynamic shadow quality" ) );
 	shadowQ.Setup( &sh );
 	shadowQ.onChanged = CMenuEditable::WriteCvarCb;
 	shadowQ.font = QM_SMALLFONT;
-	shadowQ.SetRect( 972, MenuYOffset + 200, 300, 32 );
+	shadowQ.SetRect( 1000, MenuYOffset + 200, 300, 32 );
 
 	AddItem( banner );
 	AddItem( done );
@@ -707,7 +707,7 @@ void CMenuVidOptions::_Init( void )
 #if !FPS_LIMITER_CHECKBOX
 	AddItem( maxFPSdisplay );
 #endif
-	AddItem( FPSunlimited );
+//	AddItem( FPSunlimited );
 	AddItem( gl_vsync );
 	AddItem( hideMenus );
 	AddItem( shadowQ );

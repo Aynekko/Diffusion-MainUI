@@ -104,7 +104,7 @@ bool CMenuSlider::KeyDown( int key )
 
 		return true;
 	}
-	else if( UI::Key::IsLeftArrow( key ) )
+	else if( UI::Key::IsLeftArrow( key ) || key == K_MWHEELUP )
 	{
 		m_flCurValue -= m_flRange;
 
@@ -122,7 +122,7 @@ bool CMenuSlider::KeyDown( int key )
 		PlayLocalSound( uiStatic.sounds[SND_KEY] );
 		return true;
 	}
-	else if( UI::Key::IsRightArrow( key ) )
+	else if( UI::Key::IsRightArrow( key ) || key == K_MWHEELDOWN )
 	{
 		m_flCurValue += m_flRange;
 
