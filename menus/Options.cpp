@@ -46,7 +46,6 @@ public:
 	void GetConfig( void );
 	int	outlineWidth;
 
-	CMenuCheckBox cl_showdamage;
 	CMenuCheckBox cl_achievement_notify;
 	CMenuCheckBox cl_tutor;
 	CMenuCheckBox cl_showhealthbars;
@@ -117,21 +116,17 @@ void CMenuOptions::_Init( void )
 	cl_subtitles.iFlags |= QMF_NOTIFY;
 	cl_subtitles.SetCoord( 300, MenuYOffset + 80 );
 
-	cl_showdamage.SetNameAndStatus( L( "GameUI_ShowDamage" ), L( "-" ) );
-	cl_showdamage.iFlags |= QMF_NOTIFY;
-	cl_showdamage.SetCoord( 300, MenuYOffset + 130 );
-
 	cl_achievement_notify.SetNameAndStatus( L( "GameUI_AchievementNotify" ), L( "-" ) );
 	cl_achievement_notify.iFlags |= QMF_NOTIFY;
-	cl_achievement_notify.SetCoord( 300, MenuYOffset + 180 );
+	cl_achievement_notify.SetCoord( 300, MenuYOffset + 130 );
 
 	cl_tutor.SetNameAndStatus( L( "GameUI_Tutorials" ), L( "-" ) );
 	cl_tutor.iFlags |= QMF_NOTIFY;
-	cl_tutor.SetCoord( 300, MenuYOffset + 230 );
+	cl_tutor.SetCoord( 300, MenuYOffset + 180 );
 
 	cl_showhealthbars.SetNameAndStatus( L( "GameUI_Healthbars" ), L( "-" ) );
 	cl_showhealthbars.iFlags |= QMF_NOTIFY;
-	cl_showhealthbars.SetCoord( 300, MenuYOffset + 280 );
+	cl_showhealthbars.SetCoord( 300, MenuYOffset + 230 );
 
 	static const char *cl_hitmarker_str[] =
 	{
@@ -142,11 +137,11 @@ void CMenuOptions::_Init( void )
 	cl_hitmarker.Setup( &hitmarker );
 	cl_hitmarker.onChanged = CMenuEditable::WriteCvarCb;
 	cl_hitmarker.font = QM_SMALLFONT;
-	cl_hitmarker.SetRect( 300, MenuYOffset + 355, 300, 32 );
+	cl_hitmarker.SetRect( 300, MenuYOffset + 305, 300, 32 );
 
 	cl_useicon.SetNameAndStatus( L( "GameUI_InteractionIcon" ), L( "-" ) );
 	cl_useicon.iFlags |= QMF_NOTIFY;
-	cl_useicon.SetCoord( 300, MenuYOffset + 395 );
+	cl_useicon.SetCoord( 300, MenuYOffset + 345 );
 
 	static const char *cl_crosshair_str[] =
 	{
@@ -157,7 +152,7 @@ void CMenuOptions::_Init( void )
 	cl_crosshair.Setup( &crossy );
 	cl_crosshair.onChanged = CMenuEditable::WriteCvarCb;
 	cl_crosshair.font = QM_SMALLFONT;
-	cl_crosshair.SetRect( 300, MenuYOffset + 470, 200, 32 );
+	cl_crosshair.SetRect( 300, MenuYOffset + 420, 200, 32 );
 
 	static const char *cl_largehud_str[] =
 	{
@@ -168,24 +163,23 @@ void CMenuOptions::_Init( void )
 	cl_largehud.Setup( &largehud );
 	cl_largehud.onChanged = CMenuEditable::WriteCvarCb;
 	cl_largehud.font = QM_SMALLFONT;
-	cl_largehud.SetRect( 520, MenuYOffset + 470, 200, 32 );
+	cl_largehud.SetRect( 520, MenuYOffset + 420, 200, 32 );
 
 	cl_centerhud.SetNameAndStatus( L( "GameUI_CenterHUD" ), L( "-" ) );
 	cl_centerhud.iFlags |= QMF_NOTIFY;
-	cl_centerhud.SetCoord( 730, MenuYOffset + 470 );
+	cl_centerhud.SetCoord( 730, MenuYOffset + 420 );
 
-	cl_viewmodel_extras.SetCoord( 300, MenuYOffset + 560 );
+	cl_viewmodel_extras.SetCoord( 300, MenuYOffset + 510 );
 	cl_viewmodel_extras.SetNameAndStatus( L( "GameUI_WeaponAnimInfluence" ), L( "-" ) );
 	cl_viewmodel_extras.Setup( 0.0f, 1.0f, 0.1f );
 	cl_viewmodel_extras.SetSize( 400, 15 );
 
 	allowConsole.SetNameAndStatus( L( "GameUI_EnableConsole" ), L( "-" ) );
-	allowConsole.SetCoord( 300, MenuYOffset + 590 );
+	allowConsole.SetCoord( 300, MenuYOffset + 540 );
 	allowConsole.onChanged.SetCommand( false, "ui_allowconsole\n" );
 
 	AddItem( default_fov );
 	AddItem( cl_subtitles );
-	AddItem( cl_showdamage );
 	AddItem( cl_achievement_notify );
 	AddItem( cl_tutor );
 	AddItem( cl_showhealthbars );
@@ -208,7 +202,6 @@ void CMenuOptions::Hide(void)
 {
 	default_fov.WriteCvar();
 	cl_subtitles.WriteCvar();
-	cl_showdamage.WriteCvar();
 	cl_achievement_notify.WriteCvar();
 	cl_tutor.WriteCvar();
 	cl_showhealthbars.WriteCvar();
@@ -225,7 +218,6 @@ void CMenuOptions::GetConfig()
 {
 	default_fov.LinkCvar( "default_fov", CMenuEditable::CVAR_VALUE );
 	cl_subtitles.LinkCvar( "cl_subtitles" );
-	cl_showdamage.LinkCvar( "cl_showdamage" );
 	cl_achievement_notify.LinkCvar( "cl_achievement_notify" );
 	cl_tutor.LinkCvar( "cl_tutor" );
 	cl_showhealthbars.LinkCvar( "cl_showhealthbars" );
