@@ -50,7 +50,7 @@ public:
 	CMenuCheckBox cl_achievement_notify;
 	CMenuCheckBox cl_tutor;
 	CMenuCheckBox cl_showhealthbars;
-	CMenuCheckBox cl_hitsound;
+	CMenuSpinControl cl_hitmarker;
 	CMenuCheckBox cl_useicon;
 	CMenuCheckBox cl_subtitles;
 	CMenuSpinControl cl_crosshair;
@@ -133,13 +133,20 @@ void CMenuOptions::_Init( void )
 	cl_showhealthbars.iFlags |= QMF_NOTIFY;
 	cl_showhealthbars.SetCoord( 300, MenuYOffset + 280 );
 
-	cl_hitsound.SetNameAndStatus( L( "GameUI_HitmarkSound" ), L( "-" ) );
-	cl_hitsound.iFlags |= QMF_NOTIFY;
-	cl_hitsound.SetCoord( 300, MenuYOffset + 330 );
+	static const char *cl_hitmarker_str[] =
+	{
+		L( "GameUI_Off" ), L( "GameUI_On" ), L( "GameUI_OnWithSound" )
+	};
+	static CStringArrayModel hitmarker( cl_hitmarker_str, V_ARRAYSIZE( cl_hitmarker_str ) );
+	cl_hitmarker.SetNameAndStatus( L( "GameUI_Hitmarker" ), L( "-" ) );
+	cl_hitmarker.Setup( &hitmarker );
+	cl_hitmarker.onChanged = CMenuEditable::WriteCvarCb;
+	cl_hitmarker.font = QM_SMALLFONT;
+	cl_hitmarker.SetRect( 300, MenuYOffset + 355, 300, 32 );
 
 	cl_useicon.SetNameAndStatus( L( "GameUI_InteractionIcon" ), L( "-" ) );
 	cl_useicon.iFlags |= QMF_NOTIFY;
-	cl_useicon.SetCoord( 300, MenuYOffset + 380 );
+	cl_useicon.SetCoord( 300, MenuYOffset + 395 );
 
 	static const char *cl_crosshair_str[] =
 	{
@@ -182,7 +189,7 @@ void CMenuOptions::_Init( void )
 	AddItem( cl_achievement_notify );
 	AddItem( cl_tutor );
 	AddItem( cl_showhealthbars );
-	AddItem( cl_hitsound );
+	AddItem( cl_hitmarker );
 	AddItem( cl_useicon );
 	AddItem( cl_crosshair );
 	AddItem( cl_largehud );
@@ -206,7 +213,7 @@ void CMenuOptions::Hide(void)
 	cl_tutor.WriteCvar();
 	cl_showhealthbars.WriteCvar();
 	cl_centerhud.WriteCvar();
-	cl_hitsound.WriteCvar();
+	cl_hitmarker.WriteCvar();
 	cl_useicon.WriteCvar();
 	EngFuncs::CvarSetValue( "cl_viewmodel_extras", cl_viewmodel_extras.GetCurrentValue() );
 
@@ -223,7 +230,7 @@ void CMenuOptions::GetConfig()
 	cl_tutor.LinkCvar( "cl_tutor" );
 	cl_showhealthbars.LinkCvar( "cl_showhealthbars" );
 	cl_centerhud.LinkCvar( "cl_centerhud" );
-	cl_hitsound.LinkCvar( "cl_hitsound" );
+	cl_hitmarker.LinkCvar( "cl_hitmarker", CMenuEditable::CVAR_VALUE );
 	cl_useicon.LinkCvar( "cl_useicon" );
 	cl_crosshair.LinkCvar( "cl_crosshair", CMenuEditable::CVAR_VALUE );
 	cl_largehud.LinkCvar( "cl_largehud", CMenuEditable::CVAR_VALUE );
