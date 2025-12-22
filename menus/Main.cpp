@@ -347,8 +347,8 @@ void CMenuMain::VidInit( bool connected )
 	// statically positioned items
 	minimizeBtn.SetRect( uiStatic.width - 72, 13, 32, 32 );
 	quitButton.SetRect( uiStatic.width - 36, 13, 32, 32 );
-	disconnect.SetCoord( 72, MenuYOffset + 180 );
-	resumeGame.SetCoord( 72, MenuYOffset + 230 );
+	resumeGame.SetCoord( 72, MenuYOffset + 180 );
+	disconnect.SetCoord( 72, MenuYOffset + 230 );
 	newGame.SetCoord( 72, MenuYOffset + 280 );
 	hazardCourse.SetCoord( 72, MenuYOffset + 330 );
 
