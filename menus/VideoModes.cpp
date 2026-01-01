@@ -72,11 +72,6 @@ public:
 
 	void GetConfig();
 
-	void GetRendererConfig();
-	void WriteRendererConfig();
-
-	CMenuCheckBox	vsync;
-
 	CMenuTable	vidList;
 	CMenuVidModesModel vidListModel;
 
@@ -117,8 +112,6 @@ void CMenuVidModes::GetConfig()
 
 	windowMode.SetCurrentValue( fullscreen );
 	vidList.SetCurrentIndex( vid_mode );
-
-	vsync.UpdateCvar();
 
 	ApplyChanges();
 }
@@ -168,8 +161,6 @@ void CMenuVidModes::SetConfig()
 		testModeMsgBox.Show();
 		testModeTimer = gpGlobals->time + 10.0f; // five seconds should be enough
 	}
-
-	vsync.WriteCvar();
 
 	if( isWindowedModeChanged )
 		EngFuncs::CvarSetValue( "fullscreen", currentWindowModeIndex );
@@ -258,10 +249,6 @@ void CMenuVidModes::_Init( void )
 	vidList.SetupColumn( 0, L( "GameUI_Resolution" ), 1.0f );
 	vidList.SetModel( &vidListModel );
 
-	vsync.SetNameAndStatus( L( "GameUI_VSync" ), L( "GameUI_VSync" ) );
-	vsync.SetCoord( 72, MenuYOffset - 30 );
-	vsync.LinkCvar( "gl_vsync" );
-
 	testModeMsgBox.SetMessage( testModeMsg );
 	testModeMsgBox.onPositive = VoidCb( &CMenuVidModes::FinalizeChanges );
 	testModeMsgBox.onNegative = VoidCb( &CMenuVidModes::RevertChanges );
@@ -269,7 +256,7 @@ void CMenuVidModes::_Init( void )
 
 	windowMode.SetNameAndStatus( L( "Window mode" ), L( "Select desired window mode" ) );
 	windowMode.Setup( &windowModeModel );
-	windowMode.SetRect( 72, MenuYOffset + 60, 250, 32 ); // windowed.SetCoord( 360, MenuYOffset/2 + 620 );
+	windowMode.SetRect( 72, MenuYOffset - 30, 250, 32 ); // windowed.SetCoord( 360, MenuYOffset/2 + 620 );
 	windowMode.SetCharSize( QM_SMALLFONT );
 	SET_EVENT_MULTI( windowMode.onChanged,
 		{
@@ -283,7 +270,6 @@ void CMenuVidModes::_Init( void )
 	AddButton( L( "GameUI_Apply" ), L( "Apply changes" ), PC_OK, VoidCb( &CMenuVidModes::SetConfig ) );
 	AddButton( L( "GameUI_Cancel" ), L( "Return back to previous menu" ), PC_CANCEL, VoidCb( &CMenuVidModes::Hide ) );
 	AddItem( windowMode );
-	AddItem( vsync );
 	AddItem( vidList );
 }
 
