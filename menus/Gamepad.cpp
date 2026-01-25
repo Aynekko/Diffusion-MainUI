@@ -255,19 +255,19 @@ void CMenuGamePad::_VidInit()
 
 	side.SetCoord( 630, 280 + sliderAlign );
 	side.SetCharSize( QM_SMALLFONT );
-	invSide.SetCoord( 850, 280 );
+	invSide.SetCoord( 950, 280 );
 
 	forward.SetCoord( 630, 330 + sliderAlign );
 	forward.SetCharSize( QM_SMALLFONT );
-	invFwd.SetCoord( 850, 330 );
+	invFwd.SetCoord( 950, 330 );
 
 	pitch.SetCoord( 630, 380 + sliderAlign );
 	pitch.SetCharSize( QM_SMALLFONT );
-	invPitch.SetCoord( 850, 380 );
+	invPitch.SetCoord( 950, 380 );
 
 	yaw.SetCoord( 630, 430 + sliderAlign );
 	yaw.SetCharSize( QM_SMALLFONT );
-	invYaw.SetCoord( 850, 430 );
+	invYaw.SetCoord( 950, 430 );
 
 	GetConfig();
 }
