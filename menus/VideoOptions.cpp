@@ -62,6 +62,7 @@ public:
 	void Draw( void );
 
 	void WriteAnisotropy( void );
+	void WriteAntiAliasing( void );
 	void SetMaxFps( void );
 	void SetCurFps( void );
 	void SetVSync( void );
@@ -102,7 +103,7 @@ public:
 	CMenuCheckBox	r_blur;
 	CMenuSpinControl shadowQ;
 	CMenuSpinControl mirrorQ;
-	CMenuCheckBox	gl_msaa;
+	CMenuSpinControl AntiAliasing;
 	CMenuCheckBox	gl_lensflare;
 	CMenuCheckBox	gl_emboss;
 	CMenuCheckBox	gl_bump;
@@ -123,6 +124,7 @@ void SetSettingsTo( int Quality )
 		EngFuncs::CvarSetValue( "gl_sunshafts", 0 );
 		EngFuncs::CvarSetValue( "cl_muzzlelight", 0 );
 		EngFuncs::CvarSetValue( "gl_msaa", 0 );
+		EngFuncs::CvarSetValue( "gl_smaa", 0 );
 		EngFuncs::CvarSetValue( "r_bloom", 0 );
 		EngFuncs::CvarSetValue( "r_blur", 0 );
 		EngFuncs::CvarSetValue( "gl_lensflare", 0 );
@@ -144,6 +146,7 @@ void SetSettingsTo( int Quality )
 		EngFuncs::CvarSetValue( "gl_sunshafts", 0 );
 		EngFuncs::CvarSetValue( "cl_muzzlelight", 1 );
 		EngFuncs::CvarSetValue( "gl_msaa", 1 );
+		EngFuncs::CvarSetValue( "gl_smaa", 0 );
 		EngFuncs::CvarSetValue( "r_bloom", 0 );
 		EngFuncs::CvarSetValue( "r_blur", 0 );
 		EngFuncs::CvarSetValue( "gl_lensflare", 0 );
@@ -164,7 +167,8 @@ void SetSettingsTo( int Quality )
 		EngFuncs::CvarSetValue( "gl_anisotropy", 8 );
 		EngFuncs::CvarSetValue( "gl_sunshafts", 1 );
 		EngFuncs::CvarSetValue( "cl_muzzlelight", 1 );
-		EngFuncs::CvarSetValue( "gl_msaa", 1 );
+		EngFuncs::CvarSetValue( "gl_msaa", 0 );
+		EngFuncs::CvarSetValue( "gl_smaa", 1 );
 		EngFuncs::CvarSetValue( "r_bloom", 0 );
 		EngFuncs::CvarSetValue( "r_blur", 1 );
 		EngFuncs::CvarSetValue( "gl_lensflare", 1 );
@@ -185,7 +189,8 @@ void SetSettingsTo( int Quality )
 		EngFuncs::CvarSetValue( "gl_anisotropy", 16 );
 		EngFuncs::CvarSetValue( "gl_sunshafts", 1 );
 		EngFuncs::CvarSetValue( "cl_muzzlelight", 1 );
-		EngFuncs::CvarSetValue( "gl_msaa", 1 );
+		EngFuncs::CvarSetValue( "gl_msaa", 0 );
+		EngFuncs::CvarSetValue( "gl_smaa", 1 );
 		EngFuncs::CvarSetValue( "r_bloom", 1 );
 		EngFuncs::CvarSetValue( "r_blur", 1 );
 		EngFuncs::CvarSetValue( "gl_lensflare", 1 );
@@ -234,7 +239,6 @@ void CMenuVidOptions::GetConfig( void )
 	r_blur.LinkCvar( "r_blur" );
 	shadowQ.LinkCvar( "r_shadowquality", CMenuEditable::CVAR_VALUE );
 	mirrorQ.LinkCvar( "r_mirrorquality", CMenuEditable::CVAR_VALUE );
-	gl_msaa.LinkCvar( "gl_msaa" );
 	gl_lensflare.LinkCvar( "gl_lensflare" );
 	gl_emboss.LinkCvar( "gl_emboss" );
 	gl_bump.LinkCvar( "gl_bump" );
@@ -257,6 +261,15 @@ void CMenuVidOptions::GetConfig( void )
 	case 8: gl_anisotropy.SetCurrentValue( 3.0f ); break;
 	case 16: gl_anisotropy.SetCurrentValue( 4.0f ); break;
 	}
+
+	bool bSMAA = ((int)EngFuncs::GetCvarFloat( "gl_smaa" ) > 0);
+	bool bMSAA = ((int)EngFuncs::GetCvarFloat( "gl_msaa" ) > 0);
+	if( bSMAA )
+		AntiAliasing.SetCurrentValue( 2.0f );
+	else if( bMSAA )
+		AntiAliasing.SetCurrentValue( 1.0f );
+	else
+		AntiAliasing.SetCurrentValue( 0.0f );
 
 	bool vsync = (EngFuncs::GetCvarFloat( "gl_vsync" ) == 1.0f);
 	float fps = EngFuncs::GetCvarFloat( "fps_max" );
@@ -313,6 +326,27 @@ void CMenuVidOptions::WriteAnisotropy(void)
 	}
 }
 
+void CMenuVidOptions::WriteAntiAliasing( void )
+{
+	int AAval = AntiAliasing.GetCurrentValue();
+	switch( AAval )
+	{
+	default:
+	case 0:
+		EngFuncs::CvarSetValue( "gl_msaa", 0 );
+		EngFuncs::CvarSetValue( "gl_smaa", 0 );
+		break;
+	case 1:
+		EngFuncs::CvarSetValue( "gl_msaa", 1 );
+		EngFuncs::CvarSetValue( "gl_smaa", 0 );
+		break;
+	case 2:
+		EngFuncs::CvarSetValue( "gl_msaa", 0 );
+		EngFuncs::CvarSetValue( "gl_smaa", 1 );
+		break;
+	}
+}
+
 void CMenuVidOptions::SaveAndPopMenu( void )
 {
 #if LEGACY_VIEWSIZE
@@ -328,7 +362,6 @@ void CMenuVidOptions::SaveAndPopMenu( void )
 	r_blur.WriteCvar();
 	shadowQ.WriteCvar();
 	mirrorQ.WriteCvar();
-	gl_msaa.WriteCvar();
 	gl_lensflare.WriteCvar();
 	gl_emboss.WriteCvar();
 	gl_bump.WriteCvar();
@@ -341,6 +374,7 @@ void CMenuVidOptions::SaveAndPopMenu( void )
 	// special case here...
 //	gl_anisotropy.WriteCvar();
 	WriteAnisotropy();
+	WriteAntiAliasing();
 
 	SetMaxFps();
 
@@ -435,7 +469,7 @@ void CMenuVidOptions::HideMenus( void )
 		shadowQ.iFlags |= QMF_HIDDEN;
 		mirrorQ.iFlags |= QMF_HIDDEN;
 		gl_anisotropy.iFlags |= QMF_HIDDEN;
-		gl_msaa.iFlags |= QMF_HIDDEN;
+		AntiAliasing.iFlags |= QMF_HIDDEN;
 		gl_lensflare.iFlags |= QMF_HIDDEN;
 		gl_emboss.iFlags |= QMF_HIDDEN;
 		gl_water_refraction.iFlags |= QMF_HIDDEN;
@@ -470,7 +504,7 @@ void CMenuVidOptions::HideMenus( void )
 		shadowQ.iFlags &= ~QMF_HIDDEN;
 		mirrorQ.iFlags &= ~QMF_HIDDEN;
 		gl_anisotropy.iFlags &= ~QMF_HIDDEN;
-		gl_msaa.iFlags &= ~QMF_HIDDEN;
+		AntiAliasing.iFlags &= ~QMF_HIDDEN;
 		gl_lensflare.iFlags &= ~QMF_HIDDEN;
 		gl_emboss.iFlags &= ~QMF_HIDDEN;
 		gl_water_refraction.iFlags &= ~QMF_HIDDEN;
@@ -505,7 +539,12 @@ void CMenuVidOptions::_Init( void )
 
 	static const char *AnisotropyStr[] =
 	{
-		L( "1x" ), L( "2x" ), L( "4x" ), L( "8x" ), L( "16x" )
+		"1x", "2x", "4x", "8x", "16x"
+	};
+
+	static const char *AAstr[] =
+	{
+		L( "GameUI_NoAA" ), "MSAA", "SMAA"
 	};
 
 	banner.SetPicture( ART_BANNER );
@@ -570,11 +609,13 @@ void CMenuVidOptions::_Init( void )
 	hideMenus.iFlags |= QMF_NOTIFY;
 	hideMenus.SetCoord( 300, MenuYOffset + 600 );
 	hideMenus.onChanged = VoidCb( &CMenuVidOptions::HideMenus );
-	
-	gl_msaa.SetNameAndStatus( L( "GameUI_MSAA" ), L( "-" ) );
-	gl_msaa.iFlags |= QMF_NOTIFY;
-	gl_msaa.SetCoord( 400, MenuYOffset + 100 );
-	gl_msaa.onChanged = CMenuEditable::WriteCvarCb;
+
+	static CStringArrayModel aasing( AAstr, V_ARRAYSIZE( AAstr ) );
+	AntiAliasing.SetNameAndStatus( L( "GameUI_AntiAliasing" ), "" );
+	AntiAliasing.Setup( &aasing );
+	AntiAliasing.onChanged = VoidCb( &CMenuVidOptions::WriteAntiAliasing );
+	AntiAliasing.font = QM_SMALLFONT;
+	AntiAliasing.SetRect( 400, MenuYOffset + 125, 220, 32 );
 
 	gl_lensflare.SetNameAndStatus( L( "GameUI_LensFlare" ), L( "-" ) );
 	gl_lensflare.iFlags |= QMF_NOTIFY;
@@ -713,7 +754,7 @@ void CMenuVidOptions::_Init( void )
 	AddItem( shadowQ );
 	AddItem( mirrorQ );
 	AddItem( gl_anisotropy );
-	AddItem( gl_msaa );
+	AddItem( AntiAliasing );
 	AddItem( gl_lensflare );
 	AddItem( gl_emboss );
 	AddItem( gl_water_refraction );
