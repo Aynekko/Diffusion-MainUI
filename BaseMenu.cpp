@@ -57,6 +57,8 @@ const char *uiSounds[] = {
 	"media/launch_select1.wav",				// SND_KEY
 	"media/launch_deny1.wav",				// SND_REMOVEKEY
 	"media/launch_move.wav",				// SND_MOVE
+	"media/ui_spincontrol.wav",				// SND_SPINCONTROL
+	"media/ui_spincontrol_buzz.wav",		// SND_SPINCONTROL_BUZZ
 	""										// SND_NULL
 };
 
