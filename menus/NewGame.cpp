@@ -32,6 +32,14 @@ static const char *chapter_str[5];
 static const char *chapter_str_sel[5];
 static float lerp_value = 1.0f;
 static int SELECTED_CHAPTER = 0;
+const float PIC_WIDTH = 576.0f; // 1920x1080 x 0.3
+const float PIC_HEIGHT = 324.0f;
+const float PIC_Y_POS = 100.0f;
+const float PIC_X_POS = 80.0f;
+static float pic_width;
+static float pic_height;
+static float pic_x_pos;
+static float pic_y_pos;
 
 float lerp( float start, float end, float frac )
 {
@@ -74,6 +82,7 @@ public:
 private:
 	void _Init() override;
 	void _VidInit() override;
+	void SetPicPos();
 
 	static void ShowDialogCb( CMenuBaseItem *pSelf, void *pExtra  );
 
@@ -88,9 +97,18 @@ private:
 	CMenuSpinControl chapters;
 };
 
+void CMenuNewGame::SetPicPos()
+{
+	pic_width = PIC_WIDTH * uiStatic.scaleX;
+	pic_height = PIC_HEIGHT * uiStatic.scaleY;
+	pic_x_pos = chapters.pos.x;
+	pic_y_pos = (chapters.pos.y - PIC_HEIGHT - 100) * uiStatic.scaleY;
+}
+
 void CMenuNewGame::_VidInit()
 {
 	GetConfig();
+	SetPicPos();
 }
 
 void CMenuNewGame::GetConfig()
@@ -203,10 +221,15 @@ void CMenuNewGame::_Init( void )
 	chapters_img_bw[4].Load( "gfx/shell/menu_chapter5bw.tga" );
 	
 	AddItem( chapters );
+
+	SetPicPos();
 	
 	CMenuPicButton *easy = AddButton( L( "GameUI_Easy" ), L( "StringsList_200" ), PC_EASY, easyCallback, QMF_NOTIFY );
+	easy->pos.y = chapters.pos.y + 50;
 	CMenuPicButton *norm = AddButton( L( "GameUI_Medium" ), L( "StringsList_201" ), PC_MEDIUM, normCallback, QMF_NOTIFY );
+	norm->pos.y = easy->pos.y + 50;
 	CMenuPicButton *hard = AddButton( L( "GameUI_Hard" ), L( "StringsList_202" ), PC_DIFFICULT, hardCallback, QMF_NOTIFY );
+	hard->pos.y = norm->pos.y + 50;
 
 	easy->onReleasedClActive =
 		norm->onReleasedClActive =
@@ -215,7 +238,8 @@ void CMenuNewGame::_Init( void )
 	norm->onReleasedClActive.pExtra = &normCallback;
 	hard->onReleasedClActive.pExtra = &hardCallback;
 
-	AddButton( L( "GameUI_Cancel" ), L( "Go back to the Main menu" ), PC_CANCEL, VoidCb( &CMenuNewGame::Hide ), QMF_NOTIFY );
+	CMenuPicButton *cancel = AddButton( L( "GameUI_Cancel" ), L( "Go back to the Main menu" ), PC_CANCEL, VoidCb( &CMenuNewGame::Hide ), QMF_NOTIFY );
+	cancel->pos.y = hard->pos.y + 100;
 
 	msgBox.SetMessage( L( "StringsList_240" ) );
 	msgBox.HighlightChoice( CMenuYesNoMessageBox::HIGHLIGHT_NO );
@@ -229,10 +253,6 @@ void CMenuNewGame::Draw( void )
 	if( !lasttime )
 		lasttime = newtime - 0.001f;
 	float frametime = (newtime - lasttime);
-
-	// 1920x1080 x 0.3
-	const float pic_width = 576.0f;
-	const float pic_height = 324.0f;
 
 	const int iSelectedChapter = (int)chapters.GetCurrentValue();
 
@@ -270,10 +290,10 @@ void CMenuNewGame::Draw( void )
 
 	// draw the pics
 	float Xpos[5];
-	Xpos[0] = 100.0f;
+	Xpos[0] = pic_x_pos;
 	for( int i = 1; i < 5; ++i )
 	{
-		float overlap = 300.0f * size_factor[i];
+		float overlap = 300.0f * uiStatic.scaleX * size_factor[i];
 		Xpos[i] = Xpos[i - 1] + w[i - 1] - overlap;
 	}
 
@@ -288,7 +308,7 @@ void CMenuNewGame::Draw( void )
 		Point pt;
 		Size sz;
 		pt.x = Xpos[i];
-		pt.y = 200 + (pic_height - h[i]) * 0.5f;
+		pt.y = pic_y_pos + (pic_height - h[i]) * 0.5f;
 		sz.w = w[i];
 		sz.h = h[i];
 		UI_DrawPic( pt, sz, uiColorWhite, chapters_img_bw[i] );
@@ -304,7 +324,7 @@ void CMenuNewGame::Draw( void )
 	Point pt;
 	Size sz;
 	pt.x = Xpos[iSelectedChapter];
-	pt.y = 200 + (pic_height - h[iSelectedChapter]) * 0.5f;
+	pt.y = pic_y_pos + (pic_height - h[iSelectedChapter]) * 0.5f;
 	sz.w = w[iSelectedChapter];
 	sz.h = h[iSelectedChapter];
 	UI_DrawPic( pt, sz, uiColorWhite, chapters_img[iSelectedChapter] );
