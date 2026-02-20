@@ -114,6 +114,7 @@ public:
 	CMenuCheckBox gl_cubemaps;
 	CMenuCheckBox gl_water_planar;
 	CMenuSpinControl gl_renderscale;
+	CMenuCheckBox gl_fsr;
 };
 
 void SetSettingsTo( int Quality )
@@ -247,6 +248,7 @@ void CMenuVidOptions::GetConfig( void )
 	gl_exposure.LinkCvar( "gl_exposure" );
 	gl_cubemaps.LinkCvar( "gl_cubemaps" );
 	gl_water_planar.LinkCvar( "gl_water_planar" );
+	gl_fsr.LinkCvar( "gl_fsr" );
 
 	// special case here...
 	// this sucks. fix it!
@@ -370,6 +372,7 @@ void CMenuVidOptions::SaveAndPopMenu( void )
 	gl_exposure.WriteCvar();
 	gl_cubemaps.WriteCvar();
 	gl_water_planar.WriteCvar();
+	gl_fsr.WriteCvar();
 
 	// special case here...
 //	gl_anisotropy.WriteCvar();
@@ -479,6 +482,7 @@ void CMenuVidOptions::HideMenus( void )
 		gl_bump.iFlags |= QMF_HIDDEN;
 		gl_specular.iFlags |= QMF_HIDDEN;
 		gl_renderscale.iFlags |= QMF_HIDDEN;
+		gl_fsr.iFlags |= QMF_HIDDEN;
 	}
 	else
 	{
@@ -514,6 +518,7 @@ void CMenuVidOptions::HideMenus( void )
 		gl_bump.iFlags &= ~QMF_HIDDEN;
 		gl_specular.iFlags &= ~QMF_HIDDEN;
 		gl_renderscale.iFlags &= ~QMF_HIDDEN;
+		gl_fsr.iFlags &= ~QMF_HIDDEN;
 	}
 }
 
@@ -697,6 +702,11 @@ void CMenuVidOptions::_Init( void )
 	gl_renderscale.LinkCvar( "gl_renderscale", CMenuEditable::CVAR_VALUE );
 	gl_renderscale.onChanged = CMenuEditable::WriteCvarCb;
 
+	gl_fsr.SetNameAndStatus( "FSR 1.0", L( "-" ) );
+	gl_fsr.iFlags |= QMF_NOTIFY;
+	gl_fsr.SetCoord( 350, MenuYOffset + 480 + gamma_slider_offset );
+	gl_fsr.onChanged = CMenuEditable::WriteCvarCb;
+
 	static CStringArrayModel mi( MirrorqualityStr, V_ARRAYSIZE( MirrorqualityStr ) );
 	mirrorQ.SetNameAndStatus( L( "GameUI_MirrorQuality" ), L( "Mirror reflection quality" ) );
 	mirrorQ.Setup( &mi );
@@ -763,6 +773,7 @@ void CMenuVidOptions::_Init( void )
 	AddItem( gl_water_planar );
 	AddItem( gl_bump );
 	AddItem( gl_specular );
+	AddItem( gl_fsr );
 #if GAMMA_SLIDER
 	gammaIntensity.LinkCvar( "gamma" );
 #endif
