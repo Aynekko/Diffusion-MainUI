@@ -159,6 +159,8 @@ void CMenuSpinControl::Draw( void )
 	scCenterBox.w = m_scSize.w - arrow.w * 2;
 	scCenterBox.h = m_scSize.h;
 
+	const bool bDrawLeftArrow = (m_flCurValue > m_flMinValue);
+	const bool bDrawRightArrow = (m_flCurValue < m_flMaxValue);
 
 	if( m_szBackground )
 	{
@@ -178,8 +180,10 @@ void CMenuSpinControl::Draw( void )
 		UI::Scissor::PushScissor( scCenterPos, scCenterBox );
 		UI_DrawString( font, scCenterPos, scCenterBox, m_szDisplay, uiColorDkGrey, m_scChSize, eTextAlignment, textflags | ETF_FORCECOL );
 		UI::Scissor::PopScissor();
-		UI_DrawPic( left, arrow, uiColorDkGrey, m_szLeftArrow );
-		UI_DrawPic( right, arrow, uiColorDkGrey, m_szRightArrow );
+		if( bDrawLeftArrow )
+			UI_DrawPic( left, arrow, uiColorDkGrey, m_szLeftArrow );
+		if( bDrawRightArrow )
+			UI_DrawPic( right, arrow, uiColorDkGrey, m_szRightArrow );
 		return; // grayed
 	}
 
@@ -188,8 +192,10 @@ void CMenuSpinControl::Draw( void )
 		UI::Scissor::PushScissor( scCenterPos, scCenterBox );
 		UI_DrawString( font, scCenterPos, scCenterBox, m_szDisplay, colorBase, m_scChSize, eTextAlignment, textflags );
 		UI::Scissor::PopScissor();
-		UI_DrawPic(left, arrow, colorBase, m_szLeftArrow);
-		UI_DrawPic(right, arrow, colorBase, m_szRightArrow);
+		if( bDrawLeftArrow )
+			UI_DrawPic(left, arrow, colorBase, m_szLeftArrow);
+		if( bDrawRightArrow )
+			UI_DrawPic(right, arrow, colorBase, m_szRightArrow);
 		return;		// No focus
 	}
 
@@ -202,8 +208,10 @@ void CMenuSpinControl::Draw( void )
 		UI::Scissor::PushScissor( scCenterPos, scCenterBox );
 		UI_DrawString( font, scCenterPos, scCenterBox, m_szDisplay, colorFocus, m_scChSize, eTextAlignment, textflags );
 		UI::Scissor::PopScissor();
-		UI_DrawPic( left, arrow, colorBase, (leftFocus) ? m_szLeftArrowFocus : m_szLeftArrow );
-		UI_DrawPic( right, arrow, colorBase, (rightFocus) ? m_szRightArrowFocus : m_szRightArrow );
+		if( bDrawLeftArrow )
+			UI_DrawPic( left, arrow, colorBase, (leftFocus) ? m_szLeftArrowFocus : m_szLeftArrow );
+		if( bDrawRightArrow )
+			UI_DrawPic( right, arrow, colorBase, (rightFocus) ? m_szRightArrowFocus : m_szRightArrow );
 	}
 	else if( eFocusAnimation == QM_PULSEIFFOCUS )
 	{
@@ -214,8 +222,10 @@ void CMenuSpinControl::Draw( void )
 		UI::Scissor::PushScissor( scCenterPos, scCenterBox );
 		UI_DrawString( font, scCenterPos, scCenterBox, m_szDisplay, color, m_scChSize, eTextAlignment, textflags );
 		UI::Scissor::PopScissor();
-		UI_DrawPic( left, arrow, (leftFocus) ? color : (int)colorBase, (leftFocus) ? m_szLeftArrowFocus : m_szLeftArrow );
-		UI_DrawPic( right, arrow, (rightFocus) ? color : (int)colorBase, (rightFocus) ? m_szRightArrowFocus : m_szRightArrow );
+		if( bDrawLeftArrow )
+			UI_DrawPic( left, arrow, (leftFocus) ? color : (int)colorBase, (leftFocus) ? m_szLeftArrowFocus : m_szLeftArrow );
+		if( bDrawRightArrow )
+			UI_DrawPic( right, arrow, (rightFocus) ? color : (int)colorBase, (rightFocus) ? m_szRightArrowFocus : m_szRightArrow );
 	}
 }
 
