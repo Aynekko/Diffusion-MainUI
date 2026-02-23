@@ -49,8 +49,16 @@ public:
 	void Draw() override;
 	bool KeyUp( int key ) override;
 	bool KeyDown( int key ) override;
-	bool DrawAnimation() override { return true; }
 	void Show() override;
+	bool DrawAnimation() override
+	{
+		return true;
+	}
+
+	void EnableFinalCredits( bool enable )
+	{
+		active = finalCredits = enable;
+	}
 
 	friend void UI_DrawFinalCredits( void );
 	friend void UI_FinalCredits( void );
@@ -118,7 +126,10 @@ void CMenuCredits::Draw( void )
 	{
 		active = false; // end of credits
 		if( finalCredits )
+		{
 			EngFuncs::HostEndGame( gMenu.m_gameinfo.title );
+			finalCredits = false;
+		}
 	}
 
 	if( !active && !finalCredits ) // for final credits we don't show the window, just drawing
@@ -219,7 +230,17 @@ void UI_DrawFinalCredits( void )
 
 int UI_CreditsActive( void )
 {
-	return menu_credits->active && menu_credits->finalCredits;
+	if( !menu_credits->active || !menu_credits->finalCredits )
+		return false;
+
+	// client left the game, stop final credits
+	if( !EngFuncs::ClientInGame() )
+	{
+		menu_credits->EnableFinalCredits( false );
+		return false;
+	}
+
+	return true;
 }
 
 void UI_FinalCredits( void )
@@ -227,9 +248,7 @@ void UI_FinalCredits( void )
 	menu_credits->Init();
 	menu_credits->VidInit();
 	menu_credits->Reload(); // take a chance to reload info for items
-
-	menu_credits->active = true;
-	menu_credits->finalCredits = true;
+	menu_credits->EnableFinalCredits( true );
 	// don't create a window
 	// menu_credits->Show();
 }
