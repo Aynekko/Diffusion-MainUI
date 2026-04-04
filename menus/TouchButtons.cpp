@@ -90,6 +90,7 @@ public:
 	class CMenuButtonPreview : public CMenuBaseItem
 	{
 	public:
+		CMenuButtonPreview() : CMenuBaseItem(), textureId( 0 ) {}
 		void Draw() override;
 		HIMAGE textureId;
 	} preview;
