@@ -51,6 +51,7 @@ public:
 	CMenuCheckBox cl_showhealthbars;
 	CMenuSpinControl cl_hitmarker;
 	CMenuCheckBox cl_useicon;
+	CMenuCheckBox cl_crosshair_reloading;
 	CMenuCheckBox cl_subtitles;
 	CMenuSpinControl cl_crosshair;
 	CMenuSpinControl cl_largehud;
@@ -143,6 +144,10 @@ void CMenuOptions::_Init( void )
 	cl_useicon.iFlags |= QMF_NOTIFY;
 	cl_useicon.SetCoord( 300, MenuYOffset + 345 );
 
+	cl_crosshair_reloading.SetNameAndStatus( L( "GameUI_CrosshairReloading" ), L( "-" ) );
+	cl_crosshair_reloading.iFlags |= QMF_NOTIFY;
+	cl_crosshair_reloading.SetCoord( 600, MenuYOffset + 345 );
+
 	static const char *cl_crosshair_str[] =
 	{
 		L( "GameUI_Off" ), L( "GameUI_Diffusion" ), L( "GameUI_Simple" )
@@ -185,6 +190,7 @@ void CMenuOptions::_Init( void )
 	AddItem( cl_showhealthbars );
 	AddItem( cl_hitmarker );
 	AddItem( cl_useicon );
+	AddItem( cl_crosshair_reloading );
 	AddItem( cl_crosshair );
 	AddItem( cl_largehud );
 	AddItem( cl_centerhud );
@@ -208,6 +214,7 @@ void CMenuOptions::Hide(void)
 	cl_centerhud.WriteCvar();
 	cl_hitmarker.WriteCvar();
 	cl_useicon.WriteCvar();
+	cl_crosshair_reloading.WriteCvar();
 	EngFuncs::CvarSetValue( "cl_viewmodel_extras", cl_viewmodel_extras.GetCurrentValue() );
 
 	CMenuFramework::Hide();
@@ -224,6 +231,7 @@ void CMenuOptions::GetConfig()
 	cl_centerhud.LinkCvar( "cl_centerhud" );
 	cl_hitmarker.LinkCvar( "cl_hitmarker", CMenuEditable::CVAR_VALUE );
 	cl_useicon.LinkCvar( "cl_useicon" );
+	cl_crosshair_reloading.LinkCvar( "cl_crosshair_reloading" );
 	cl_crosshair.LinkCvar( "cl_crosshair", CMenuEditable::CVAR_VALUE );
 	cl_largehud.LinkCvar( "cl_largehud", CMenuEditable::CVAR_VALUE );
 	cl_viewmodel_extras.SetCurrentValue( EngFuncs::GetCvarFloat( "cl_viewmodel_extras" ) );
