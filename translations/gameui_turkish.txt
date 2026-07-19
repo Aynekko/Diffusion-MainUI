@@ -3,7 +3,8 @@
 "Language" "Turkish" 
 "Tokens" 
 {
-"GameUI_CrosshairReloading"	"Reloading circle"
+"GameUI_CrosshairScale"		"Görüş boyutu"
+"GameUI_CrosshairReloading"	"Yeniden Yükleme Çemberi"
 "GameUI_Chapter1"		"Utah Laboratuvarları"
 "GameUI_Chapter2"		"Kızıl Boyut"
 "GameUI_Chapter3"		"Mavi Boyut"
