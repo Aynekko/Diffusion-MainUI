@@ -38,6 +38,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define LEGACY_VIEWSIZE 0
 #define FPS_LIMITER_CHECKBOX 0
 
+#define SUN_SHADOW_MIN 800
+#define SUN_SHADOW_MED 1280
+#define SUN_SHADOW_MAX 2048
+
 enum
 {
 	PRESET_LOW = 0,
@@ -67,6 +71,8 @@ public:
 	void SetCurFps( void );
 	void SetVSync( void );
 	void HideMenus( void );
+	void GetSunShadow( void );
+	void SetSunShadow( void );
 
 	int	outlineWidth;
 
@@ -102,6 +108,7 @@ public:
 	CMenuCheckBox	r_bloom;
 	CMenuCheckBox	r_blur;
 	CMenuSpinControl shadowQ;
+	CMenuSpinControl sunshadowQ;
 	CMenuSpinControl mirrorQ;
 	CMenuSpinControl AntiAliasing;
 	CMenuCheckBox	gl_lensflare;
@@ -138,6 +145,9 @@ void SetSettingsTo( int Quality )
 		EngFuncs::CvarSetValue( "gl_water_planar", 0 );
 		EngFuncs::CvarSetValue( "r_mirrorquality", 0 );
 		EngFuncs::CvarSetValue( "r_shadowquality", 0 );
+		EngFuncs::CvarSetValue( "r_sun_shadow", 0 );
+		EngFuncs::CvarSetValue( "r_sun_shadow_size", SUN_SHADOW_MIN );
+		EngFuncs::CvarSetValue( "r_shadowquality", 0 );
 		EngFuncs::CvarSetValue( "gl_hbao", 0 );
 		EngFuncs::CvarSetValue( "cl_lod_enable", 1 );
 	}
@@ -160,6 +170,8 @@ void SetSettingsTo( int Quality )
 		EngFuncs::CvarSetValue( "gl_water_planar", 0 );
 		EngFuncs::CvarSetValue( "r_mirrorquality", 2 );
 		EngFuncs::CvarSetValue( "r_shadowquality", 1 );
+		EngFuncs::CvarSetValue( "r_sun_shadow", 1 );
+		EngFuncs::CvarSetValue( "r_sun_shadow_size", SUN_SHADOW_MIN );
 		EngFuncs::CvarSetValue( "gl_hbao", 0 );
 		EngFuncs::CvarSetValue( "cl_lod_enable", 1 );
 	}
@@ -182,6 +194,8 @@ void SetSettingsTo( int Quality )
 		EngFuncs::CvarSetValue( "gl_water_planar", 0 );
 		EngFuncs::CvarSetValue( "r_mirrorquality", 3 );
 		EngFuncs::CvarSetValue( "r_shadowquality", 2 );
+		EngFuncs::CvarSetValue( "r_sun_shadow", 1 );
+		EngFuncs::CvarSetValue( "r_sun_shadow_size", SUN_SHADOW_MED );
 		EngFuncs::CvarSetValue( "gl_hbao", 0 );
 		EngFuncs::CvarSetValue( "cl_lod_enable", 0 );
 	}
@@ -204,10 +218,61 @@ void SetSettingsTo( int Quality )
 		EngFuncs::CvarSetValue( "gl_water_planar", 0 );
 		EngFuncs::CvarSetValue( "r_mirrorquality", 4 );
 		EngFuncs::CvarSetValue( "r_shadowquality", 3 );
+		EngFuncs::CvarSetValue( "r_sun_shadow", 1 );
+		EngFuncs::CvarSetValue( "r_sun_shadow_size", SUN_SHADOW_MAX );
 		EngFuncs::CvarSetValue( "gl_hbao", 1 );
 		EngFuncs::CvarSetValue( "cl_lod_enable", 0 );
 
 		EngFuncs::ClientCmd( false, "menuactivate video_maximum\n" );
+	}
+}
+
+void CMenuVidOptions::GetSunShadow( void )
+{
+	// approximate the menu setting, then set the appropriate one
+	const int SunShadow = EngFuncs::GetCvarFloat( "r_sun_shadow" );
+	const int SunShadowSize = EngFuncs::GetCvarFloat( "r_sun_shadow_size" );
+
+	if( SunShadow < 1 )
+	{
+		sunshadowQ.SetCurrentValue( 0.0f );
+		EngFuncs::CvarSetValue( "r_sun_shadow", 0 );
+		EngFuncs::CvarSetValue( "r_sun_shadow_size", SUN_SHADOW_MIN );
+	}
+	else
+	{
+		if( SunShadowSize <= SUN_SHADOW_MIN )
+		{
+			sunshadowQ.SetCurrentValue( 1.0f );
+			EngFuncs::CvarSetValue( "r_sun_shadow", 1 );
+			EngFuncs::CvarSetValue( "r_sun_shadow_size", SUN_SHADOW_MIN );
+		}
+		else if( SunShadowSize <= SUN_SHADOW_MED )
+		{
+			sunshadowQ.SetCurrentValue( 2.0f );
+			EngFuncs::CvarSetValue( "r_sun_shadow", 1 );
+			EngFuncs::CvarSetValue( "r_sun_shadow_size", SUN_SHADOW_MED );
+		}
+		else
+		{
+			sunshadowQ.SetCurrentValue( 3.0f );
+			EngFuncs::CvarSetValue( "r_sun_shadow", 1 );
+			EngFuncs::CvarSetValue( "r_sun_shadow_size", SUN_SHADOW_MAX );
+		}
+	}
+}
+
+void CMenuVidOptions::SetSunShadow( void )
+{
+	const int val = sunshadowQ.GetCurrentValue();
+
+	switch( val )
+	{
+	default:
+	case 0: EngFuncs::CvarSetValue( "r_sun_shadow", 0 ); EngFuncs::CvarSetValue( "r_sun_shadow_size", SUN_SHADOW_MIN ); break;
+	case 1: EngFuncs::CvarSetValue( "r_sun_shadow", 1 ); EngFuncs::CvarSetValue( "r_sun_shadow_size", SUN_SHADOW_MIN ); break;
+	case 2: EngFuncs::CvarSetValue( "r_sun_shadow", 1 ); EngFuncs::CvarSetValue( "r_sun_shadow_size", SUN_SHADOW_MED ); break;
+	case 3: EngFuncs::CvarSetValue( "r_sun_shadow", 1 ); EngFuncs::CvarSetValue( "r_sun_shadow_size", SUN_SHADOW_MAX ); break;
 	}
 }
 
@@ -249,6 +314,8 @@ void CMenuVidOptions::GetConfig( void )
 	gl_cubemaps.LinkCvar( "gl_cubemaps" );
 	gl_water_planar.LinkCvar( "gl_water_planar" );
 	gl_fsr.LinkCvar( "gl_fsr" );
+
+	GetSunShadow();
 
 	// special case here...
 	// this sucks. fix it!
@@ -316,8 +383,9 @@ void CMenuVidOptions::GetConfig( void )
 
 void CMenuVidOptions::WriteAnisotropy(void)
 {
-	int AnisotropyValue = gl_anisotropy.GetCurrentValue();
-	switch( AnisotropyValue )
+	const int val = gl_anisotropy.GetCurrentValue();
+
+	switch( val )
 	{
 	default:
 	case 0: EngFuncs::CvarSetValue( "gl_anisotropy", 1 ); break;
@@ -379,6 +447,7 @@ void CMenuVidOptions::SaveAndPopMenu( void )
 	WriteAnisotropy();
 	WriteAntiAliasing();
 
+	SetSunShadow();
 	SetMaxFps();
 
 	CMenuFramework::SaveAndPopMenu();
@@ -470,6 +539,7 @@ void CMenuVidOptions::HideMenus( void )
 	//	FPSunlimited.iFlags |= QMF_HIDDEN;
 		gl_vsync.iFlags |= QMF_HIDDEN;
 		shadowQ.iFlags |= QMF_HIDDEN;
+		sunshadowQ.iFlags |= QMF_HIDDEN;
 		mirrorQ.iFlags |= QMF_HIDDEN;
 		gl_anisotropy.iFlags |= QMF_HIDDEN;
 		AntiAliasing.iFlags |= QMF_HIDDEN;
@@ -506,6 +576,7 @@ void CMenuVidOptions::HideMenus( void )
 	//	FPSunlimited.iFlags &= ~QMF_HIDDEN;
 		gl_vsync.iFlags &= ~QMF_HIDDEN;
 		shadowQ.iFlags &= ~QMF_HIDDEN;
+		sunshadowQ.iFlags &= ~QMF_HIDDEN;
 		mirrorQ.iFlags &= ~QMF_HIDDEN;
 		gl_anisotropy.iFlags &= ~QMF_HIDDEN;
 		AntiAliasing.iFlags &= ~QMF_HIDDEN;
@@ -535,6 +606,11 @@ void CMenuVidOptions::_Init( void )
 	{
 	//	L( "Low (256p)" ), L( "Medium (512p)" ), L( "High (1024p)" ), L( "Maximum (2048p)" ), L( "Extreme (4096p)" )
 		L( "GameUI_Low256" ), L( "GameUI_Medium512" ), L( "GameUI_High1024" ), L( "GameUI_Maximum2048" )
+	};
+
+	static const char *SunShadowqualityStr[] =
+	{
+		L( "GameUI_Off" ), L( "GameUI_Medium512" ), L( "GameUI_High1024" ), L( "GameUI_Maximum2048" )
 	};
 
 	static const char *MirrorqualityStr[] =
@@ -733,6 +809,13 @@ void CMenuVidOptions::_Init( void )
 	shadowQ.font = QM_SMALLFONT;
 	shadowQ.SetRect( 1000, MenuYOffset + 200, 300, 32 );
 
+	static CStringArrayModel sh_sun( SunShadowqualityStr, V_ARRAYSIZE( SunShadowqualityStr ) );
+	sunshadowQ.SetNameAndStatus( L( "GameUI_SunShadowQuality" ), L( "Dynamic sun shadow quality" ) );
+	sunshadowQ.Setup( &sh_sun );
+	sunshadowQ.onChanged = VoidCb( &CMenuVidOptions::SetSunShadow );
+	sunshadowQ.font = QM_SMALLFONT;
+	sunshadowQ.SetRect( 1000, MenuYOffset + 300, 300, 32 );
+
 	AddItem( banner );
 	AddItem( done );
 	AddItem( SetToLow );
@@ -762,6 +845,7 @@ void CMenuVidOptions::_Init( void )
 	AddItem( gl_vsync );
 	AddItem( hideMenus );
 	AddItem( shadowQ );
+	AddItem( sunshadowQ );
 	AddItem( mirrorQ );
 	AddItem( gl_anisotropy );
 	AddItem( AntiAliasing );
