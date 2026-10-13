@@ -41,6 +41,7 @@ public:
 	void Hide();
 	void Think() override;
 	void GetConfig( void );
+	void SetCrosshairScale( void );
 	int	outlineWidth;
 
 	CMenuCheckBox cl_achievement_notify;
@@ -66,6 +67,12 @@ void CMenuOptions::Think()
 {
 	allowConsole.bChecked = gpGlobals->developer;
 	CMenuFramework::Think();
+}
+
+void CMenuOptions::SetCrosshairScale( void )
+{
+	EngFuncs::CvarSetValue( "cl_crosshair_scale", cl_crosshair_scale.GetCurrentValue() );
+	EngFuncs::CvarSetValue( "ui_crosshair_setup", 9 ); // show crosshair on screen for 3 seconds, fading out; 9 because it will decrease at 3x speed, see client DLL (DrawTestCrosshair func)
 }
 
 /*
@@ -152,7 +159,7 @@ void CMenuOptions::_Init( void )
 	cl_crosshair_scale.SetDisplayPrecision( 1 );
 	cl_crosshair_scale.SetRect( 300, MenuYOffset + 370, 260, 32 );
 	cl_crosshair_scale.LinkCvar( "cl_crosshair_scale", CMenuEditable::CVAR_VALUE );
-	cl_crosshair_scale.onChanged = CMenuEditable::WriteCvarCb;
+	cl_crosshair_scale.onChanged = VoidCb( &CMenuOptions::SetCrosshairScale );
 
 	static const char *cl_crosshair_str[] =
 	{
