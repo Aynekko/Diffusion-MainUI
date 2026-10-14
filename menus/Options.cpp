@@ -42,6 +42,7 @@ public:
 	void Think() override;
 	void GetConfig( void );
 	void SetCrosshairScale( void );
+	void SetCrosshairStyle( void );
 	int	outlineWidth;
 
 	CMenuCheckBox cl_achievement_notify;
@@ -73,6 +74,14 @@ void CMenuOptions::SetCrosshairScale( void )
 {
 	EngFuncs::CvarSetValue( "cl_crosshair_scale", cl_crosshair_scale.GetCurrentValue() );
 	EngFuncs::CvarSetValue( "ui_crosshair_setup", 9 ); // show crosshair on screen for 3 seconds, fading out; 9 because it will decrease at 3x speed, see client DLL (DrawTestCrosshair func)
+}
+
+void CMenuOptions::SetCrosshairStyle( void )
+{
+	int val = cl_crosshair.GetCurrentValue();
+	EngFuncs::CvarSetValue( "cl_crosshair", val );
+	if( val > 0 )
+		EngFuncs::CvarSetValue( "ui_crosshair_setup", 9 ); // show crosshair on screen for 3 seconds, fading out; 9 because it will decrease at 3x speed, see client DLL (DrawTestCrosshair func)
 }
 
 /*
@@ -168,9 +177,10 @@ void CMenuOptions::_Init( void )
 	static CStringArrayModel crossy( cl_crosshair_str, V_ARRAYSIZE( cl_crosshair_str ) );
 	cl_crosshair.SetNameAndStatus( L( "GameUI_CrosshairStyle" ), L( "Set crosshair style" ) );
 	cl_crosshair.Setup( &crossy );
-	cl_crosshair.onChanged = CMenuEditable::WriteCvarCb;
 	cl_crosshair.font = QM_SMALLFONT;
 	cl_crosshair.SetRect( 300, MenuYOffset + 445, 200, 32 );
+	cl_crosshair.LinkCvar( "cl_crosshair", CMenuEditable::CVAR_VALUE );
+	cl_crosshair.onChanged = VoidCb( &CMenuOptions::SetCrosshairStyle );
 
 	static const char *cl_largehud_str[] =
 	{
@@ -230,6 +240,7 @@ void CMenuOptions::Hide(void)
 	cl_useicon.WriteCvar();
 	cl_crosshair_reloading.WriteCvar();
 	EngFuncs::CvarSetValue( "cl_viewmodel_extras", cl_viewmodel_extras.GetCurrentValue() );
+	EngFuncs::CvarSetValue( "ui_crosshair_setup", 0 );
 
 	CMenuFramework::Hide();
 	EngFuncs::ClientCmd(false, "menuactivate mainmenu\n");
