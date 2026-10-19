@@ -84,6 +84,7 @@ private:
 
 	bool bTrainMap;
 	bool bCustomGame;
+	bool bReInit;
 
 	class CGameLogo : public CMenuBitmap
 	{
@@ -409,6 +410,31 @@ void CMenuMain::VidInit( bool connected )
 	achievements.SetCoord( 72, MenuYOffset + (bTrainMap ? 630 : 480) );
 	previews.SetCoord(72, MenuYOffset + ((bCustomGame) ? (bTrainMap ? 580 : 530) : (bTrainMap ? 530 : 480)));
 	quit.SetCoord(72, MenuYOffset + ((bCustomGame) ? (bTrainMap ? 630 : 580) : (bTrainMap ? 580 : 530)));
+
+	console.SetVisibility( true );
+	newGame.SetVisibility( true );
+	saveRestore.SetVisibility( true );
+	configuration.SetVisibility( true );
+	multiPlayer.SetVisibility( true );
+	achievements.SetVisibility( true );
+	previews.SetVisibility( true );
+	quit.SetVisibility( true );
+
+	// hide all menus while compiling shaders, just for satisfying visuals
+	if( !bReInit || (int)EngFuncs::GetCvarFloat( "cl_background" ) != 0 )
+	{
+		if( (int)EngFuncs::GetCvarFloat( "ui_shadersdone" ) != 1 )
+		{
+			console.SetVisibility( false );
+			newGame.SetVisibility( false );
+			saveRestore.SetVisibility( false );
+			configuration.SetVisibility( false );
+			multiPlayer.SetVisibility( false );
+			achievements.SetVisibility( false );
+			previews.SetVisibility( false );
+			quit.SetVisibility( false );
+		}
+	}
 }
 
 void CMenuMain::_VidInit()
@@ -419,6 +445,17 @@ void CMenuMain::_VidInit()
 
 void CMenuMain::Draw(void)
 {
+	if( (int)EngFuncs::GetCvarFloat( "ui_shadersdone" ) != 1 )
+		return;
+	else
+	{
+		if( !bReInit )
+		{
+			bReInit = true;
+			VidInit( CL_IsActive() );
+		}
+	}
+	
 	if( !EngFuncs::ClientInGame() && (int)EngFuncs::GetCvarFloat( "host_serverstate" ) == 0 )
 	{
 		uiStatic.bgmap_hack_framecount++;
