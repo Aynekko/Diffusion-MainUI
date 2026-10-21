@@ -421,7 +421,7 @@ void CMenuMain::VidInit( bool connected )
 	quit.SetVisibility( true );
 
 	// hide all menus while compiling shaders, just for satisfying visuals
-	if( !bReInit || (int)EngFuncs::GetCvarFloat( "cl_background" ) != 0 )
+	if( (int)EngFuncs::GetCvarFloat( "cl_background" ) != 0 )
 	{
 		if( (int)EngFuncs::GetCvarFloat( "ui_shadersdone" ) != 1 )
 		{
@@ -445,17 +445,6 @@ void CMenuMain::_VidInit()
 
 void CMenuMain::Draw(void)
 {
-	if( (int)EngFuncs::GetCvarFloat( "ui_shadersdone" ) != 1 )
-		return;
-	else
-	{
-		if( !bReInit )
-		{
-			bReInit = true;
-			VidInit( CL_IsActive() );
-		}
-	}
-	
 	if( !EngFuncs::ClientInGame() && (int)EngFuncs::GetCvarFloat( "host_serverstate" ) == 0 )
 	{
 		uiStatic.bgmap_hack_framecount++;
@@ -468,15 +457,31 @@ void CMenuMain::Draw(void)
 
 void CMenuMain::Think()
 {
-	if( gpGlobals->developer )
+	if( (int)EngFuncs::GetCvarFloat( "ui_shadersdone" ) == 1 )
 	{
-		if( !console.IsVisible() )
-			console.Show();
-	}
-	else
-	{
-		if( console.IsVisible() )
-			console.Hide();
+		if( !bReInit )
+		{
+			bReInit = true;
+			console.SetVisibility( true );
+			newGame.SetVisibility( true );
+			saveRestore.SetVisibility( true );
+			configuration.SetVisibility( true );
+			multiPlayer.SetVisibility( true );
+			achievements.SetVisibility( true );
+			previews.SetVisibility( true );
+			quit.SetVisibility( true );
+		}
+
+		if( gpGlobals->developer )
+		{
+			if( !console.IsVisible() )
+				console.Show();
+		}
+		else
+		{
+			if( console.IsVisible() )
+				console.Hide();
+		}
 	}
 
 	CMenuFramework::Think();
