@@ -461,8 +461,15 @@ void CMenuMain::Think()
 	{
 		if( !bReInit )
 		{
-			bReInit = true;
-			console.SetVisibility( true );
+			// sometimes they are just not showing, very rarely. I don't know what else to do.
+			// spam set visibility to true for 10 frames:
+			uiStatic.bgmap_hack_framecount++;
+			if( uiStatic.bgmap_hack_framecount > 10 )
+			{
+				uiStatic.bgmap_hack_framecount = 0;
+				bReInit = true;
+			}
+
 			newGame.SetVisibility( true );
 			saveRestore.SetVisibility( true );
 			configuration.SetVisibility( true );
