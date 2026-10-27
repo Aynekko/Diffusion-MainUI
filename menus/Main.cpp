@@ -19,14 +19,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include "Framework.h"
-#include "Action.h"
 #include "Bitmap.h"
 #include "PicButton.h"
 #include "YesNoMessageBox.h"
-#include "keydefs.h"
 #include "MenuStrings.h"
-#include "PlayerIntroduceDialog.h"
-#include "Table.h"
 
 #define ART_MINIMIZE_N	"gfx/shell/min_n"
 #define ART_MINIMIZE_F	"gfx/shell/min_f"
@@ -36,19 +32,24 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define ART_CLOSEBTN_D	"gfx/shell/cls_d"
 #define ART_GAMEICON	"gfx/shell/game_icon.tga"
 
-class CMenuMain: public CMenuFramework
+static bool bTrainMap = false;
+static bool bCustomGame = false;
+static bool bReInit = false;
+static int iCvarExists = -1;
+
+class CMenuMain : public CMenuFramework
 {
 public:
-	CMenuMain() : CMenuFramework( "CMenuMain" ) { }
+	CMenuMain() : CMenuFramework( "CMenuMain" ) {}
 
 	bool KeyDown( int key ) override;
 private:
 	void _Init() override;
-	void _VidInit( ) override;
+	void _VidInit() override;
 	void Draw();
 	void Think() override;
-	
-	void VidInit(bool connected);
+
+	void VidInit( bool connected );
 
 	void QuitDialog( void *pExtra = NULL );
 	void DisconnectCb();
@@ -82,9 +83,6 @@ private:
 	// quit dialog
 	CMenuYesNoMessageBox dialog;
 
-	bool bTrainMap;
-	bool bCustomGame;
-
 	class CGameLogo : public CMenuBitmap
 	{
 		void Draw() override;
@@ -114,7 +112,7 @@ void CMenuMain::CMenuMainBanner::Draw()
 	EngFuncs::DrawLogo( "logo.avi", 0, logoPosY, logoWidth, logoHeight );
 }
 
-void CMenuMain::QuitDialog(void *pExtra)
+void CMenuMain::QuitDialog( void *pExtra )
 {
 	dialog.SetMessage( L( "GameUI_QuitConfirmationText" ) );
 	dialog.onPositive.SetCommand( false, "quit\n" );
@@ -166,7 +164,7 @@ bool CMenuMain::KeyDown( int key )
 
 		return true;
 	}
-	
+
 	return CMenuFramework::KeyDown( key );
 }
 
@@ -194,12 +192,12 @@ void CMenuMain::HazardCourseCb()
 
 void CMenuMain::_Init( void )
 {
-//	if( gMenu.m_gameinfo.trainmap[0] && stricmp( gMenu.m_gameinfo.trainmap, gMenu.m_gameinfo.startmap ) != 0 )
-//		bTrainMap = true;
-//	else
+	//	if( gMenu.m_gameinfo.trainmap[0] && stricmp( gMenu.m_gameinfo.trainmap, gMenu.m_gameinfo.startmap ) != 0 )
+	//		bTrainMap = true;
+	//	else
 	bTrainMap = false; // diffusion - disabled for now
 
-	if( EngFuncs::GetCvarFloat( "host_allow_changegame" ))
+	if( EngFuncs::GetCvarFloat( "host_allow_changegame" ) )
 		bCustomGame = true;
 	else bCustomGame = false;
 
@@ -215,10 +213,10 @@ void CMenuMain::_Init( void )
 	console.SetPicture( PC_CONSOLE );
 	console.SetVisibility( gpGlobals->developer );
 	SET_EVENT_MULTI( console.onReleased,
-	{
-		UI_SetActiveMenu( false );
-		EngFuncs::KEY_SetDest( KEY_CONSOLE );
-	});
+		{
+			UI_SetActiveMenu( false );
+			EngFuncs::KEY_SetDest( KEY_CONSOLE );
+		} );
 
 	resumeGame.SetNameAndStatus( L( "GameUI_GameMenu_ResumeGame" ), L( "StringsList_188" ) );
 	resumeGame.SetPicture( PC_RESUME_GAME );
@@ -261,30 +259,30 @@ void CMenuMain::_Init( void )
 	previews.SetNameAndStatus( L( "Previews" ), L( "StringsList_400" ) );
 	previews.SetPicture( PC_PREVIEWS );
 	previews.iFlags |= QMF_NOTIFY;
-	SET_EVENT( previews.onReleased, EngFuncs::ShellExecute( MenuStrings[ IDS_MEDIA_PREVIEWURL ], NULL, false ) );
+	SET_EVENT( previews.onReleased, EngFuncs::ShellExecute( MenuStrings[IDS_MEDIA_PREVIEWURL], NULL, false ) );
 
 	quit.SetNameAndStatus( L( "GameUI_GameMenu_Quit" ), L( "GameUI_QuitConfirmationText" ) );
 	quit.SetPicture( PC_QUIT );
 	quit.iFlags |= QMF_NOTIFY;
 	quit.onReleased = MenuCb( &CMenuMain::QuitDialog );
 
-/*	quitButton.SetPicture( ART_CLOSEBTN_N, ART_CLOSEBTN_F, ART_CLOSEBTN_D );
-	quitButton.iFlags = QMF_MOUSEONLY;
-	quitButton.eFocusAnimation = QM_HIGHLIGHTIFFOCUS;
-	quitButton.onReleased = MenuCb( &CMenuMain::QuitDialog );
+	/*	quitButton.SetPicture( ART_CLOSEBTN_N, ART_CLOSEBTN_F, ART_CLOSEBTN_D );
+		quitButton.iFlags = QMF_MOUSEONLY;
+		quitButton.eFocusAnimation = QM_HIGHLIGHTIFFOCUS;
+		quitButton.onReleased = MenuCb( &CMenuMain::QuitDialog );
 
-	minimizeBtn.SetPicture( ART_MINIMIZE_N, ART_MINIMIZE_F, ART_MINIMIZE_D );
-	minimizeBtn.iFlags = QMF_MOUSEONLY;
-	minimizeBtn.eFocusAnimation = QM_HIGHLIGHTIFFOCUS;
-	minimizeBtn.onReleased.SetCommand( false, "minimize\n" );*/
+		minimizeBtn.SetPicture( ART_MINIMIZE_N, ART_MINIMIZE_F, ART_MINIMIZE_D );
+		minimizeBtn.iFlags = QMF_MOUSEONLY;
+		minimizeBtn.eFocusAnimation = QM_HIGHLIGHTIFFOCUS;
+		minimizeBtn.onReleased.SetCommand( false, "minimize\n" );*/
 
-	if ( gMenu.m_gameinfo.gamemode == GAME_MULTIPLAYER_ONLY || gMenu.m_gameinfo.startmap[0] == 0 )
+	if( gMenu.m_gameinfo.gamemode == GAME_MULTIPLAYER_ONLY || gMenu.m_gameinfo.startmap[0] == 0 )
 		newGame.SetGrayed( true );
 
-	if ( gMenu.m_gameinfo.gamemode == GAME_SINGLEPLAYER_ONLY )
+	if( gMenu.m_gameinfo.gamemode == GAME_SINGLEPLAYER_ONLY )
 		multiPlayer.SetGrayed( true );
 
-	if ( gMenu.m_gameinfo.gamemode == GAME_MULTIPLAYER_ONLY )
+	if( gMenu.m_gameinfo.gamemode == GAME_MULTIPLAYER_ONLY )
 	{
 		saveRestore.SetGrayed( true );
 		hazardCourse.SetGrayed( true );
@@ -295,7 +293,7 @@ void CMenuMain::_Init( void )
 		previews.SetGrayed( true );
 
 	// server.dll needs for reading savefiles or startup newgame
-	if( !EngFuncs::CheckGameDll( ))
+	if( !EngFuncs::CheckGameDll() )
 	{
 		saveRestore.SetGrayed( true );
 		hazardCourse.SetGrayed( true );
@@ -317,7 +315,7 @@ void CMenuMain::_Init( void )
 	AddItem( resumeGame );
 	AddItem( newGame );
 
-	if ( bTrainMap )
+	if( bTrainMap )
 		AddItem( hazardCourse );
 
 	AddItem( saveRestore );
@@ -330,8 +328,8 @@ void CMenuMain::_Init( void )
 
 	AddItem( previews );
 	AddItem( quit );
-//	AddItem( minimizeBtn );
-//	AddItem( quitButton );
+	//	AddItem( minimizeBtn );
+	//	AddItem( quitButton );
 
 	AddItem( achievements );
 	AddItem( gameLogo );
@@ -399,16 +397,43 @@ void CMenuMain::VidInit( bool connected )
 		disconnect.Hide();
 		console.pos.y = MenuYOffset + 230;
 	}
-	
+
 	console.pos.x = 72;
 	console.CalcPosition();
-	saveRestore.SetCoord(72, MenuYOffset + (bTrainMap ? 380 : 330));
-	configuration.SetCoord(72, MenuYOffset + (bTrainMap ? 430 : 380));
-	multiPlayer.SetCoord(72, MenuYOffset + (bTrainMap ? 480 : 430));
-//	customGame.SetCoord(72, MenuYOffset + (bTrainMap ? 530 : 480));
+	saveRestore.SetCoord( 72, MenuYOffset + (bTrainMap ? 380 : 330) );
+	configuration.SetCoord( 72, MenuYOffset + (bTrainMap ? 430 : 380) );
+	multiPlayer.SetCoord( 72, MenuYOffset + (bTrainMap ? 480 : 430) );
+	//	customGame.SetCoord(72, MenuYOffset + (bTrainMap ? 530 : 480));
 	achievements.SetCoord( 72, MenuYOffset + (bTrainMap ? 630 : 480) );
-	previews.SetCoord(72, MenuYOffset + ((bCustomGame) ? (bTrainMap ? 580 : 530) : (bTrainMap ? 530 : 480)));
-	quit.SetCoord(72, MenuYOffset + ((bCustomGame) ? (bTrainMap ? 630 : 580) : (bTrainMap ? 580 : 530)));
+	previews.SetCoord( 72, MenuYOffset + ((bCustomGame) ? (bTrainMap ? 580 : 530) : (bTrainMap ? 530 : 480)) );
+	quit.SetCoord( 72, MenuYOffset + ((bCustomGame) ? (bTrainMap ? 630 : 580) : (bTrainMap ? 580 : 530)) );
+
+	console.SetVisibility( true );
+	newGame.SetVisibility( true );
+	saveRestore.SetVisibility( true );
+	configuration.SetVisibility( true );
+	multiPlayer.SetVisibility( true );
+	achievements.SetVisibility( true );
+	previews.SetVisibility( true );
+	quit.SetVisibility( true );
+
+	iCvarExists = EngFuncs::textfuncs.pfnIsCvarReadOnly( "ui_shadersdone" );
+
+	// hide all menus while compiling shaders, just for satisfying visuals
+	if( iCvarExists != -1 && (int)EngFuncs::GetCvarFloat( "cl_background" ) != 0 )
+	{
+		if( (int)EngFuncs::GetCvarFloat( "ui_shadersdone" ) != 1 )
+		{
+			console.SetVisibility( false );
+			newGame.SetVisibility( false );
+			saveRestore.SetVisibility( false );
+			configuration.SetVisibility( false );
+			multiPlayer.SetVisibility( false );
+			achievements.SetVisibility( false );
+			previews.SetVisibility( false );
+			quit.SetVisibility( false );
+		}
+	}
 }
 
 void CMenuMain::_VidInit()
@@ -417,7 +442,7 @@ void CMenuMain::_VidInit()
 	uiStatic.bgmap_hack_framecount = 0;
 }
 
-void CMenuMain::Draw(void)
+void CMenuMain::Draw( void )
 {
 	if( !EngFuncs::ClientInGame() && (int)EngFuncs::GetCvarFloat( "host_serverstate" ) == 0 )
 	{
@@ -431,15 +456,43 @@ void CMenuMain::Draw(void)
 
 void CMenuMain::Think()
 {
-	if( gpGlobals->developer )
+	if( iCvarExists != -1 )
 	{
-		if( !console.IsVisible() )
-			console.Show();
+		if( (int)EngFuncs::GetCvarFloat( "ui_shadersdone" ) == 1 )
+		{
+			if( !bReInit )
+			{
+				bReInit = true;
+				VidInit( CL_IsActive() );
+				CalcPosition();
+				CalcSizes();
+				VidInitItems();
+			}
+
+			if( gpGlobals->developer )
+			{
+				if( !console.IsVisible() )
+					console.Show();
+			}
+			else
+			{
+				if( console.IsVisible() )
+					console.Hide();
+			}
+		}
 	}
 	else
 	{
-		if( console.IsVisible() )
-			console.Hide();
+		if( gpGlobals->developer )
+		{
+			if( !console.IsVisible() )
+				console.Show();
+		}
+		else
+		{
+			if( console.IsVisible() )
+				console.Hide();
+		}
 	}
 
 	CMenuFramework::Think();
