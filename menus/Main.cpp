@@ -32,6 +32,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define ART_CLOSEBTN_D	"gfx/shell/cls_d"
 #define ART_GAMEICON	"gfx/shell/game_icon.tga"
 
+const float ArtCoord[4] = { 50.0f, 50.0f, 300.0f, 300.0f }; // x y w h
+
 static bool bTrainMap = false;
 static bool bCustomGame = false;
 static bool bReInit = false;
@@ -204,7 +206,7 @@ void CMenuMain::_Init( void )
 	// game logo/icon
 	hGameLogo = EngFuncs::PIC_Load( ART_GAMEICON, PIC_KEEP_SOURCE | PIC_EXPAND_SOURCE );
 	gameLogo.iFlags = QMF_INACTIVE;
-	gameLogo.SetRect( 390, 225, 480, 450 );
+	gameLogo.SetRect( ArtCoord[0], ArtCoord[1], ArtCoord[2], ArtCoord[3] );
 	gameLogo.SetPicture( ART_GAMEICON );
 
 	// console
@@ -416,6 +418,7 @@ void CMenuMain::VidInit( bool connected )
 	achievements.SetVisibility( true );
 	previews.SetVisibility( true );
 	quit.SetVisibility( true );
+	gameLogo.SetVisibility( true );
 
 	iCvarExists = EngFuncs::textfuncs.pfnIsCvarReadOnly( "ui_shadersdone" );
 
@@ -432,6 +435,7 @@ void CMenuMain::VidInit( bool connected )
 			achievements.SetVisibility( false );
 			previews.SetVisibility( false );
 			quit.SetVisibility( false );
+			gameLogo.SetVisibility( false );
 		}
 	}
 }
@@ -502,5 +506,5 @@ ADD_MENU( menu_main, CMenuMain, UI_Main_Menu );
 
 void CMenuMain::CGameLogo::Draw()
 {
-	UI_DrawPic( 50, 50, m_scSize.w * 0.625, m_scSize.w * 0.625, uiColorWhite, szPic, QM_DRAWTRANS ); // using w twice to make sure it's a square...
+	UI_DrawPic( ArtCoord[0], ArtCoord[1], ArtCoord[2], ArtCoord[3], uiColorWhite, szPic, QM_DRAWTRANS );
 }
