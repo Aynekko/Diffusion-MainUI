@@ -39,6 +39,104 @@ static bool bCustomGame = false;
 static bool bReInit = false;
 static int iCvarExists = -1;
 
+class CMenuLinksMessageBox : public CMenuYesNoMessageBox
+{
+public:
+	CMenuLinksMessageBox() : CMenuYesNoMessageBox( true ) {}
+
+	void CMenuLinksMessageBox::_Init()
+	{
+		CMenuYesNoMessageBox::_Init();
+
+		RemoveItem( yes ); // remove OK button - it's not centered, I'll use my own button
+
+		int textWidth, textHeight;
+
+		//--------------------------------------------------------------------------
+		// set link 1 - itchio
+		//--------------------------------------------------------------------------
+		link1.SetNameAndStatus( "itch.io", NULL );
+		link1.SetCoord( (640 - UI_BUTTONS_WIDTH) / 2, 140 );
+		link1.iFlags |= QMF_NOTIFY;
+		SET_EVENT( link1.onReleased, EngFuncs::ShellExecute( "https://aynekko.itch.io/diffusion", NULL, false ) );
+
+		// Calculate text width and set button size to match
+		textWidth = g_FontMgr->GetTextWideScaled( link1.font, link1.szName, link1.charSize );
+		textHeight = g_FontMgr->GetTextHeightExt( link1.font, link1.szName, link1.charSize, textWidth );
+		textHeight += 8;
+
+		const int y_base = 80;
+		const int y_add = (int)(textHeight * 0.7f);
+
+		// Center using the real text-based width
+		link1.SetRect( (640 - textWidth) / 2, y_base, textWidth, textHeight );
+		AddItem( link1 );
+
+		//--------------------------------------------------------------------------
+		// set link 2 - moddb
+		//--------------------------------------------------------------------------
+		link2.SetNameAndStatus( "ModDB", NULL );
+		link2.SetCoord( (640 - UI_BUTTONS_WIDTH) / 2, 140 );
+		link2.iFlags |= QMF_NOTIFY;
+		SET_EVENT( link2.onReleased, EngFuncs::ShellExecute( "https://www.moddb.com/mods/diffusion", NULL, false ) );
+
+		textWidth = g_FontMgr->GetTextWideScaled( link2.font, link2.szName, link2.charSize );
+		textHeight = g_FontMgr->GetTextHeightExt( link2.font, link2.szName, link2.charSize, textWidth );
+		textHeight += 8;
+
+		link2.SetRect( (640 - textWidth) / 2, y_base + y_add, textWidth, textHeight );
+		AddItem( link2 );
+
+		//--------------------------------------------------------------------------
+		// set link 3 - OST/Spotify
+		//--------------------------------------------------------------------------
+		link3.SetNameAndStatus( "OST (Spotify)", NULL );
+		link3.SetCoord( (640 - UI_BUTTONS_WIDTH) / 2, 140 );
+		link3.iFlags |= QMF_NOTIFY;
+		SET_EVENT( link3.onReleased, EngFuncs::ShellExecute( "https://open.spotify.com/artist/5WlZjaIwAqje4r2OGZ3nXG", NULL, false ) );
+
+		textWidth = g_FontMgr->GetTextWideScaled( link3.font, link3.szName, link3.charSize );
+		textHeight = g_FontMgr->GetTextHeightExt( link3.font, link3.szName, link3.charSize, textWidth );
+		textHeight += 8;
+
+		link3.SetRect( (640 - textWidth) / 2, y_base + y_add + y_add, textWidth, textHeight );
+		AddItem( link3 );
+
+		//--------------------------------------------------------------------------
+		// close button
+		//--------------------------------------------------------------------------
+		Close.SetNameAndStatus( L( "GameUI_OK" ), NULL );
+		Close.SetCoord( (640 - UI_BUTTONS_WIDTH) / 2, 140 );
+		Close.iFlags |= QMF_NOTIFY;
+		Close.onReleased = VoidCb( &CMenuLinksMessageBox::Hide );
+
+		textWidth = g_FontMgr->GetTextWideScaled( Close.font, Close.szName, Close.charSize );
+		textHeight = g_FontMgr->GetTextHeightExt( Close.font, Close.szName, Close.charSize, textWidth );
+		textHeight += 8;
+
+		Close.SetRect( (640 - textWidth) / 2, y_base + y_add + y_add + y_add + y_add, textWidth, textHeight );
+		AddItem( Close );
+	}
+
+	void CMenuLinksMessageBox::_VidInit( void )
+	{
+		SetRect( DLG_X + 192, 256, 640, 300 );
+		pos.x += uiStatic.xOffset;
+		pos.y += uiStatic.yOffset;
+		CalcPosition();
+		CalcSizes();
+
+		dlgMessage1.SetRect( 0, 24, 640, 256 - 24 );
+		dlgMessage1.SetCharSize( QM_DEFAULTFONT );
+
+	}
+
+	CMenuPicButton link1;
+	CMenuPicButton link2;
+	CMenuPicButton link3;
+	CMenuPicButton Close;
+};
+
 class CMenuMain : public CMenuFramework
 {
 public:
@@ -58,6 +156,7 @@ private:
 	void DisconnectDialogCb();
 	void HazardCourseDialogCb();
 	void HazardCourseCb();
+	void LinksDialog( void *pExtra = NULL );
 
 	CMenuPicButton	console;
 	CMenuPicButton achievements;
@@ -84,6 +183,8 @@ private:
 
 	// quit dialog
 	CMenuYesNoMessageBox dialog;
+
+	CMenuLinksMessageBox links;
 
 	class CGameLogo : public CMenuBitmap
 	{
@@ -119,6 +220,12 @@ void CMenuMain::QuitDialog( void *pExtra )
 	dialog.SetMessage( L( "GameUI_QuitConfirmationText" ) );
 	dialog.onPositive.SetCommand( false, "quit\n" );
 	dialog.Show();
+}
+
+void CMenuMain::LinksDialog( void *pExtra )
+{
+	links.SetMessage( L( "GameUI_LinksDialog" ) );
+	links.Show();
 }
 
 void CMenuMain::DisconnectCb()
@@ -261,7 +368,7 @@ void CMenuMain::_Init( void )
 	previews.SetNameAndStatus( L( "Previews" ), L( "StringsList_400" ) );
 	previews.SetPicture( PC_PREVIEWS );
 	previews.iFlags |= QMF_NOTIFY;
-	SET_EVENT( previews.onReleased, EngFuncs::ShellExecute( MenuStrings[IDS_MEDIA_PREVIEWURL], NULL, false ) );
+	previews.onReleased = MenuCb( &CMenuMain::LinksDialog );
 
 	quit.SetNameAndStatus( L( "GameUI_GameMenu_Quit" ), L( "GameUI_QuitConfirmationText" ) );
 	quit.SetPicture( PC_QUIT );

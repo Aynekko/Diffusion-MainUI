@@ -3,6 +3,7 @@
 "Language" "Turkish" 
 "Tokens" 
 {
+"GameUI_LinksDialog"		"Resmi Linkler"
 "GameUI_CrosshairScale"		"Görüş boyutu"
 "GameUI_CrosshairReloading"	"Yeniden Yükleme Çemberi"
 "GameUI_Chapter1"		"Utah Laboratuvarları"
