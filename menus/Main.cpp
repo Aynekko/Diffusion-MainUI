@@ -44,7 +44,7 @@ class CMenuLinksMessageBox : public CMenuYesNoMessageBox
 public:
 	CMenuLinksMessageBox() : CMenuYesNoMessageBox( true ) {}
 
-	void CMenuLinksMessageBox::_Init()
+	void _Init() override
 	{
 		CMenuYesNoMessageBox::_Init();
 
@@ -118,7 +118,7 @@ public:
 		AddItem( Close );
 	}
 
-	void CMenuLinksMessageBox::_VidInit( void )
+	void _VidInit( void ) override
 	{
 		SetRect( DLG_X + 192, 256, 640, 300 );
 		pos.x += uiStatic.xOffset;
