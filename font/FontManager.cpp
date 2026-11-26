@@ -13,6 +13,11 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 #include <locale.h>
+#ifdef __APPLE__
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#endif
 #include "FontManager.h"
 #include "BaseMenu.h"
 #include "Utils.h"
@@ -55,8 +60,11 @@ CFontManager::~CFontManager()
 
 	FOR_EACH_HASHMAP( m_FontFiles, i )
 	{
-		byte *p = m_FontFiles.Element( i ).data;
-		EngFuncs::COM_FreeFile( p );
+		const font_file &file = m_FontFiles.Element( i );
+		if( file.system )
+			free( file.data );
+		else
+			EngFuncs::COM_FreeFile( file.data );
 	}
 
 	m_FontFiles.Purge();
@@ -534,6 +542,22 @@ HFont CFontBuilder::Create()
 
 bool CFontManager::FindFontDataFile( const char *name, int tall, int weight, int flags, char *dataFile, size_t dataFileChars )
 {
+#ifdef __APPLE__
+	// macOS ships the same faces the Windows build gets from the system
+	const char *systemFile = NULL;
+
+	if( !strcmp( name, "Trebuchet MS" ) )
+		systemFile = "/System/Library/Fonts/Supplemental/Trebuchet MS.ttf";
+	else if( !strcmp( name, "Tahoma" ) )
+		systemFile = "/System/Library/Fonts/Supplemental/Tahoma.ttf";
+
+	if( systemFile && access( systemFile, R_OK ) == 0 )
+	{
+		Q_strncpy( dataFile, systemFile, dataFileChars );
+		return true;
+	}
+#endif
+
 	if( !strcmp( name, "Trebuchet MS" ) )
 	{
 		Q_strncpy( dataFile, "gfx/fonts/FiraSans-Regular.ttf", dataFileChars );
@@ -558,6 +582,39 @@ byte *CFontManager::LoadFontDataFile( const char *vfspath, int *plen )
 
 		return m_FontFiles[i].data;
 	}
+
+#ifdef __APPLE__
+	// engine filesystem doesn't take absolute paths
+	if( vfspath[0] == '/' )
+	{
+		FILE *f = fopen( vfspath, "rb" );
+		if( !f )
+			return nullptr;
+
+		fseek( f, 0, SEEK_END );
+		long size = ftell( f );
+		fseek( f, 0, SEEK_SET );
+
+		byte *data = size > 0 ? (byte *)malloc( size ) : nullptr;
+		if( data && fread( data, 1, size, f ) != (size_t)size )
+		{
+			free( data );
+			data = nullptr;
+		}
+		fclose( f );
+
+		if( !data )
+			return nullptr;
+
+		if( plen )
+			*plen = (int)size;
+
+		font_file file = { (int)size, data, true };
+		m_FontFiles.Insert( vfspath, file );
+		return data;
+	}
+#endif
+
 	int len = 0;
 	byte *p = EngFuncs::COM_LoadFile( vfspath, &len );
 	if( p != nullptr )
