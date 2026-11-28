@@ -83,6 +83,7 @@ private:
 	{
 		int length;
 		unsigned char *data;
+		bool system;
 	};
 	CUtlHashMap<CUtlString, font_file> m_FontFiles;
 
