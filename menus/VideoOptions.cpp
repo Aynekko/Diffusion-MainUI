@@ -73,6 +73,7 @@ public:
 	void HideMenus( void );
 	void GetSunShadow( void );
 	void SetSunShadow( void );
+	void SetScaleAndFSR( void );
 
 	int	outlineWidth;
 
@@ -414,6 +415,21 @@ void CMenuVidOptions::WriteAntiAliasing( void )
 		EngFuncs::CvarSetValue( "gl_msaa", 0 );
 		EngFuncs::CvarSetValue( "gl_smaa", 1 );
 		break;
+	}
+}
+
+void CMenuVidOptions::SetScaleAndFSR( void )
+{
+	gl_renderscale.WriteCvar();
+
+	// disable FSR
+	if( gl_renderscale.GetCurrentValue() > 1.0f )
+	{
+		gl_fsr.SetGrayed( true );
+	}
+	else
+	{
+		gl_fsr.SetGrayed( false );
 	}
 }
 
@@ -773,10 +789,10 @@ void CMenuVidOptions::_Init( void )
 	gl_renderscale.szName = L( "GameUI_RenderScale" );
 	gl_renderscale.szStatusText = L( "-" );
 	gl_renderscale.SetDisplayPrecision( 2 );
-	gl_renderscale.Setup( 0.25f, 1.00f, 0.05f );
+	gl_renderscale.Setup( 0.25f, 2.00f, 0.05f );
 	gl_renderscale.SetRect( 72, MenuYOffset + 480 + gamma_slider_offset, 260, 32 );
 	gl_renderscale.LinkCvar( "gl_renderscale", CMenuEditable::CVAR_VALUE );
-	gl_renderscale.onChanged = CMenuEditable::WriteCvarCb;
+	gl_renderscale.onChanged = VoidCb( &CMenuVidOptions::SetScaleAndFSR );
 
 	gl_fsr.SetNameAndStatus( "FSR 1.0", L( "-" ) );
 	gl_fsr.iFlags |= QMF_NOTIFY;
